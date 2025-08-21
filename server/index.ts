@@ -4,6 +4,18 @@ import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { handleLogin, handleVerifyToken } from "./routes/auth";
 import { handleDashboardStats } from "./routes/dashboard";
+import {
+  handleGetUsers,
+  handleGetUser,
+  handleCreateUser,
+  handleUpdateUser,
+  handleDeleteUser,
+  handleResetPassword,
+  handleToggleMFA,
+  handleBulkImport,
+  handleExportUsers,
+  handleGetUserActivity
+} from "./routes/users";
 
 export function createServer() {
   const app = express();
