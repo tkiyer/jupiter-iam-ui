@@ -21,5 +21,12 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
+  // IAM Authentication routes
+  app.post("/api/auth/login", handleLogin);
+  app.get("/api/auth/verify", handleVerifyToken);
+
+  // IAM Dashboard routes
+  app.get("/api/dashboard/stats", handleDashboardStats);
+
   return app;
 }
