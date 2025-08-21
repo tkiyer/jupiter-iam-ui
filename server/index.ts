@@ -28,8 +28,21 @@ import {
   handleGetRoleHierarchy,
   handleCloneRole,
   handleResolveConflict,
-  handleGetPermissions
+  handleGetPermissions as handleGetPermissionsFromRoles
 } from "./routes/roles";
+import {
+  handleGetPermissions,
+  handleGetPermission,
+  handleCreatePermission,
+  handleUpdatePermission,
+  handleDeletePermission,
+  handleGetPermissionCategories,
+  handleGetOptimizations,
+  handleGetPermissionAnalytics,
+  handleGetResources,
+  handleApplyOptimization,
+  handleDelegatePermission
+} from "./routes/permissions";
 
 export function createServer() {
   const app = express();
