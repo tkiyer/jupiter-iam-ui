@@ -884,15 +884,15 @@ const EditRoleDialog: React.FC<{
           <TabsContent value="hierarchy" className="space-y-4">
             <div>
               <Label>Parent Role</Label>
-              <Select 
-                value={formData.parentRole || ''}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, parentRole: value || undefined }))}
+              <Select
+                value={formData.parentRole || 'none'}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, parentRole: value === 'none' ? undefined : value }))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="No parent role" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">No parent role</SelectItem>
+                  <SelectItem value="none">No parent role</SelectItem>
                   {parentRoles.map((parentRole) => (
                     <SelectItem key={parentRole.id} value={parentRole.id}>
                       {parentRole.name}
