@@ -111,20 +111,22 @@ const Users: React.FC = () => {
 
   const handleCreateUser = async (userData: CreateUserRequest) => {
     try {
-      // Mock API call - replace with real endpoint
-      const newUser: User = {
-        id: Date.now().toString(),
-        username: userData.username,
-        email: userData.email,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        status: 'active',
-        roles: userData.roles,
-        attributes: userData.attributes || {},
-        createdAt: new Date().toISOString(),
-      };
-      setUsers(prev => [...prev, newUser]);
-      setIsCreateDialogOpen(false);
+      const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (response.ok) {
+        const newUser = await response.json();
+        setUsers(prev => [...prev, newUser]);
+        setIsCreateDialogOpen(false);
+      } else {
+        const error = await response.json();
+        console.error('Error creating user:', error.error);
+      }
     } catch (error) {
       console.error('Error creating user:', error);
     }
