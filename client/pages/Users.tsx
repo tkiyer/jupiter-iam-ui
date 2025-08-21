@@ -55,82 +55,9 @@ const Users: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      // Mock API call - replace with real endpoint
-      const mockUsers: User[] = [
-        {
-          id: '1',
-          username: 'john.doe',
-          email: 'john.doe@company.com',
-          firstName: 'John',
-          lastName: 'Doe',
-          status: 'active',
-          roles: ['user', 'manager'],
-          attributes: {
-            department: 'Engineering',
-            clearanceLevel: 'medium',
-            location: 'New York',
-            phone: '+1-555-0123',
-            hireDate: '2023-01-15'
-          },
-          createdAt: '2023-01-15T00:00:00Z',
-          lastLogin: '2024-01-10T14:30:00Z'
-        },
-        {
-          id: '2',
-          username: 'jane.smith',
-          email: 'jane.smith@company.com',
-          firstName: 'Jane',
-          lastName: 'Smith',
-          status: 'active',
-          roles: ['admin', 'user'],
-          attributes: {
-            department: 'IT',
-            clearanceLevel: 'high',
-            location: 'San Francisco',
-            phone: '+1-555-0124',
-            hireDate: '2022-08-10'
-          },
-          createdAt: '2022-08-10T00:00:00Z',
-          lastLogin: '2024-01-10T09:15:00Z'
-        },
-        {
-          id: '3',
-          username: 'bob.wilson',
-          email: 'bob.wilson@company.com',
-          firstName: 'Bob',
-          lastName: 'Wilson',
-          status: 'inactive',
-          roles: ['user'],
-          attributes: {
-            department: 'Sales',
-            clearanceLevel: 'low',
-            location: 'Chicago',
-            phone: '+1-555-0125',
-            hireDate: '2023-06-01'
-          },
-          createdAt: '2023-06-01T00:00:00Z',
-          lastLogin: '2023-12-15T16:45:00Z'
-        },
-        {
-          id: '4',
-          username: 'alice.brown',
-          email: 'alice.brown@company.com',
-          firstName: 'Alice',
-          lastName: 'Brown',
-          status: 'suspended',
-          roles: ['user'],
-          attributes: {
-            department: 'HR',
-            clearanceLevel: 'medium',
-            location: 'Boston',
-            phone: '+1-555-0126',
-            hireDate: '2023-03-20'
-          },
-          createdAt: '2023-03-20T00:00:00Z',
-          lastLogin: '2023-12-20T11:20:00Z'
-        }
-      ];
-      setUsers(mockUsers);
+      const response = await fetch('/api/users');
+      const data = await response.json();
+      setUsers(data.users || data);
     } catch (error) {
       console.error('Error fetching users:', error);
     } finally {
