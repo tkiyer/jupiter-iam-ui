@@ -14,13 +14,13 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Role, CreateRoleRequest, RoleTemplate, RoleConflict, RoleAnalytics, Permission } from '@shared/iam';
-import { 
-  Search, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Download, 
-  Upload, 
+import {
+  Search,
+  Plus,
+  Edit,
+  Trash2,
+  Download,
+  Upload,
   Filter,
   MoreHorizontal,
   Shield,
@@ -38,7 +38,8 @@ import {
   BarChart3,
   Settings,
   Crown,
-  Layers
+  Layers,
+  User
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
