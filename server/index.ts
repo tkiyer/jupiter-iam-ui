@@ -40,5 +40,17 @@ export function createServer() {
   // IAM Dashboard routes
   app.get("/api/dashboard/stats", handleDashboardStats);
 
+  // IAM User Management routes
+  app.get("/api/users", handleGetUsers);
+  app.get("/api/users/export", handleExportUsers);
+  app.post("/api/users", handleCreateUser);
+  app.post("/api/users/bulk-import", handleBulkImport);
+  app.get("/api/users/:id", handleGetUser);
+  app.put("/api/users/:id", handleUpdateUser);
+  app.delete("/api/users/:id", handleDeleteUser);
+  app.post("/api/users/:id/reset-password", handleResetPassword);
+  app.post("/api/users/:id/toggle-mfa", handleToggleMFA);
+  app.get("/api/users/:id/activity", handleGetUserActivity);
+
   return app;
 }
