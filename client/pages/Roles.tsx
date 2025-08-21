@@ -352,15 +352,15 @@ const Roles: React.FC = () => {
                         <div className="flex items-center space-x-3">
                           {getLevelIcon(role.level)}
                           <div>
-                            <p className="font-medium text-gray-900 flex items-center gap-2">
-                              {role.name}
+                            <div className="font-medium text-gray-900 flex items-center gap-2">
+                              <span>{role.name}</span>
                               {role.isSystemRole && (
                                 <Badge variant="secondary" className="text-xs">System</Badge>
                               )}
                               {role.isTemplate && (
                                 <Badge variant="outline" className="text-xs">Template</Badge>
                               )}
-                            </p>
+                            </div>
                             <p className="text-sm text-gray-500">{role.description}</p>
                           </div>
                         </div>
@@ -970,28 +970,45 @@ const EditRoleDialog: React.FC<{
 
 // Role Hierarchy Visualization Component
 const RoleHierarchyView: React.FC<{ roles: Role[] }> = ({ roles }) => {
+  const getLevelIcon = (level: number) => {
+    if (level >= 4) return <Crown className="h-4 w-4 text-purple-600" />;
+    if (level >= 3) return <Shield className="h-4 w-4 text-blue-600" />;
+    if (level >= 2) return <Users className="h-4 w-4 text-green-600" />;
+    return <User className="h-4 w-4 text-gray-600" />;
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'active': return 'bg-green-100 text-green-800';
+      case 'pending': return 'bg-yellow-100 text-yellow-800';
+      case 'inactive': return 'bg-gray-100 text-gray-800';
+      case 'deprecated': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
   const buildHierarchy = (roles: Role[]) => {
     const roleMap = new Map(roles.map(role => [role.id, role]));
     const hierarchy: Role[] = [];
-    
+
     roles.forEach(role => {
       if (!role.parentRole) {
         hierarchy.push(role);
       }
     });
-    
+
     return hierarchy;
   };
 
   const renderRoleNode = (role: Role, level: number = 0) => {
     const children = roles.filter(r => r.parentRole === role.id);
-    
+
     return (
       <div key={role.id} className={`ml-${level * 4}`}>
         <div className="flex items-center space-x-2 p-2 border rounded-lg mb-2">
           {getLevelIcon(role.level)}
           <span className="font-medium">{role.name}</span>
-          <Badge className={getStatusColor(role.status)}>{role.status}</Badge>
+          <Badge className={cn(getStatusColor(role.status))}>{role.status}</Badge>
           <span className="text-sm text-gray-500">({role.permissions.length} permissions)</span>
         </div>
         {children.map(child => renderRoleNode(child, level + 1))}
@@ -1000,7 +1017,7 @@ const RoleHierarchyView: React.FC<{ roles: Role[] }> = ({ roles }) => {
   };
 
   const rootRoles = buildHierarchy(roles);
-  
+
   return (
     <div className="space-y-2">
       {rootRoles.map(role => renderRoleNode(role))}
