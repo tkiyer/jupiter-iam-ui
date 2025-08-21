@@ -495,9 +495,27 @@ const CreateUserDialog: React.FC<{ onCreateUser: (user: CreateUserRequest) => vo
 const EditUserDialog: React.FC<{ user: User; onSave: (user: User) => void }> = ({ user, onSave }) => {
   const [formData, setFormData] = useState<User>(user);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    try {
+      const response = await fetch(`/api/users/${user.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const updatedUser = await response.json();
+        onSave(updatedUser);
+      } else {
+        const error = await response.json();
+        console.error('Error updating user:', error.error);
+      }
+    } catch (error) {
+      console.error('Error updating user:', error);
+    }
   };
 
   return (
