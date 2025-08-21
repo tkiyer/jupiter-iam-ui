@@ -163,6 +163,169 @@ export interface Permission {
   action: string;
   description: string;
   category: string;
+  // Granular and context-based permissions
+  conditions?: PermissionCondition[];
+  fieldRestrictions?: FieldRestriction[];
+  apiEndpoints?: string[];
+  scope: 'global' | 'resource' | 'field' | 'api';
+  // Permission hierarchy and delegation
+  parentPermission?: string;
+  canDelegate: boolean;
+  delegatedBy?: string;
+  delegatedAt?: string;
+  // Metadata and analytics
+  createdAt: string;
+  updatedAt?: string;
+  usageCount?: number;
+  lastUsed?: string;
+  isSystemPermission: boolean;
+  isDeprecated?: boolean;
+  // Optimization and cleanup
+  risk: 'low' | 'medium' | 'high' | 'critical';
+  complianceRequired: boolean;
+  autoCleanupDate?: string;
+}
+
+// Permission conditions for context-based access
+export interface PermissionCondition {
+  id: string;
+  type: 'time' | 'location' | 'device' | 'attribute' | 'custom';
+  operator: 'equals' | 'not_equals' | 'contains' | 'in' | 'not_in' | 'greater_than' | 'less_than';
+  field: string;
+  value: any;
+  description: string;
+}
+
+// Field-level permission restrictions
+export interface FieldRestriction {
+  id: string;
+  field: string;
+  access: 'read' | 'write' | 'none';
+  conditions?: PermissionCondition[];
+  maskingRule?: 'none' | 'partial' | 'full' | 'hash';
+}
+
+// Permission categories and grouping
+export interface PermissionCategory {
+  id: string;
+  name: string;
+  description: string;
+  color: string;
+  icon: string;
+  parentCategory?: string;
+  permissions: string[];
+  isSystemCategory: boolean;
+}
+
+// Resource definitions for resource-based access control
+export interface Resource {
+  id: string;
+  name: string;
+  type: string;
+  description: string;
+  attributes: Record<string, any>;
+  // API endpoint mapping
+  endpoints?: ResourceEndpoint[];
+  // Field definitions
+  fields?: ResourceField[];
+  // Access patterns
+  accessPatterns?: AccessPattern[];
+  createdAt: string;
+  updatedAt?: string;
+}
+
+// API endpoint definitions
+export interface ResourceEndpoint {
+  id: string;
+  path: string;
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  description: string;
+  requiredPermissions: string[];
+  rateLimit?: number;
+  authRequired: boolean;
+}
+
+// Resource field definitions
+export interface ResourceField {
+  id: string;
+  name: string;
+  type: string;
+  sensitive: boolean;
+  piiType?: 'email' | 'phone' | 'ssn' | 'cc' | 'custom';
+  defaultAccess: 'read' | 'write' | 'none';
+  validationRules?: string[];
+}
+
+// Access patterns for analytics
+export interface AccessPattern {
+  id: string;
+  userId: string;
+  action: string;
+  frequency: number;
+  lastAccess: string;
+  anomalyScore: number;
+}
+
+// Permission analytics and reporting
+export interface PermissionAnalytics {
+  permissionId: string;
+  usageStats: {
+    totalUses: number;
+    uniqueUsers: number;
+    lastUsed: string;
+    averageDaily: number;
+    peakUsage: string;
+  };
+  riskMetrics: {
+    riskScore: number;
+    sensitiveDataAccess: boolean;
+    privilegeEscalation: boolean;
+    unusualAccess: boolean;
+  };
+  complianceStatus: {
+    isCompliant: boolean;
+    violations: string[];
+    auditReady: boolean;
+  };
+  recommendations: string[];
+}
+
+// Permission delegation tracking
+export interface PermissionDelegation {
+  id: string;
+  permissionId: string;
+  delegatedBy: string;
+  delegatedTo: string;
+  delegatedAt: string;
+  expiresAt?: string;
+  conditions?: PermissionCondition[];
+  reason: string;
+  status: 'active' | 'expired' | 'revoked';
+}
+
+// Permission optimization suggestions
+export interface PermissionOptimization {
+  id: string;
+  type: 'cleanup' | 'consolidation' | 'deprecation' | 'risk_reduction';
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  permissions: string[];
+  description: string;
+  recommendation: string;
+  estimatedImpact: string;
+  autoApplicable: boolean;
+}
+
+// Permission usage tracking
+export interface PermissionUsage {
+  id: string;
+  permissionId: string;
+  userId: string;
+  resourceId?: string;
+  action: string;
+  timestamp: string;
+  context: Record<string, any>;
+  result: 'granted' | 'denied' | 'error';
+  reason?: string;
 }
 
 export interface Resource {
