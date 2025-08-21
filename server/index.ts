@@ -66,5 +66,21 @@ export function createServer() {
   app.post("/api/users/:id/toggle-mfa", handleToggleMFA);
   app.get("/api/users/:id/activity", handleGetUserActivity);
 
+  // IAM Role Management routes
+  app.get("/api/roles", handleGetRoles);
+  app.get("/api/roles/templates", handleGetRoleTemplates);
+  app.get("/api/roles/conflicts", handleGetRoleConflicts);
+  app.get("/api/roles/hierarchy", handleGetRoleHierarchy);
+  app.post("/api/roles", handleCreateRole);
+  app.get("/api/roles/:id", handleGetRole);
+  app.put("/api/roles/:id", handleUpdateRole);
+  app.delete("/api/roles/:id", handleDeleteRole);
+  app.post("/api/roles/:id/clone", handleCloneRole);
+  app.get("/api/roles/:id/analytics", handleGetRoleAnalytics);
+  app.post("/api/roles/conflicts/:id/resolve", handleResolveConflict);
+
+  // IAM Permission Management routes
+  app.get("/api/permissions", handleGetPermissions);
+
   return app;
 }
