@@ -16,6 +16,20 @@ import {
   handleExportUsers,
   handleGetUserActivity
 } from "./routes/users";
+import {
+  handleGetRoles,
+  handleGetRole,
+  handleCreateRole,
+  handleUpdateRole,
+  handleDeleteRole,
+  handleGetRoleTemplates,
+  handleGetRoleConflicts,
+  handleGetRoleAnalytics,
+  handleGetRoleHierarchy,
+  handleCloneRole,
+  handleResolveConflict,
+  handleGetPermissions
+} from "./routes/roles";
 
 export function createServer() {
   const app = express();
