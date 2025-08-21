@@ -152,7 +152,11 @@ const Users: React.FC = () => {
           <p className="text-gray-600 mt-1">Manage users, roles, and access permissions</p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => window.open('/api/users/export?format=csv', '_blank')}
+          >
             <Download className="mr-2 h-4 w-4" />
             Export
           </Button>
