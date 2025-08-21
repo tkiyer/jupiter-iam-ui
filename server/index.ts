@@ -92,8 +92,20 @@ export function createServer() {
   app.get("/api/roles/:id/analytics", handleGetRoleAnalytics);
   app.post("/api/roles/conflicts/:id/resolve", handleResolveConflict);
 
-  // IAM Permission Management routes
+  // IAM Permission Management routes (detailed)
   app.get("/api/permissions", handleGetPermissions);
+  app.get("/api/permissions/categories", handleGetPermissionCategories);
+  app.get("/api/permissions/optimizations", handleGetOptimizations);
+  app.post("/api/permissions", handleCreatePermission);
+  app.get("/api/permissions/:id", handleGetPermission);
+  app.put("/api/permissions/:id", handleUpdatePermission);
+  app.delete("/api/permissions/:id", handleDeletePermission);
+  app.get("/api/permissions/:id/analytics", handleGetPermissionAnalytics);
+  app.post("/api/permissions/:id/delegate", handleDelegatePermission);
+  app.post("/api/permissions/optimize", handleApplyOptimization);
+
+  // Resource management routes
+  app.get("/api/resources", handleGetResources);
 
   return app;
 }
