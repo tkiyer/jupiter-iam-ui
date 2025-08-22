@@ -859,7 +859,7 @@ const EditRoleDialog: React.FC<{
             <div>
               <Label>Assigned Permissions ({formData.permissions.length})</Label>
               <div className="grid grid-cols-2 gap-2 mt-2 max-h-64 overflow-y-auto">
-                {availablePermissions.map((permission) => (
+                {(availablePermissions || []).map((permission) => (
                   <div key={permission.id} className="flex items-center space-x-2">
                     <Checkbox
                       id={`edit-${permission.id}`}
