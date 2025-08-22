@@ -698,7 +698,7 @@ const CreateRoleDialog: React.FC<{
             <div>
               <Label>Select Permissions</Label>
               <div className="grid grid-cols-2 gap-2 mt-2 max-h-64 overflow-y-auto">
-                {(availablePermissions || []).map((permission) => (
+                {Array.isArray(availablePermissions) ? availablePermissions.map((permission) => (
                   <div key={permission.id} className="flex items-center space-x-2">
                     <Checkbox
                       id={permission.id}
@@ -716,7 +716,7 @@ const CreateRoleDialog: React.FC<{
                       <span className="text-xs text-gray-500 block">{permission.description}</span>
                     </Label>
                   </div>
-                ))}
+                )) : []}
               </div>
             </div>
           </TabsContent>
