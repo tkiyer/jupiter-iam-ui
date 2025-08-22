@@ -122,5 +122,20 @@ export function createServer() {
   // Resource management routes
   app.get("/api/resources", handleGetResources);
 
+  // IAM Policy Management routes (ABAC)
+  app.get("/api/policies", handleGetPolicies);
+  app.get("/api/policies/conflicts", handleGetPolicyConflicts);
+  app.get("/api/policies/analytics", handleGetPolicyAnalytics);
+  app.post("/api/policies", handleCreatePolicy);
+  app.post("/api/policies/test", handleTestPolicy);
+  app.post("/api/policies/evaluate", handleEvaluatePolicy);
+  app.get("/api/policies/:id", handleGetPolicy);
+  app.put("/api/policies/:id", handleUpdatePolicy);
+  app.delete("/api/policies/:id", handleDeletePolicy);
+  app.get("/api/policies/:id/versions", handleGetPolicyVersions);
+  app.post("/api/policies/:id/rollback", handleRollbackPolicy);
+  app.post("/api/policies/:id/activate", handleActivatePolicy);
+  app.post("/api/policies/:id/deactivate", handleDeactivatePolicy);
+
   return app;
 }
