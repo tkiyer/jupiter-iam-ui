@@ -907,7 +907,7 @@ const EditRoleDialog: React.FC<{
                 <Label>Inherited Permissions ({formData.inheritedPermissions.length})</Label>
                 <div className="text-sm text-gray-600 mt-1">
                   {(formData.inheritedPermissions || []).map((permId, index) => {
-                    const perm = availablePermissions.find(p => p.id === permId);
+                    const perm = Array.isArray(availablePermissions) ? availablePermissions.find(p => p.id === permId) : null;
                     return perm ? (
                       <Badge key={index} variant="outline" className="mr-1 mb-1">
                         {perm.name}
