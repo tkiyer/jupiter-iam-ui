@@ -43,6 +43,21 @@ import {
   handleApplyOptimization,
   handleDelegatePermission
 } from "./routes/permissions";
+import {
+  handleGetPolicies,
+  handleGetPolicy,
+  handleCreatePolicy,
+  handleUpdatePolicy,
+  handleDeletePolicy,
+  handleTestPolicy,
+  handleGetPolicyVersions,
+  handleRollbackPolicy,
+  handleGetPolicyConflicts,
+  handleGetPolicyAnalytics,
+  handleActivatePolicy,
+  handleDeactivatePolicy,
+  handleEvaluatePolicy
+} from "./routes/policies";
 
 export function createServer() {
   const app = express();
