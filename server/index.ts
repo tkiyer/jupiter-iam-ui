@@ -137,5 +137,9 @@ export function createServer() {
   app.post("/api/policies/:id/activate", handleActivatePolicy);
   app.post("/api/policies/:id/deactivate", handleDeactivatePolicy);
 
+  // Access Control routes
+  const accessControlRoutes = require('./routes/access-control').default;
+  app.use("/api/access-control", accessControlRoutes);
+
   return app;
 }
