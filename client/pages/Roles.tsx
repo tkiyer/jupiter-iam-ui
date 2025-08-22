@@ -119,9 +119,10 @@ const Roles: React.FC = () => {
     try {
       const response = await fetch('/api/permissions');
       const data = await response.json();
-      setAvailablePermissions(data);
+      setAvailablePermissions(data.permissions || data || []);
     } catch (error) {
       console.error('Error fetching permissions:', error);
+      setAvailablePermissions([]);
     }
   };
 
