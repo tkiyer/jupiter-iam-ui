@@ -455,7 +455,7 @@ const Roles: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {roleTemplates.map((template) => (
+                {(roleTemplates || []).map((template) => (
                   <Card key={template.id} className="hover:shadow-md transition-shadow">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-lg">{template.name}</CardTitle>
@@ -499,7 +499,7 @@ const Roles: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {conflicts.map((conflict) => (
+                {(conflicts || []).map((conflict) => (
                   <Card key={conflict.id} className={cn("border", getConflictSeverityColor(conflict.severity))}>
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between">
@@ -728,7 +728,7 @@ const CreateRoleDialog: React.FC<{
                   <SelectValue placeholder="Select parent role" />
                 </SelectTrigger>
                 <SelectContent>
-                  {parentRoles.map((role) => (
+                  {(parentRoles || []).map((role) => (
                     <SelectItem key={role.id} value={role.id}>{role.name}</SelectItem>
                   ))}
                 </SelectContent>
@@ -893,7 +893,7 @@ const EditRoleDialog: React.FC<{
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="none">No parent role</SelectItem>
-                  {parentRoles.map((parentRole) => (
+                  {(parentRoles || []).map((parentRole) => (
                     <SelectItem key={parentRole.id} value={parentRole.id}>
                       {parentRole.name}
                     </SelectItem>
@@ -905,7 +905,7 @@ const EditRoleDialog: React.FC<{
               <div>
                 <Label>Inherited Permissions ({formData.inheritedPermissions.length})</Label>
                 <div className="text-sm text-gray-600 mt-1">
-                  {formData.inheritedPermissions.map((permId, index) => {
+                  {(formData.inheritedPermissions || []).map((permId, index) => {
                     const perm = availablePermissions.find(p => p.id === permId);
                     return perm ? (
                       <Badge key={index} variant="outline" className="mr-1 mb-1">
