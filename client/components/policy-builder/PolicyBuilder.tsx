@@ -377,6 +377,7 @@ export const PolicyBuilder: React.FC = () => {
     draggedComponent: null,
     canvas: { zoom: 1, pan: { x: 0, y: 0 } }
   });
+  const [activeTab, setActiveTab] = useState<'builder' | 'tester'>('builder');
 
   const canvasRef = useRef<HTMLDivElement>(null);
 
