@@ -600,6 +600,18 @@ export const PolicyBuilder: React.FC = () => {
         </div>
       </div>
 
+      {/* Main Content Tabs */}
+      <Tabs value={activeTab} onValueChange={(value: 'builder' | 'tester') => setActiveTab(value)}>
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="builder">Policy Builder</TabsTrigger>
+          <TabsTrigger value="tester">
+            <TestTube className="h-4 w-4 mr-2" />
+            Policy Tester
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="builder" className="space-y-6">
+
       {/* Rule tabs */}
       <div className="border-b">
         <div className="flex gap-2">
@@ -822,6 +834,17 @@ export const PolicyBuilder: React.FC = () => {
           )}
         </div>
       </div>
+        </TabsContent>
+
+        <TabsContent value="tester" className="space-y-6">
+          <PolicyTester
+            policy={generatePolicyPreview()}
+            onTestComplete={(results) => {
+              console.log('Test results:', results);
+            }}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
