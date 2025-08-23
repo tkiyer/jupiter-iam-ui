@@ -203,10 +203,25 @@ function authenticateToken(req: any, res: any, next: any) {
     return res.status(401).json({ error: 'Access token required' });
   }
 
-  // In a real implementation, verify the JWT token
-  // For now, we'll just extract user ID from a simple token format
+  // Extract user ID from mock token format: mock-jwt-token-{userId}-{timestamp}
   try {
-    const userId = token === 'admin-token' ? '1' : '2';
+    if (!token.startsWith('mock-jwt-token')) {
+      return res.status(403).json({ error: 'Invalid token format' });
+    }
+
+    const parts = token.split('-');
+    if (parts.length < 4) {
+      return res.status(403).json({ error: 'Invalid token structure' });
+    }
+
+    const userId = parts[3]; // Extract userId from token
+
+    // Verify user exists in our mock data
+    const user = mockUsers.find(u => u.id === userId);
+    if (!user || user.status !== 'active') {
+      return res.status(403).json({ error: 'Invalid or inactive user' });
+    }
+
     req.userId = userId;
     next();
   } catch (error) {
