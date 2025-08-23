@@ -268,7 +268,7 @@ async function evaluateAccess(request: AccessRequest): Promise<AccessResponse> {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
       },
       body: JSON.stringify(request)
     });
@@ -292,7 +292,7 @@ async function fetchUserRoles(userId: string): Promise<Role[]> {
   try {
     const response = await fetch(`/api/access-control/users/${userId}/roles`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
       }
     });
 
@@ -312,7 +312,7 @@ async function fetchUserPermissions(userId: string): Promise<Permission[]> {
   try {
     const response = await fetch(`/api/access-control/users/${userId}/permissions`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
       }
     });
 
@@ -332,7 +332,7 @@ async function fetchActivePolicies(): Promise<ABACPolicy[]> {
   try {
     const response = await fetch('/api/access-control/policies?status=active', {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
       }
     });
 
