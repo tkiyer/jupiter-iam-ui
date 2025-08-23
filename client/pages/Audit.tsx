@@ -509,7 +509,7 @@ export default function Audit() {
                 
                 <div>
                   <Label>Result</Label>
-                  <Select value={filters.result} onValueChange={(value) => setFilters(prev => ({ ...prev, result: value === 'all' ? '' : value }))}>
+                  <Select value={filters.result} onValueChange={(value) => setFilters(prev => ({ ...prev, result: value }))}>
                     <SelectTrigger>
                       <SelectValue placeholder="All results" />
                     </SelectTrigger>
@@ -524,7 +524,7 @@ export default function Audit() {
 
                 <div>
                   <Label>Category</Label>
-                  <Select value={filters.category} onValueChange={(value) => setFilters(prev => ({ ...prev, category: value === 'all' ? '' : value }))}>
+                  <Select value={filters.category} onValueChange={(value) => setFilters(prev => ({ ...prev, category: value }))}>
                     <SelectTrigger>
                       <SelectValue placeholder="All categories" />
                     </SelectTrigger>
@@ -541,7 +541,7 @@ export default function Audit() {
 
                 <div>
                   <Label>Risk Level</Label>
-                  <Select value={filters.risk} onValueChange={(value) => setFilters(prev => ({ ...prev, risk: value === 'all' ? '' : value }))}>
+                  <Select value={filters.risk} onValueChange={(value) => setFilters(prev => ({ ...prev, risk: value }))}>
                     <SelectTrigger>
                       <SelectValue placeholder="All levels" />
                     </SelectTrigger>
