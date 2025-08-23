@@ -38,6 +38,7 @@ const navigationItems = [
   { path: '/roles', label: 'Role Management', icon: Key },
   { path: '/permissions', label: 'Permissions', icon: Settings },
   { path: '/policies', label: 'ABAC Policies', icon: FileText },
+  { path: '/access-control', label: 'Access Control', icon: Shield },
   { path: '/audit', label: 'Audit Logs', icon: BarChart3 },
 ];
 
