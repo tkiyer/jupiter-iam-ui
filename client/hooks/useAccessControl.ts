@@ -290,7 +290,7 @@ async function evaluateAccess(request: AccessRequest): Promise<AccessResponse> {
 
 async function fetchUserRoles(userId: string): Promise<Role[]> {
   try {
-    const response = await fetch(`/api/users/${userId}/roles`, {
+    const response = await fetch(`/api/access-control/users/${userId}/roles`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
@@ -310,7 +310,7 @@ async function fetchUserRoles(userId: string): Promise<Role[]> {
 
 async function fetchUserPermissions(userId: string): Promise<Permission[]> {
   try {
-    const response = await fetch(`/api/users/${userId}/permissions`, {
+    const response = await fetch(`/api/access-control/users/${userId}/permissions`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
@@ -330,7 +330,7 @@ async function fetchUserPermissions(userId: string): Promise<Permission[]> {
 
 async function fetchActivePolicies(): Promise<ABACPolicy[]> {
   try {
-    const response = await fetch('/api/policies?status=active', {
+    const response = await fetch('/api/access-control/policies?status=active', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
