@@ -111,10 +111,10 @@ export default function Audit() {
     userId: '',
     action: '',
     resource: '',
-    result: '',
-    category: '',
+    result: 'all',
+    category: 'all',
     dateRange: { from: undefined, to: undefined } as any,
-    risk: ''
+    risk: 'all'
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(50);
@@ -354,10 +354,10 @@ export default function Audit() {
     if (filters.userId && !log.userId.toLowerCase().includes(filters.userId.toLowerCase())) return false;
     if (filters.action && !log.action.toLowerCase().includes(filters.action.toLowerCase())) return false;
     if (filters.resource && !log.resource.toLowerCase().includes(filters.resource.toLowerCase())) return false;
-    if (filters.result && log.result !== filters.result) return false;
-    if (filters.category && log.category !== filters.category) return false;
-    if (filters.risk && log.risk !== filters.risk) return false;
-    if (searchTerm && !log.userName.toLowerCase().includes(searchTerm.toLowerCase()) && 
+    if (filters.result && filters.result !== 'all' && log.result !== filters.result) return false;
+    if (filters.category && filters.category !== 'all' && log.category !== filters.category) return false;
+    if (filters.risk && filters.risk !== 'all' && log.risk !== filters.risk) return false;
+    if (searchTerm && !log.userName.toLowerCase().includes(searchTerm.toLowerCase()) &&
         !log.action.toLowerCase().includes(searchTerm.toLowerCase()) &&
         !log.resource.toLowerCase().includes(searchTerm.toLowerCase())) return false;
     return true;
