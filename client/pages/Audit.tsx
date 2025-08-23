@@ -509,12 +509,12 @@ export default function Audit() {
                 
                 <div>
                   <Label>Result</Label>
-                  <Select value={filters.result} onValueChange={(value) => setFilters(prev => ({ ...prev, result: value }))}>
+                  <Select value={filters.result} onValueChange={(value) => setFilters(prev => ({ ...prev, result: value === 'all' ? '' : value }))}>
                     <SelectTrigger>
                       <SelectValue placeholder="All results" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All results</SelectItem>
+                      <SelectItem value="all">All results</SelectItem>
                       <SelectItem value="success">Success</SelectItem>
                       <SelectItem value="failure">Failure</SelectItem>
                       <SelectItem value="warning">Warning</SelectItem>
@@ -524,12 +524,12 @@ export default function Audit() {
 
                 <div>
                   <Label>Category</Label>
-                  <Select value={filters.category} onValueChange={(value) => setFilters(prev => ({ ...prev, category: value }))}>
+                  <Select value={filters.category} onValueChange={(value) => setFilters(prev => ({ ...prev, category: value === 'all' ? '' : value }))}>
                     <SelectTrigger>
                       <SelectValue placeholder="All categories" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All categories</SelectItem>
+                      <SelectItem value="all">All categories</SelectItem>
                       <SelectItem value="authentication">Authentication</SelectItem>
                       <SelectItem value="authorization">Authorization</SelectItem>
                       <SelectItem value="data_access">Data Access</SelectItem>
@@ -541,12 +541,12 @@ export default function Audit() {
 
                 <div>
                   <Label>Risk Level</Label>
-                  <Select value={filters.risk} onValueChange={(value) => setFilters(prev => ({ ...prev, risk: value }))}>
+                  <Select value={filters.risk} onValueChange={(value) => setFilters(prev => ({ ...prev, risk: value === 'all' ? '' : value }))}>
                     <SelectTrigger>
                       <SelectValue placeholder="All levels" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All levels</SelectItem>
+                      <SelectItem value="all">All levels</SelectItem>
                       <SelectItem value="low">Low</SelectItem>
                       <SelectItem value="medium">Medium</SelectItem>
                       <SelectItem value="high">High</SelectItem>
