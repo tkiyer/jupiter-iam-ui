@@ -14,6 +14,7 @@ import Users from "./pages/Users";
 import Roles from "./pages/Roles";
 import Permissions from "./pages/Permissions";
 import Policies from "./pages/Policies";
+import AccessControl from "./pages/AccessControl";
 import Audit from "./pages/Audit";
 import NotFound from "./pages/NotFound";
 
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/roles" element={<DashboardLayout><Roles /></DashboardLayout>} />
             <Route path="/permissions" element={<DashboardLayout><Permissions /></DashboardLayout>} />
             <Route path="/policies" element={<DashboardLayout><Policies /></DashboardLayout>} />
+            <Route path="/access-control" element={<DashboardLayout><AccessControl /></DashboardLayout>} />
             <Route path="/audit" element={<DashboardLayout><Audit /></DashboardLayout>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
