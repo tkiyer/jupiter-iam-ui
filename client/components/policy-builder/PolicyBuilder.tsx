@@ -14,6 +14,8 @@ import { Alert, AlertDescription } from '../ui/alert';
 import { ScrollArea } from '../ui/scroll-area';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Separator } from '../ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import PolicyTester from './PolicyTester';
 import {
   Users,
   Database,
@@ -32,7 +34,8 @@ import {
   X,
   GripVertical,
   ArrowRight,
-  Copy
+  Copy,
+  TestTube
 } from 'lucide-react';
 
 // Component types for the policy builder
