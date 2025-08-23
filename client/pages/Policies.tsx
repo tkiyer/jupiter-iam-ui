@@ -66,6 +66,7 @@ import {
   FlaskConical
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { PolicyBuilder } from '@/components/policy-builder/PolicyBuilder';
 
 const Policies: React.FC = () => {
   const [policies, setPolicies] = useState<ABACPolicy[]>([]);
@@ -512,7 +513,7 @@ const Policies: React.FC = () => {
 
         {/* Policy Builder Tab */}
         <TabsContent value="builder" className="space-y-6">
-          <PolicyBuilderView />
+          <PolicyBuilder />
         </TabsContent>
 
         {/* Simulation Tab */}
