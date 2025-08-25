@@ -21,6 +21,7 @@ import {
 const Dashboard: React.FC = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFullReportOpen, setIsFullReportOpen] = useState(false);
 
   useEffect(() => {
     fetchDashboardStats();
