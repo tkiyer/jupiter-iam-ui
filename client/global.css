@@ -103,4 +103,24 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Optimize for ResizeObserver performance */
+  [data-radix-popper-content-wrapper] {
+    contain: layout style paint;
+  }
+
+  [data-radix-dialog-overlay] {
+    contain: strict;
+  }
+
+  /* Prevent layout shift that can trigger ResizeObserver loops */
+  [data-radix-tooltip-content] {
+    will-change: transform, opacity;
+    contain: layout style paint;
+  }
+
+  /* Optimize portal rendering */
+  [data-radix-portal] {
+    contain: layout;
+  }
 }
