@@ -1,5 +1,9 @@
 import "./global.css";
 
+// Import ResizeObserver fix FIRST to prevent Radix UI errors
+import "@/utils/resizeObserver";
+
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { createRoot } from "react-dom/client";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -18,6 +22,54 @@ import AccessControl from "./pages/AccessControl";
 import BusinessScenarios from "./pages/BusinessScenarios";
 import Audit from "./pages/Audit";
 import NotFound from "./pages/NotFound";
+
+// Error Boundary Component for catching React errors
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error?: Error }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    // Suppress ResizeObserver errors
+    if (error.message.includes('ResizeObserver loop completed')) {
+      console.warn('ResizeObserver error caught and suppressed in ErrorBoundary');
+      this.setState({ hasError: false, error: undefined });
+      return;
+    }
+
+    console.error('ErrorBoundary caught an error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError && this.state.error &&
+        !this.state.error.message.includes('ResizeObserver loop completed')) {
+      return (
+        <div className="flex items-center justify-center min-h-screen bg-red-50">
+          <div className="text-center p-8">
+            <h1 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h1>
+            <p className="text-gray-600 mb-4">An unexpected error occurred</p>
+            <button
+              onClick={() => this.setState({ hasError: false, error: undefined })}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Try again
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 const queryClient = new QueryClient();
 
