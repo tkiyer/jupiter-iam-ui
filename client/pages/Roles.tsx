@@ -362,7 +362,7 @@ const Roles: React.FC = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredRoles.map((role) => (
+                  {paginatedRoles.map((role) => (
                     <TableRow key={role.id}>
                       <TableCell>
                         <div className="flex items-center space-x-3">
