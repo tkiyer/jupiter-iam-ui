@@ -160,7 +160,7 @@ const businessScenarios: BusinessScenario[] = [
       '部署窗口：只在指定时间窗口部署',
       '变更级别：重大变更需要审批',
       '紧急情况：紧急修复可特殊授权',
-      '安全检查：必须通���安全扫描'
+      '安全检查：必须通过安全扫描'
     ],
     businessRules: [
       '生产部署只在维护窗口进行',
@@ -179,7 +179,7 @@ const businessScenarios: BusinessScenario[] = [
   {
     id: 'financial-report-access',
     title: '财务报表访问权限',
-    description: '财务数据根据用户级别和报表类型实施精细化访问控制',
+    description: '财务数据根据用户级别和报表类型��施精细化访问控制',
     icon: <FileText className="h-5 w-5" />,
     rbacRequirements: [
       '财务专员：查看基础财务报表',
@@ -227,7 +227,7 @@ export default function BusinessScenarios() {
         rbacResult: {
           allowed: Math.random() > 0.5,
           appliedRoles: ['部门经理', '财务审批员'],
-          reason: 'RBAC: 用户具有必要的��色权限'
+          reason: 'RBAC: 用户具有必要的角色权限'
         },
         abacResult: {
           allowed: Math.random() > 0.4,
@@ -278,6 +278,11 @@ export default function BusinessScenarios() {
           <TabsTrigger value="testing">场景测试</TabsTrigger>
           <TabsTrigger value="workflows">业务工作流</TabsTrigger>
         </TabsList>
+
+        {/* 实时仪表板 Tab */}
+        <TabsContent value="dashboard" className="space-y-6">
+          <BusinessAccessDashboard />
+        </TabsContent>
 
         {/* 业务场景 Tab */}
         <TabsContent value="scenarios" className="space-y-6">
@@ -495,7 +500,7 @@ export default function BusinessScenarios() {
                 <div className="flex items-center gap-4 p-4 border rounded-lg">
                   <div className="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold">3</div>
                   <div>
-                    <h4 className="font-semibold">业务规则应用</h4>
+                    <h4 className="font-semibold">��务规则应用</h4>
                     <p className="text-sm text-muted-foreground">应用特定的业务逻辑和工作流规则</p>
                   </div>
                   <Badge variant="outline">业务层</Badge>
@@ -571,7 +576,7 @@ export default function BusinessScenarios() {
               </div>
               
               <Button onClick={runBusinessScenarioTest} className="w-full">
-                运���业务场景测试
+                运行业务场景测试
               </Button>
 
               {testResults.length > 0 && (
@@ -645,7 +650,7 @@ export default function BusinessScenarios() {
           </Card>
         </TabsContent>
 
-        {/* 业务��作流 Tab */}
+        {/* 业务工作流 Tab */}
         <TabsContent value="workflows" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
@@ -678,7 +683,7 @@ export default function BusinessScenarios() {
                     <h5 className="font-medium">第三步：分级审批</h5>
                     <p className="text-sm text-muted-foreground">按层级进行审批决策</p>
                     <div className="mt-2 text-xs space-x-1">
-                      <Badge variant="outline">RBAC: 审批权限</Badge>
+                      <Badge variant="outline">RBAC: 审��权限</Badge>
                       <Badge variant="outline">业务: 审批流程</Badge>
                     </div>
                   </div>
