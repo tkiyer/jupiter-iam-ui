@@ -132,6 +132,10 @@ export function createServer() {
 
   // Resource management routes
   app.get("/api/resources", handleGetResources);
+  app.post("/api/resources", handleCreateResource);
+  app.get("/api/resources/:id", handleGetResource);
+  app.put("/api/resources/:id", handleUpdateResource);
+  app.delete("/api/resources/:id", handleDeleteResource);
 
   // IAM Policy Management routes (ABAC)
   app.get("/api/policies", handleGetPolicies);
