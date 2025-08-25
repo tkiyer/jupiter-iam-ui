@@ -42,6 +42,10 @@ import {
   handleGetResources,
   handleApplyOptimization,
   handleDelegatePermission,
+  handleCreateResource,
+  handleUpdateResource,
+  handleDeleteResource,
+  handleGetResource,
 } from "./routes/permissions";
 import {
   handleGetPolicies,
