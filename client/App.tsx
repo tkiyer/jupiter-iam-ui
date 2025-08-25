@@ -15,6 +15,7 @@ import Roles from "./pages/Roles";
 import Permissions from "./pages/Permissions";
 import Policies from "./pages/Policies";
 import AccessControl from "./pages/AccessControl";
+import BusinessScenarios from "./pages/BusinessScenarios";
 import Audit from "./pages/Audit";
 import NotFound from "./pages/NotFound";
 
@@ -30,13 +31,70 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
-            <Route path="/users" element={<DashboardLayout><Users /></DashboardLayout>} />
-            <Route path="/roles" element={<DashboardLayout><Roles /></DashboardLayout>} />
-            <Route path="/permissions" element={<DashboardLayout><Permissions /></DashboardLayout>} />
-            <Route path="/policies" element={<DashboardLayout><Policies /></DashboardLayout>} />
-            <Route path="/access-control" element={<DashboardLayout><AccessControl /></DashboardLayout>} />
-            <Route path="/audit" element={<DashboardLayout><Audit /></DashboardLayout>} />
+            <Route
+              path="/dashboard"
+              element={
+                <DashboardLayout>
+                  <Dashboard />
+                </DashboardLayout>
+              }
+            />
+            <Route
+              path="/users"
+              element={
+                <DashboardLayout>
+                  <Users />
+                </DashboardLayout>
+              }
+            />
+            <Route
+              path="/roles"
+              element={
+                <DashboardLayout>
+                  <Roles />
+                </DashboardLayout>
+              }
+            />
+            <Route
+              path="/permissions"
+              element={
+                <DashboardLayout>
+                  <Permissions />
+                </DashboardLayout>
+              }
+            />
+            <Route
+              path="/policies"
+              element={
+                <DashboardLayout>
+                  <Policies />
+                </DashboardLayout>
+              }
+            />
+            <Route
+              path="/access-control"
+              element={
+                <DashboardLayout>
+                  <AccessControl />
+                </DashboardLayout>
+              }
+            />
+            <Route
+              path="/business-scenarios"
+              element={
+                <DashboardLayout>
+                  <BusinessScenarios />
+                </DashboardLayout>
+              }
+            />
+            <Route
+              path="/audit"
+              element={
+                <DashboardLayout>
+                  <Audit />
+                </DashboardLayout>
+              }
+            />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
