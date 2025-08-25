@@ -15,6 +15,7 @@ import Roles from "./pages/Roles";
 import Permissions from "./pages/Permissions";
 import Policies from "./pages/Policies";
 import AccessControl from "./pages/AccessControl";
+import BusinessScenarios from "./pages/BusinessScenarios";
 import Audit from "./pages/Audit";
 import NotFound from "./pages/NotFound";
 
