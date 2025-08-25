@@ -42,6 +42,7 @@ import {
   User
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { PaginationControl, usePagination } from '@/components/ui/pagination-control';
 
 const Roles: React.FC = () => {
   const [roles, setRoles] = useState<Role[]>([]);
