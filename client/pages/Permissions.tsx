@@ -902,6 +902,31 @@ const Permissions: React.FC = () => {
           />
         </Dialog>
       )}
+
+      {/* Add Resource Dialog */}
+      <Dialog open={isAddResourceDialogOpen} onOpenChange={setIsAddResourceDialogOpen}>
+        <AddResourceDialog onCreateResource={handleCreateResource} />
+      </Dialog>
+
+      {/* Edit Resource Dialog */}
+      {selectedResource && (
+        <Dialog open={isEditResourceDialogOpen} onOpenChange={setIsEditResourceDialogOpen}>
+          <EditResourceDialog
+            resource={selectedResource}
+            onSave={handleUpdateResource}
+          />
+        </Dialog>
+      )}
+
+      {/* Resource Settings Dialog */}
+      {selectedResource && (
+        <Dialog open={isResourceSettingsDialogOpen} onOpenChange={setIsResourceSettingsDialogOpen}>
+          <ResourceSettingsDialog
+            resource={selectedResource}
+            onSave={handleUpdateResource}
+          />
+        </Dialog>
+      )}
     </div>
   );
 };
