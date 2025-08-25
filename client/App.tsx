@@ -74,86 +74,88 @@ class ErrorBoundary extends React.Component<
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AuthProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/login" element={<Login />} />
-            <Route
-              path="/dashboard"
-              element={
-                <DashboardLayout>
-                  <Dashboard />
-                </DashboardLayout>
-              }
-            />
-            <Route
-              path="/users"
-              element={
-                <DashboardLayout>
-                  <Users />
-                </DashboardLayout>
-              }
-            />
-            <Route
-              path="/roles"
-              element={
-                <DashboardLayout>
-                  <Roles />
-                </DashboardLayout>
-              }
-            />
-            <Route
-              path="/permissions"
-              element={
-                <DashboardLayout>
-                  <Permissions />
-                </DashboardLayout>
-              }
-            />
-            <Route
-              path="/policies"
-              element={
-                <DashboardLayout>
-                  <Policies />
-                </DashboardLayout>
-              }
-            />
-            <Route
-              path="/access-control"
-              element={
-                <DashboardLayout>
-                  <AccessControl />
-                </DashboardLayout>
-              }
-            />
-            <Route
-              path="/business-scenarios"
-              element={
-                <DashboardLayout>
-                  <BusinessScenarios />
-                </DashboardLayout>
-              }
-            />
-            <Route
-              path="/audit"
-              element={
-                <DashboardLayout>
-                  <Audit />
-                </DashboardLayout>
-              }
-            />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <AuthProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Login />} />
+              <Route path="/login" element={<Login />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <DashboardLayout>
+                    <Dashboard />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/users"
+                element={
+                  <DashboardLayout>
+                    <Users />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/roles"
+                element={
+                  <DashboardLayout>
+                    <Roles />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/permissions"
+                element={
+                  <DashboardLayout>
+                    <Permissions />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/policies"
+                element={
+                  <DashboardLayout>
+                    <Policies />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/access-control"
+                element={
+                  <DashboardLayout>
+                    <AccessControl />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/business-scenarios"
+                element={
+                  <DashboardLayout>
+                    <BusinessScenarios />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/audit"
+                element={
+                  <DashboardLayout>
+                    <Audit />
+                  </DashboardLayout>
+                }
+              />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 createRoot(document.getElementById("root")!).render(<App />);
