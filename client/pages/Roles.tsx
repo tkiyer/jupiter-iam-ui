@@ -60,6 +60,20 @@ const Roles: React.FC = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('roles');
 
+  // Pagination state
+  const {
+    currentPage,
+    pageSize,
+    totalPages,
+    startIndex,
+    endIndex,
+    handlePageChange,
+    handlePageSizeChange,
+  } = usePagination(filteredRoles.length, 10);
+
+  // Paginated roles for display
+  const paginatedRoles = filteredRoles.slice(startIndex, endIndex);
+
   useEffect(() => {
     fetchRoles();
     fetchRoleTemplates();
