@@ -1,19 +1,52 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Progress } from '@/components/ui/progress';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Role, CreateRoleRequest, RoleTemplate, RoleConflict, RoleAnalytics, Permission } from '@shared/iam';
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Progress } from "@/components/ui/progress";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Role,
+  CreateRoleRequest,
+  RoleTemplate,
+  RoleConflict,
+  RoleAnalytics,
+  Permission,
+} from "@shared/iam";
 import {
   Search,
   Plus,
@@ -39,10 +72,13 @@ import {
   Settings,
   Crown,
   Layers,
-  User
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { PaginationControl, usePagination } from '@/components/ui/pagination-control';
+  User,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  PaginationControl,
+  usePagination,
+} from "@/components/ui/pagination-control";
 
 const Roles: React.FC = () => {
   const [roles, setRoles] = useState<Role[]>([]);
@@ -50,15 +86,17 @@ const Roles: React.FC = () => {
   const [roleTemplates, setRoleTemplates] = useState<RoleTemplate[]>([]);
   const [conflicts, setConflicts] = useState<RoleConflict[]>([]);
   const [analytics, setAnalytics] = useState<Record<string, RoleAnalytics>>({});
-  const [availablePermissions, setAvailablePermissions] = useState<Permission[]>([]);
+  const [availablePermissions, setAvailablePermissions] = useState<
+    Permission[]
+  >([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [levelFilter, setLevelFilter] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [levelFilter, setLevelFilter] = useState<string>("all");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('roles');
+  const [activeTab, setActiveTab] = useState("roles");
 
   // Pagination state
   const {
@@ -87,24 +125,27 @@ const Roles: React.FC = () => {
 
   const fetchRoles = async () => {
     try {
-      const response = await fetch('/api/roles');
+      const response = await fetch("/api/roles");
       const data = await response.json();
       setRoles(data.roles || data);
-      
+
       // Fetch analytics for each role
       if (data.roles) {
-        const analyticsPromises = data.roles.map((role: Role) => 
-          fetch(`/api/roles/${role.id}/analytics`).then(r => r.json())
+        const analyticsPromises = data.roles.map((role: Role) =>
+          fetch(`/api/roles/${role.id}/analytics`).then((r) => r.json()),
         );
         const analyticsResults = await Promise.all(analyticsPromises);
-        const analyticsMap = data.roles.reduce((acc: Record<string, RoleAnalytics>, role: Role, index: number) => {
-          acc[role.id] = analyticsResults[index];
-          return acc;
-        }, {});
+        const analyticsMap = data.roles.reduce(
+          (acc: Record<string, RoleAnalytics>, role: Role, index: number) => {
+            acc[role.id] = analyticsResults[index];
+            return acc;
+          },
+          {},
+        );
         setAnalytics(analyticsMap);
       }
     } catch (error) {
-      console.error('Error fetching roles:', error);
+      console.error("Error fetching roles:", error);
     } finally {
       setIsLoading(false);
     }
@@ -112,31 +153,31 @@ const Roles: React.FC = () => {
 
   const fetchRoleTemplates = async () => {
     try {
-      const response = await fetch('/api/roles/templates');
+      const response = await fetch("/api/roles/templates");
       const data = await response.json();
       setRoleTemplates(data);
     } catch (error) {
-      console.error('Error fetching role templates:', error);
+      console.error("Error fetching role templates:", error);
     }
   };
 
   const fetchConflicts = async () => {
     try {
-      const response = await fetch('/api/roles/conflicts');
+      const response = await fetch("/api/roles/conflicts");
       const data = await response.json();
       setConflicts(data);
     } catch (error) {
-      console.error('Error fetching conflicts:', error);
+      console.error("Error fetching conflicts:", error);
     }
   };
 
   const fetchPermissions = async () => {
     try {
-      const response = await fetch('/api/permissions');
+      const response = await fetch("/api/permissions");
       const data = await response.json();
       setAvailablePermissions(data.permissions || data || []);
     } catch (error) {
-      console.error('Error fetching permissions:', error);
+      console.error("Error fetching permissions:", error);
       setAvailablePermissions([]);
     }
   };
@@ -145,18 +186,21 @@ const Roles: React.FC = () => {
     let filtered = roles;
 
     if (searchTerm) {
-      filtered = filtered.filter(role => 
-        role.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        role.description.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (role) =>
+          role.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          role.description.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(role => role.status === statusFilter);
+    if (statusFilter !== "all") {
+      filtered = filtered.filter((role) => role.status === statusFilter);
     }
 
-    if (levelFilter !== 'all') {
-      filtered = filtered.filter(role => role.level.toString() === levelFilter);
+    if (levelFilter !== "all") {
+      filtered = filtered.filter(
+        (role) => role.level.toString() === levelFilter,
+      );
     }
 
     setFilteredRoles(filtered);
@@ -164,21 +208,31 @@ const Roles: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'inactive': return 'bg-gray-100 text-gray-800';
-      case 'deprecated': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "active":
+        return "bg-green-100 text-green-800";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "inactive":
+        return "bg-gray-100 text-gray-800";
+      case "deprecated":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'active': return <CheckCircle className="h-3 w-3" />;
-      case 'pending': return <Clock className="h-3 w-3" />;
-      case 'inactive': return <XCircle className="h-3 w-3" />;
-      case 'deprecated': return <AlertTriangle className="h-3 w-3" />;
-      default: return <Clock className="h-3 w-3" />;
+      case "active":
+        return <CheckCircle className="h-3 w-3" />;
+      case "pending":
+        return <Clock className="h-3 w-3" />;
+      case "inactive":
+        return <XCircle className="h-3 w-3" />;
+      case "deprecated":
+        return <AlertTriangle className="h-3 w-3" />;
+      default:
+        return <Clock className="h-3 w-3" />;
     }
   };
 
@@ -191,29 +245,34 @@ const Roles: React.FC = () => {
 
   const getConflictSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-100 text-red-800 border-red-200';
-      case 'high': return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'low': return 'bg-blue-100 text-blue-800 border-blue-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case "critical":
+        return "bg-red-100 text-red-800 border-red-200";
+      case "high":
+        return "bg-orange-100 text-orange-800 border-orange-200";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "low":
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
   const handleCreateRole = async (roleData: CreateRoleRequest) => {
     try {
-      const response = await fetch('/api/roles', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/roles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(roleData),
       });
-      
+
       if (response.ok) {
         const newRole = await response.json();
-        setRoles(prev => [...prev, newRole]);
+        setRoles((prev) => [...prev, newRole]);
         setIsCreateDialogOpen(false);
       }
     } catch (error) {
-      console.error('Error creating role:', error);
+      console.error("Error creating role:", error);
     }
   };
 
@@ -223,7 +282,7 @@ const Roles: React.FC = () => {
       description: template.description,
       permissions: template.permissions,
       organizationUnit: template.organizationUnit,
-      isTemplate: false
+      isTemplate: false,
     };
     await handleCreateRole(roleData);
   };
@@ -245,36 +304,50 @@ const Roles: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Role Management</h1>
-          <p className="text-gray-600 mt-1">Manage RBAC roles, permissions, and hierarchies</p>
+          <p className="text-gray-600 mt-1">
+            Manage RBAC roles, permissions, and hierarchies
+          </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline" size="sm">
             <Download className="mr-2 h-4 w-4" />
             Export
           </Button>
-          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <Dialog
+            open={isCreateDialogOpen}
+            onOpenChange={setIsCreateDialogOpen}
+          >
             <DialogTrigger asChild>
               <Button className="bg-blue-600 hover:bg-blue-700">
                 <Plus className="mr-2 h-4 w-4" />
                 Create Role
               </Button>
             </DialogTrigger>
-            <CreateRoleDialog 
+            <CreateRoleDialog
               onCreateRole={handleCreateRole}
               availablePermissions={availablePermissions}
-              parentRoles={roles.filter(r => r.status === 'active')}
+              parentRoles={roles.filter((r) => r.status === "active")}
             />
           </Dialog>
         </div>
       </div>
 
       {/* Conflicts Alert */}
-      {conflicts.filter(c => !c.resolved && c.severity === 'critical').length > 0 && (
+      {conflicts.filter((c) => !c.resolved && c.severity === "critical")
+        .length > 0 && (
         <Alert className="border-red-200 bg-red-50">
           <AlertTriangle className="h-4 w-4 text-red-600" />
           <AlertDescription className="text-red-800">
-            {conflicts.filter(c => !c.resolved && c.severity === 'critical').length} critical role conflicts detected. 
-            <Button variant="link" className="p-0 ml-1 text-red-800" onClick={() => setActiveTab('conflicts')}>
+            {
+              conflicts.filter((c) => !c.resolved && c.severity === "critical")
+                .length
+            }{" "}
+            critical role conflicts detected.
+            <Button
+              variant="link"
+              className="p-0 ml-1 text-red-800"
+              onClick={() => setActiveTab("conflicts")}
+            >
               Review conflicts
             </Button>
           </AlertDescription>
@@ -371,41 +444,61 @@ const Roles: React.FC = () => {
                             <div className="font-medium text-gray-900 flex items-center gap-2">
                               <span>{role.name}</span>
                               {role.isSystemRole && (
-                                <Badge variant="secondary" className="text-xs">System</Badge>
+                                <Badge variant="secondary" className="text-xs">
+                                  System
+                                </Badge>
                               )}
                               {role.isTemplate && (
-                                <Badge variant="outline" className="text-xs">Template</Badge>
+                                <Badge variant="outline" className="text-xs">
+                                  Template
+                                </Badge>
                               )}
                             </div>
-                            <p className="text-sm text-gray-500">{role.description}</p>
+                            <p className="text-sm text-gray-500">
+                              {role.description}
+                            </p>
                           </div>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge className={cn("flex items-center gap-1 w-fit", getStatusColor(role.status))}>
+                        <Badge
+                          className={cn(
+                            "flex items-center gap-1 w-fit",
+                            getStatusColor(role.status),
+                          )}
+                        >
                           {getStatusIcon(role.status)}
                           {role.status}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm font-medium">Level {role.level}</span>
+                        <span className="text-sm font-medium">
+                          Level {role.level}
+                        </span>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm">{analytics[role.id]?.userCount || role.userCount || 0}</span>
+                        <span className="text-sm">
+                          {analytics[role.id]?.userCount || role.userCount || 0}
+                        </span>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-1">
-                          <span className="text-sm">{role.permissions.length}</span>
-                          {role.inheritedPermissions && role.inheritedPermissions.length > 0 && (
-                            <span className="text-xs text-gray-500">
-                              (+{role.inheritedPermissions.length} inherited)
-                            </span>
-                          )}
+                          <span className="text-sm">
+                            {role.permissions.length}
+                          </span>
+                          {role.inheritedPermissions &&
+                            role.inheritedPermissions.length > 0 && (
+                              <span className="text-xs text-gray-500">
+                                (+{role.inheritedPermissions.length} inherited)
+                              </span>
+                            )}
                         </div>
                       </TableCell>
                       <TableCell>
                         <span className="text-sm text-gray-500">
-                          {role.lastUsed ? new Date(role.lastUsed).toLocaleDateString() : 'Never'}
+                          {role.lastUsed
+                            ? new Date(role.lastUsed).toLocaleDateString()
+                            : "Never"}
                         </span>
                       </TableCell>
                       <TableCell>
@@ -423,7 +516,11 @@ const Roles: React.FC = () => {
                           <Button variant="ghost" size="sm">
                             <Copy className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="sm" className="text-red-600">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-600"
+                          >
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -484,7 +581,10 @@ const Roles: React.FC = () => {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {(roleTemplates || []).map((template) => (
-                  <Card key={template.id} className="hover:shadow-md transition-shadow">
+                  <Card
+                    key={template.id}
+                    className="hover:shadow-md transition-shadow"
+                  >
                     <CardHeader className="pb-3">
                       <CardTitle className="text-lg">{template.name}</CardTitle>
                       <CardDescription>{template.description}</CardDescription>
@@ -492,14 +592,21 @@ const Roles: React.FC = () => {
                     <CardContent className="space-y-3">
                       <div className="flex items-center justify-between">
                         <Badge variant="secondary">{template.category}</Badge>
-                        <span className="text-sm text-gray-500">Level {template.level}</span>
+                        <span className="text-sm text-gray-500">
+                          Level {template.level}
+                        </span>
                       </div>
                       <div className="text-sm">
-                        <p><strong>Permissions:</strong> {template.permissions.length}</p>
-                        <p><strong>Usage:</strong> {template.usageCount} times</p>
+                        <p>
+                          <strong>Permissions:</strong>{" "}
+                          {template.permissions.length}
+                        </p>
+                        <p>
+                          <strong>Usage:</strong> {template.usageCount} times
+                        </p>
                       </div>
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         className="w-full"
                         onClick={() => handleCreateFromTemplate(template)}
                       >
@@ -528,26 +635,53 @@ const Roles: React.FC = () => {
             <CardContent>
               <div className="space-y-4">
                 {(conflicts || []).map((conflict) => (
-                  <Card key={conflict.id} className={cn("border", getConflictSeverityColor(conflict.severity))}>
+                  <Card
+                    key={conflict.id}
+                    className={cn(
+                      "border",
+                      getConflictSeverityColor(conflict.severity),
+                    )}
+                  >
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-2">
-                            <Badge className={getConflictSeverityColor(conflict.severity)}>
+                            <Badge
+                              className={getConflictSeverityColor(
+                                conflict.severity,
+                              )}
+                            >
                               {conflict.severity}
                             </Badge>
-                            <span className="text-sm font-medium">{conflict.type.replace('_', ' ')}</span>
+                            <span className="text-sm font-medium">
+                              {conflict.type.replace("_", " ")}
+                            </span>
                             {conflict.resolved && (
-                              <Badge variant="outline" className="text-green-600">Resolved</Badge>
+                              <Badge
+                                variant="outline"
+                                className="text-green-600"
+                              >
+                                Resolved
+                              </Badge>
                             )}
                           </div>
-                          <p className="text-sm text-gray-700 mb-2">{conflict.description}</p>
-                          <p className="text-sm font-medium">Affected roles: {conflict.roles.join(', ')}</p>
-                          <p className="text-xs text-gray-500 mt-1">Suggestion: {conflict.suggestion}</p>
+                          <p className="text-sm text-gray-700 mb-2">
+                            {conflict.description}
+                          </p>
+                          <p className="text-sm font-medium">
+                            Affected roles: {conflict.roles.join(", ")}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Suggestion: {conflict.suggestion}
+                          </p>
                         </div>
                         <div className="flex space-x-2">
-                          <Button variant="outline" size="sm">Resolve</Button>
-                          <Button variant="ghost" size="sm">Dismiss</Button>
+                          <Button variant="outline" size="sm">
+                            Resolve
+                          </Button>
+                          <Button variant="ghost" size="sm">
+                            Dismiss
+                          </Button>
                         </div>
                       </div>
                     </CardContent>
@@ -565,8 +699,12 @@ const Roles: React.FC = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Total Roles</p>
-                    <p className="text-3xl font-bold text-gray-900">{roles.length}</p>
+                    <p className="text-sm font-medium text-gray-600">
+                      Total Roles
+                    </p>
+                    <p className="text-3xl font-bold text-gray-900">
+                      {roles.length}
+                    </p>
                   </div>
                   <Shield className="h-8 w-8 text-blue-600" />
                 </div>
@@ -576,9 +714,11 @@ const Roles: React.FC = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Active Roles</p>
+                    <p className="text-sm font-medium text-gray-600">
+                      Active Roles
+                    </p>
                     <p className="text-3xl font-bold text-gray-900">
-                      {roles.filter(r => r.status === 'active').length}
+                      {roles.filter((r) => r.status === "active").length}
                     </p>
                   </div>
                   <CheckCircle className="h-8 w-8 text-green-600" />
@@ -589,9 +729,11 @@ const Roles: React.FC = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Conflicts</p>
+                    <p className="text-sm font-medium text-gray-600">
+                      Conflicts
+                    </p>
                     <p className="text-3xl font-bold text-gray-900">
-                      {conflicts.filter(c => !c.resolved).length}
+                      {conflicts.filter((c) => !c.resolved).length}
                     </p>
                   </div>
                   <AlertTriangle className="h-8 w-8 text-red-600" />
@@ -602,8 +744,12 @@ const Roles: React.FC = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Templates</p>
-                    <p className="text-3xl font-bold text-gray-900">{roleTemplates.length}</p>
+                    <p className="text-sm font-medium text-gray-600">
+                      Templates
+                    </p>
+                    <p className="text-3xl font-bold text-gray-900">
+                      {roleTemplates.length}
+                    </p>
                   </div>
                   <Layers className="h-8 w-8 text-purple-600" />
                 </div>
@@ -625,12 +771,16 @@ const Roles: React.FC = () => {
       {/* Edit Role Dialog */}
       {selectedRole && (
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <EditRoleDialog 
+          <EditRoleDialog
             role={selectedRole}
             availablePermissions={availablePermissions}
-            parentRoles={roles.filter(r => r.status === 'active' && r.id !== selectedRole.id)}
+            parentRoles={roles.filter(
+              (r) => r.status === "active" && r.id !== selectedRole.id,
+            )}
             onSave={(updatedRole) => {
-              setRoles(prev => prev.map(r => r.id === updatedRole.id ? updatedRole : r));
+              setRoles((prev) =>
+                prev.map((r) => (r.id === updatedRole.id ? updatedRole : r)),
+              );
               setIsEditDialogOpen(false);
             }}
           />
@@ -647,10 +797,10 @@ const CreateRoleDialog: React.FC<{
   parentRoles: Role[];
 }> = ({ onCreateRole, availablePermissions, parentRoles }) => {
   const [formData, setFormData] = useState<CreateRoleRequest>({
-    name: '',
-    description: '',
+    name: "",
+    description: "",
     permissions: [],
-    isTemplate: false
+    isTemplate: false,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -674,7 +824,7 @@ const CreateRoleDialog: React.FC<{
             <TabsTrigger value="hierarchy">Hierarchy</TabsTrigger>
             <TabsTrigger value="advanced">Advanced</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="basic" className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -683,12 +833,21 @@ const CreateRoleDialog: React.FC<{
                   id="name"
                   required
                   value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, name: e.target.value }))
+                  }
                 />
               </div>
               <div>
                 <Label>Organization Unit</Label>
-                <Select onValueChange={(value) => setFormData(prev => ({ ...prev, organizationUnit: value }))}>
+                <Select
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      organizationUnit: value,
+                    }))
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select unit" />
                   </SelectTrigger>
@@ -708,56 +867,87 @@ const CreateRoleDialog: React.FC<{
                 id="description"
                 required
                 value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
               />
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="isTemplate"
                 checked={formData.isTemplate}
-                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isTemplate: !!checked }))}
+                onCheckedChange={(checked) =>
+                  setFormData((prev) => ({ ...prev, isTemplate: !!checked }))
+                }
               />
               <Label htmlFor="isTemplate">Create as template</Label>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="permissions" className="space-y-4">
             <div>
               <Label>Select Permissions</Label>
               <div className="grid grid-cols-2 gap-2 mt-2 max-h-64 overflow-y-auto">
-                {Array.isArray(availablePermissions) ? availablePermissions.map((permission) => (
-                  <div key={permission.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={permission.id}
-                      checked={formData.permissions.includes(permission.id)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setFormData(prev => ({ ...prev, permissions: [...prev.permissions, permission.id] }));
-                        } else {
-                          setFormData(prev => ({ ...prev, permissions: prev.permissions.filter(p => p !== permission.id) }));
-                        }
-                      }}
-                    />
-                    <Label htmlFor={permission.id} className="text-sm">
-                      {permission.name}
-                      <span className="text-xs text-gray-500 block">{permission.description}</span>
-                    </Label>
-                  </div>
-                )) : []}
+                {Array.isArray(availablePermissions)
+                  ? availablePermissions.map((permission) => (
+                      <div
+                        key={permission.id}
+                        className="flex items-center space-x-2"
+                      >
+                        <Checkbox
+                          id={permission.id}
+                          checked={formData.permissions.includes(permission.id)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setFormData((prev) => ({
+                                ...prev,
+                                permissions: [
+                                  ...prev.permissions,
+                                  permission.id,
+                                ],
+                              }));
+                            } else {
+                              setFormData((prev) => ({
+                                ...prev,
+                                permissions: prev.permissions.filter(
+                                  (p) => p !== permission.id,
+                                ),
+                              }));
+                            }
+                          }}
+                        />
+                        <Label htmlFor={permission.id} className="text-sm">
+                          {permission.name}
+                          <span className="text-xs text-gray-500 block">
+                            {permission.description}
+                          </span>
+                        </Label>
+                      </div>
+                    ))
+                  : []}
               </div>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="hierarchy" className="space-y-4">
             <div>
               <Label>Parent Role (Optional)</Label>
-              <Select onValueChange={(value) => setFormData(prev => ({ ...prev, parentRole: value }))}>
+              <Select
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, parentRole: value }))
+                }
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select parent role" />
                 </SelectTrigger>
                 <SelectContent>
                   {(parentRoles || []).map((role) => (
-                    <SelectItem key={role.id} value={role.id}>{role.name}</SelectItem>
+                    <SelectItem key={role.id} value={role.id}>
+                      {role.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -766,7 +956,7 @@ const CreateRoleDialog: React.FC<{
               </p>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="advanced" className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -774,7 +964,12 @@ const CreateRoleDialog: React.FC<{
                 <Input
                   id="validFrom"
                   type="datetime-local"
-                  onChange={(e) => setFormData(prev => ({ ...prev, validFrom: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      validFrom: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div>
@@ -782,23 +977,32 @@ const CreateRoleDialog: React.FC<{
                 <Input
                   id="validUntil"
                   type="datetime-local"
-                  onChange={(e) => setFormData(prev => ({ ...prev, validUntil: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      validUntil: e.target.value,
+                    }))
+                  }
                 />
               </div>
             </div>
           </TabsContent>
         </Tabs>
-        
+
         <div className="flex justify-end space-x-2">
-          <Button type="button" variant="outline">Cancel</Button>
-          <Button type="submit" className="bg-blue-600 hover:bg-blue-700">Create Role</Button>
+          <Button type="button" variant="outline">
+            Cancel
+          </Button>
+          <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+            Create Role
+          </Button>
         </div>
       </form>
     </DialogContent>
   );
 };
 
-// Edit Role Dialog Component  
+// Edit Role Dialog Component
 const EditRoleDialog: React.FC<{
   role: Role;
   availablePermissions: Permission[];
@@ -811,17 +1015,17 @@ const EditRoleDialog: React.FC<{
     e.preventDefault();
     try {
       const response = await fetch(`/api/roles/${role.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      
+
       if (response.ok) {
         const updatedRole = await response.json();
         onSave(updatedRole);
       }
     } catch (error) {
-      console.error('Error updating role:', error);
+      console.error("Error updating role:", error);
     }
   };
 
@@ -842,7 +1046,7 @@ const EditRoleDialog: React.FC<{
             <TabsTrigger value="temporal">Temporal</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="general" className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -850,16 +1054,18 @@ const EditRoleDialog: React.FC<{
                 <Input
                   id="editName"
                   value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, name: e.target.value }))
+                  }
                 />
               </div>
               <div>
                 <Label>Status</Label>
-                <Select 
+                <Select
                   value={formData.status}
-                  onValueChange={(value: 'active' | 'pending' | 'inactive' | 'deprecated') => 
-                    setFormData(prev => ({ ...prev, status: value }))
-                  }
+                  onValueChange={(
+                    value: "active" | "pending" | "inactive" | "deprecated",
+                  ) => setFormData((prev) => ({ ...prev, status: value }))}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -878,43 +1084,74 @@ const EditRoleDialog: React.FC<{
               <Textarea
                 id="editDescription"
                 value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
               />
             </div>
           </TabsContent>
-          
+
           <TabsContent value="permissions" className="space-y-4">
             <div>
-              <Label>Assigned Permissions ({formData.permissions.length})</Label>
+              <Label>
+                Assigned Permissions ({formData.permissions.length})
+              </Label>
               <div className="grid grid-cols-2 gap-2 mt-2 max-h-64 overflow-y-auto">
-                {Array.isArray(availablePermissions) ? availablePermissions.map((permission) => (
-                  <div key={permission.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`edit-${permission.id}`}
-                      checked={formData.permissions.includes(permission.id)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setFormData(prev => ({ ...prev, permissions: [...prev.permissions, permission.id] }));
-                        } else {
-                          setFormData(prev => ({ ...prev, permissions: prev.permissions.filter(p => p !== permission.id) }));
-                        }
-                      }}
-                    />
-                    <Label htmlFor={`edit-${permission.id}`} className="text-sm">
-                      {permission.name}
-                    </Label>
-                  </div>
-                )) : []}
+                {Array.isArray(availablePermissions)
+                  ? availablePermissions.map((permission) => (
+                      <div
+                        key={permission.id}
+                        className="flex items-center space-x-2"
+                      >
+                        <Checkbox
+                          id={`edit-${permission.id}`}
+                          checked={formData.permissions.includes(permission.id)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setFormData((prev) => ({
+                                ...prev,
+                                permissions: [
+                                  ...prev.permissions,
+                                  permission.id,
+                                ],
+                              }));
+                            } else {
+                              setFormData((prev) => ({
+                                ...prev,
+                                permissions: prev.permissions.filter(
+                                  (p) => p !== permission.id,
+                                ),
+                              }));
+                            }
+                          }}
+                        />
+                        <Label
+                          htmlFor={`edit-${permission.id}`}
+                          className="text-sm"
+                        >
+                          {permission.name}
+                        </Label>
+                      </div>
+                    ))
+                  : []}
               </div>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="hierarchy" className="space-y-4">
             <div>
               <Label>Parent Role</Label>
               <Select
-                value={formData.parentRole || 'none'}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, parentRole: value === 'none' ? undefined : value }))}
+                value={formData.parentRole || "none"}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    parentRole: value === "none" ? undefined : value,
+                  }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="No parent role" />
@@ -931,21 +1168,31 @@ const EditRoleDialog: React.FC<{
             </div>
             {formData.inheritedPermissions && (
               <div>
-                <Label>Inherited Permissions ({formData.inheritedPermissions.length})</Label>
+                <Label>
+                  Inherited Permissions ({formData.inheritedPermissions.length})
+                </Label>
                 <div className="text-sm text-gray-600 mt-1">
-                  {(formData.inheritedPermissions || []).map((permId, index) => {
-                    const perm = Array.isArray(availablePermissions) ? availablePermissions.find(p => p.id === permId) : null;
-                    return perm ? (
-                      <Badge key={index} variant="outline" className="mr-1 mb-1">
-                        {perm.name}
-                      </Badge>
-                    ) : null;
-                  })}
+                  {(formData.inheritedPermissions || []).map(
+                    (permId, index) => {
+                      const perm = Array.isArray(availablePermissions)
+                        ? availablePermissions.find((p) => p.id === permId)
+                        : null;
+                      return perm ? (
+                        <Badge
+                          key={index}
+                          variant="outline"
+                          className="mr-1 mb-1"
+                        >
+                          {perm.name}
+                        </Badge>
+                      ) : null;
+                    },
+                  )}
                 </div>
               </div>
             )}
           </TabsContent>
-          
+
           <TabsContent value="temporal" className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -953,8 +1200,17 @@ const EditRoleDialog: React.FC<{
                 <Input
                   id="editValidFrom"
                   type="datetime-local"
-                  value={formData.validFrom ? new Date(formData.validFrom).toISOString().slice(0, 16) : ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, validFrom: e.target.value }))}
+                  value={
+                    formData.validFrom
+                      ? new Date(formData.validFrom).toISOString().slice(0, 16)
+                      : ""
+                  }
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      validFrom: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div>
@@ -962,13 +1218,22 @@ const EditRoleDialog: React.FC<{
                 <Input
                   id="editValidUntil"
                   type="datetime-local"
-                  value={formData.validUntil ? new Date(formData.validUntil).toISOString().slice(0, 16) : ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, validUntil: e.target.value }))}
+                  value={
+                    formData.validUntil
+                      ? new Date(formData.validUntil).toISOString().slice(0, 16)
+                      : ""
+                  }
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      validUntil: e.target.value,
+                    }))
+                  }
                 />
               </div>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="analytics" className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <Card>
@@ -980,16 +1245,22 @@ const EditRoleDialog: React.FC<{
               <Card>
                 <CardContent className="p-4">
                   <p className="text-sm font-medium">Permissions</p>
-                  <p className="text-2xl font-bold">{role.permissions.length}</p>
+                  <p className="text-2xl font-bold">
+                    {role.permissions.length}
+                  </p>
                 </CardContent>
               </Card>
             </div>
           </TabsContent>
         </Tabs>
-        
+
         <div className="flex justify-end space-x-2">
-          <Button type="button" variant="outline">Cancel</Button>
-          <Button type="submit" className="bg-blue-600 hover:bg-blue-700">Save Changes</Button>
+          <Button type="button" variant="outline">
+            Cancel
+          </Button>
+          <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+            Save Changes
+          </Button>
         </div>
       </form>
     </DialogContent>
@@ -1007,19 +1278,24 @@ const RoleHierarchyView: React.FC<{ roles: Role[] }> = ({ roles }) => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'inactive': return 'bg-gray-100 text-gray-800';
-      case 'deprecated': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "active":
+        return "bg-green-100 text-green-800";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "inactive":
+        return "bg-gray-100 text-gray-800";
+      case "deprecated":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const buildHierarchy = (roles: Role[]) => {
-    const roleMap = new Map(roles.map(role => [role.id, role]));
+    const roleMap = new Map(roles.map((role) => [role.id, role]));
     const hierarchy: Role[] = [];
 
-    roles.forEach(role => {
+    roles.forEach((role) => {
       if (!role.parentRole) {
         hierarchy.push(role);
       }
@@ -1029,17 +1305,21 @@ const RoleHierarchyView: React.FC<{ roles: Role[] }> = ({ roles }) => {
   };
 
   const renderRoleNode = (role: Role, level: number = 0) => {
-    const children = roles.filter(r => r.parentRole === role.id);
+    const children = roles.filter((r) => r.parentRole === role.id);
 
     return (
       <div key={role.id} className={`ml-${level * 4}`}>
         <div className="flex items-center space-x-2 p-2 border rounded-lg mb-2">
           {getLevelIcon(role.level)}
           <span className="font-medium">{role.name}</span>
-          <Badge className={cn(getStatusColor(role.status))}>{role.status}</Badge>
-          <span className="text-sm text-gray-500">({role.permissions.length} permissions)</span>
+          <Badge className={cn(getStatusColor(role.status))}>
+            {role.status}
+          </Badge>
+          <span className="text-sm text-gray-500">
+            ({role.permissions.length} permissions)
+          </span>
         </div>
-        {children.map(child => renderRoleNode(child, level + 1))}
+        {children.map((child) => renderRoleNode(child, level + 1))}
       </div>
     );
   };
@@ -1048,30 +1328,39 @@ const RoleHierarchyView: React.FC<{ roles: Role[] }> = ({ roles }) => {
 
   return (
     <div className="space-y-2">
-      {rootRoles.map(role => renderRoleNode(role))}
+      {rootRoles.map((role) => renderRoleNode(role))}
     </div>
   );
 };
 
 // Role Analytics Chart Component
-const RoleAnalyticsChart: React.FC<{ 
-  roles: Role[]; 
+const RoleAnalyticsChart: React.FC<{
+  roles: Role[];
   analytics: Record<string, RoleAnalytics>;
 }> = ({ roles, analytics }) => {
   return (
     <div className="space-y-4">
-      {roles.slice(0, 10).map(role => {
+      {roles.slice(0, 10).map((role) => {
         const roleAnalytics = analytics[role.id];
-        const usageScore = roleAnalytics?.usageMetrics.frequency === 'high' ? 90 : 
-                          roleAnalytics?.usageMetrics.frequency === 'medium' ? 60 : 
-                          roleAnalytics?.usageMetrics.frequency === 'low' ? 30 : 10;
-        
+        const usageScore =
+          roleAnalytics?.usageMetrics.frequency === "high"
+            ? 90
+            : roleAnalytics?.usageMetrics.frequency === "medium"
+              ? 60
+              : roleAnalytics?.usageMetrics.frequency === "low"
+                ? 30
+                : 10;
+
         return (
-          <div key={role.id} className="flex items-center justify-between p-4 border rounded-lg">
+          <div
+            key={role.id}
+            className="flex items-center justify-between p-4 border rounded-lg"
+          >
             <div className="flex-1">
               <p className="font-medium">{role.name}</p>
               <p className="text-sm text-gray-500">
-                {roleAnalytics?.userCount || 0} users • {role.permissions.length} permissions
+                {roleAnalytics?.userCount || 0} users •{" "}
+                {role.permissions.length} permissions
               </p>
             </div>
             <div className="flex-1 mx-4">

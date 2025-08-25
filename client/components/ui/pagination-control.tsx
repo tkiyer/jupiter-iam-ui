@@ -1,15 +1,21 @@
-import React from 'react';
-import { 
-  Pagination, 
-  PaginationContent, 
-  PaginationItem, 
-  PaginationLink, 
-  PaginationNext, 
-  PaginationPrevious, 
-  PaginationEllipsis 
-} from './pagination';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select';
-import { cn } from '@/lib/utils';
+import React from "react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationEllipsis,
+} from "./pagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./select";
+import { cn } from "@/lib/utils";
 
 interface PaginationControlProps {
   currentPage: number;
@@ -34,7 +40,7 @@ export const PaginationControl: React.FC<PaginationControlProps> = ({
   className,
   showPageSizeSelector = true,
   showPageInfo = true,
-  pageSizeOptions = [10, 20, 50, 100]
+  pageSizeOptions = [10, 20, 50, 100],
 }) => {
   const startItem = (currentPage - 1) * pageSize + 1;
   const endItem = Math.min(currentPage * pageSize, totalItems);
@@ -49,7 +55,11 @@ export const PaginationControl: React.FC<PaginationControlProps> = ({
     range.push(1);
 
     // Add pages around current page
-    for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+    for (
+      let i = Math.max(2, currentPage - delta);
+      i <= Math.min(totalPages - 1, currentPage + delta);
+      i++
+    ) {
       range.push(i);
     }
 
@@ -65,7 +75,7 @@ export const PaginationControl: React.FC<PaginationControlProps> = ({
         if (i - l === 2) {
           rangeWithDots.push(l + 1);
         } else if (i - l !== 1) {
-          rangeWithDots.push('...');
+          rangeWithDots.push("...");
         }
       }
       rangeWithDots.push(i);
@@ -95,8 +105,13 @@ export const PaginationControl: React.FC<PaginationControlProps> = ({
         {/* Page Size Selector */}
         {showPageSizeSelector && (
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-muted-foreground">Rows per page:</span>
-            <Select value={pageSize.toString()} onValueChange={(value) => onPageSizeChange(Number(value))}>
+            <span className="text-sm text-muted-foreground">
+              Rows per page:
+            </span>
+            <Select
+              value={pageSize.toString()}
+              onValueChange={(value) => onPageSizeChange(Number(value))}
+            >
               <SelectTrigger className="h-8 w-[70px]">
                 <SelectValue />
               </SelectTrigger>
@@ -115,18 +130,18 @@ export const PaginationControl: React.FC<PaginationControlProps> = ({
         <Pagination>
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious 
+              <PaginationPrevious
                 onClick={() => onPageChange(Math.max(1, currentPage - 1))}
                 className={cn(
                   "cursor-pointer",
-                  currentPage === 1 && "pointer-events-none opacity-50"
+                  currentPage === 1 && "pointer-events-none opacity-50",
                 )}
               />
             </PaginationItem>
 
             {pageNumbers.map((pageNumber, index) => (
               <PaginationItem key={index}>
-                {pageNumber === '...' ? (
+                {pageNumber === "..." ? (
                   <PaginationEllipsis />
                 ) : (
                   <PaginationLink
@@ -141,11 +156,14 @@ export const PaginationControl: React.FC<PaginationControlProps> = ({
             ))}
 
             <PaginationItem>
-              <PaginationNext 
-                onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+              <PaginationNext
+                onClick={() =>
+                  onPageChange(Math.min(totalPages, currentPage + 1))
+                }
                 className={cn(
                   "cursor-pointer",
-                  currentPage === totalPages && "pointer-events-none opacity-50"
+                  currentPage === totalPages &&
+                    "pointer-events-none opacity-50",
                 )}
               />
             </PaginationItem>
@@ -157,7 +175,10 @@ export const PaginationControl: React.FC<PaginationControlProps> = ({
 };
 
 // Hook for pagination state management
-export const usePagination = (totalItems: number, initialPageSize: number = 10) => {
+export const usePagination = (
+  totalItems: number,
+  initialPageSize: number = 10,
+) => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [pageSize, setPageSize] = React.useState(initialPageSize);
 
