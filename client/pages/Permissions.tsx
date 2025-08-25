@@ -58,6 +58,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { PaginationControl, usePagination } from '@/components/ui/pagination-control';
 
 const Permissions: React.FC = () => {
   const [permissions, setPermissions] = useState<Permission[]>([]);
