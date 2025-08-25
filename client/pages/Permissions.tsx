@@ -84,6 +84,9 @@ import {
   FileText,
   Cpu,
   RefreshCw,
+  Search,
+  Trash2,
+  Lock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
