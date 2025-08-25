@@ -13,20 +13,26 @@ import { Badge } from '../components/ui/badge';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { Separator } from '../components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { 
-  Building2, 
-  CreditCard, 
-  Users, 
-  FileText, 
-  Clock, 
-  MapPin, 
-  Shield, 
+import {
+  Building2,
+  CreditCard,
+  Users,
+  FileText,
+  Clock,
+  MapPin,
+  Shield,
   Briefcase,
   DollarSign,
   AlertTriangle,
   CheckCircle,
-  XCircle
+  XCircle,
+  BarChart3,
+  Settings,
+  GitBranch
 } from 'lucide-react';
+import BusinessAccessDashboard from '../components/business/BusinessAccessDashboard';
+import BusinessPolicyFlow from '../components/business/BusinessPolicyFlow';
+import BusinessScenarioSimulator from '../components/business/BusinessScenarioSimulator';
 
 interface BusinessScenario {
   id: string;
@@ -55,13 +61,13 @@ const businessScenarios: BusinessScenario[] = [
       '员工角色：可提交费用报销申请',
       '部门经理：可审批本部门5万以下费用',
       '财务经理：可审批10万以下费用',
-      '总经理：可审批���有费用'
+      '总经理：可审批所有费用'
     ],
     abacConditions: [
       '费用金额：不同金额需要不同审批级别',
       '部门匹配：只能审批本部门的费用',
       '工作时间：非工作时间限制审批',
-      '紧急情况：紧急费用可跨级审批'
+      '紧急情��：紧急费用可跨级审批'
     ],
     businessRules: [
       '5万以下：部门经理审批',
@@ -89,7 +95,7 @@ const businessScenarios: BusinessScenario[] = [
       '客服专员：只读客户联系信息'
     ],
     abacConditions: [
-      '地理区域：只能访问负责区���的客户',
+      '地理区域：只能访问负责区域的客户',
       '客户关系：只能访问分配给自己的客户',
       '数据分类：敏感数据需要额外权限',
       '访问时间：非工作时间受限'
@@ -122,14 +128,14 @@ const businessScenarios: BusinessScenario[] = [
     abacConditions: [
       '部门限制：只能查看本部门员工',
       '薪资信息：需要特定级别权限',
-      '个人隐私：需要合���授权',
+      '个人隐私：需要合规授权',
       '批量操作：需要额外验证'
     ],
     businessRules: [
       '薪资信息只对HR经理以上开放',
       '跨部门查询需要特殊申请',
       '批量导出需要安全审计',
-      '敏感操作需要双重验证'
+      '敏感��作需要双重验证'
     ],
     exampleCase: {
       user: '王经理 (部门经理)',
@@ -163,7 +169,7 @@ const businessScenarios: BusinessScenario[] = [
       '所有部署必须可回滚'
     ],
     exampleCase: {
-      user: '陈工程师 (DevOps工程师)',
+      user: '陈工程师 (DevOps工��师)',
       action: '生产环境部署',
       context: { deploymentWindow: true, changeLevel: 'minor', emergency: false, securityCheck: 'passed' },
       expectedResult: 'allow',
@@ -436,7 +442,7 @@ export default function BusinessScenarios() {
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-purple-500" />
-                  业务逻辑层
+                  业务逻辑��
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -480,7 +486,7 @@ export default function BusinessScenarios() {
                     <h4 className="font-semibold">ABAC 上下文检查</h4>
                     <p className="text-sm text-muted-foreground">基于当前上下文和属性应用动态策略</p>
                   </div>
-                  <Badge variant="outline">增强��</Badge>
+                  <Badge variant="outline">增强层</Badge>
                 </div>
 
                 <div className="flex items-center gap-4 p-4 border rounded-lg">
