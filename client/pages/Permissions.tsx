@@ -706,21 +706,82 @@ const Permissions: React.FC = () => {
 
         {/* Resources Tab */}
         <TabsContent value="resources" className="space-y-6">
+          {/* Resources Filters */}
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input
+                      placeholder="Search resources by name, type, or description..."
+                      className="pl-10"
+                      value={resourceSearchTerm}
+                      onChange={(e) => setResourceSearchTerm(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Select
+                    value={resourceTypeFilter}
+                    onValueChange={setResourceTypeFilter}
+                  >
+                    <SelectTrigger className="w-40">
+                      <SelectValue placeholder="Resource Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Types</SelectItem>
+                      <SelectItem value="entity">Entity</SelectItem>
+                      <SelectItem value="data">Data</SelectItem>
+                      <SelectItem value="service">Service</SelectItem>
+                      <SelectItem value="api">API</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsAddResourceDialogOpen(true)}
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Resource
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center">
                   <Database className="mr-2 h-5 w-5" />
-                  Protected Resources
+                  Protected Resources ({resources.filter(r =>
+                    (resourceSearchTerm === "" ||
+                     r.name.toLowerCase().includes(resourceSearchTerm.toLowerCase()) ||
+                     r.description.toLowerCase().includes(resourceSearchTerm.toLowerCase())) &&
+                    (resourceTypeFilter === "all" || r.type === resourceTypeFilter)
+                  ).length})
                 </div>
-                <Button variant="outline" size="sm">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Resource
-                </Button>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ResourcesTable resources={resources} />
+              <EnhancedResourcesTable
+                resources={resources.filter(r =>
+                  (resourceSearchTerm === "" ||
+                   r.name.toLowerCase().includes(resourceSearchTerm.toLowerCase()) ||
+                   r.description.toLowerCase().includes(resourceSearchTerm.toLowerCase())) &&
+                  (resourceTypeFilter === "all" || r.type === resourceTypeFilter)
+                )}
+                onEdit={(resource) => {
+                  setSelectedResource(resource);
+                  setIsEditResourceDialogOpen(true);
+                }}
+                onSettings={(resource) => {
+                  setSelectedResource(resource);
+                  setIsResourceSettingsDialogOpen(true);
+                }}
+                onDelete={handleDeleteResource}
+              />
             </CardContent>
           </Card>
         </TabsContent>
