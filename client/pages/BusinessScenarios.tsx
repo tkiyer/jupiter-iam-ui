@@ -67,7 +67,7 @@ const businessScenarios: BusinessScenario[] = [
       '费用金额：不同金额需要不同审批级别',
       '部门匹配：只能审批本部门的费用',
       '工作时间：非工作时间限制审批',
-      '紧急情��：紧急费用可跨级审批'
+      '紧急情况：紧急费用可跨级审批'
     ],
     businessRules: [
       '5万以下：部门经理审批',
@@ -135,7 +135,7 @@ const businessScenarios: BusinessScenario[] = [
       '薪资信息只对HR经理以上开放',
       '跨部门查询需要特殊申请',
       '批量导出需要安全审计',
-      '敏感��作需要双重验证'
+      '敏感操作需要双重验证'
     ],
     exampleCase: {
       user: '王经理 (部门经理)',
@@ -160,7 +160,7 @@ const businessScenarios: BusinessScenario[] = [
       '部署窗口：只在指定时间窗口部署',
       '变更级别：重大变更需要审批',
       '紧急情况：紧急修复可特殊授权',
-      '安全检查：必须通过安全扫描'
+      '安全检查：必须通���安全扫描'
     ],
     businessRules: [
       '生产部署只在维护窗口进行',
@@ -169,7 +169,7 @@ const businessScenarios: BusinessScenario[] = [
       '所有部署必须可回滚'
     ],
     exampleCase: {
-      user: '陈工程师 (DevOps工��师)',
+      user: '陈工程师 (DevOps工程师)',
       action: '生产环境部署',
       context: { deploymentWindow: true, changeLevel: 'minor', emergency: false, securityCheck: 'passed' },
       expectedResult: 'allow',
@@ -227,7 +227,7 @@ export default function BusinessScenarios() {
         rbacResult: {
           allowed: Math.random() > 0.5,
           appliedRoles: ['部门经理', '财务审批员'],
-          reason: 'RBAC: 用户具有必要的角色权限'
+          reason: 'RBAC: 用户具有必要的��色权限'
         },
         abacResult: {
           allowed: Math.random() > 0.4,
@@ -268,9 +268,12 @@ export default function BusinessScenarios() {
         </div>
       </div>
 
-      <Tabs defaultValue="scenarios" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+      <Tabs defaultValue="dashboard" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-7">
+          <TabsTrigger value="dashboard">实时仪表板</TabsTrigger>
           <TabsTrigger value="scenarios">业务场景</TabsTrigger>
+          <TabsTrigger value="flow">策略流程</TabsTrigger>
+          <TabsTrigger value="simulator">场景模拟器</TabsTrigger>
           <TabsTrigger value="integration">RBAC+ABAC集成</TabsTrigger>
           <TabsTrigger value="testing">场景测试</TabsTrigger>
           <TabsTrigger value="workflows">业务工作流</TabsTrigger>
@@ -442,7 +445,7 @@ export default function BusinessScenarios() {
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-purple-500" />
-                  业务逻辑��
+                  业务逻辑层
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -568,7 +571,7 @@ export default function BusinessScenarios() {
               </div>
               
               <Button onClick={runBusinessScenarioTest} className="w-full">
-                运行业务场景测试
+                运���业务场景测试
               </Button>
 
               {testResults.length > 0 && (
@@ -642,7 +645,7 @@ export default function BusinessScenarios() {
           </Card>
         </TabsContent>
 
-        {/* 业务工作流 Tab */}
+        {/* 业务��作流 Tab */}
         <TabsContent value="workflows" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
