@@ -242,9 +242,31 @@ const FullReportDialog: React.FC<FullReportDialogProps> = ({ open, onOpenChange 
     })),
   });
 
-  const handleExportReport = (format: 'pdf' | 'csv') => {
-    // TODO: Implement export functionality
-    console.log(`Exporting report as ${format}`);
+  const handleExportReport = async (format: 'pdf' | 'csv') => {
+    if (!analytics) return;
+
+    try {
+      let success = false;
+
+      if (format === 'csv') {
+        const { exportToCSV } = await import('@/utils/exportUtils');
+        success = exportToCSV(analytics, 'iam-comprehensive-report');
+      } else if (format === 'pdf') {
+        const { exportToPDF } = await import('@/utils/exportUtils');
+        success = exportToPDF(analytics, 'iam-comprehensive-report');
+      }
+
+      if (success) {
+        // Optional: Show success notification
+        console.log(`Report exported successfully as ${format.toUpperCase()}`);
+      } else {
+        console.error(`Failed to export report as ${format.toUpperCase()}`);
+        alert(`Failed to export report as ${format.toUpperCase()}. Please try again.`);
+      }
+    } catch (error) {
+      console.error('Export error:', error);
+      alert(`Error exporting report: ${error}`);
+    }
   };
 
   if (isLoading) {
