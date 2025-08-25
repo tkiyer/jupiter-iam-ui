@@ -40,6 +40,7 @@ const navigationItems = [
   { path: '/permissions', label: 'Permissions', icon: Settings },
   { path: '/policies', label: 'ABAC Policies', icon: FileText },
   { path: '/access-control', label: 'Access Control', icon: Shield },
+  { path: '/business-scenarios', label: 'Business Scenarios', icon: Building2 },
   { path: '/audit', label: 'Audit Logs', icon: BarChart3 },
 ];
 
