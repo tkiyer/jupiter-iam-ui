@@ -4,12 +4,13 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { DashboardStats } from '@shared/iam';
-import { 
-  Users, 
-  Key, 
-  Shield, 
-  FileText, 
-  TrendingUp, 
+import FullReportDialog from '@/components/dashboard/FullReportDialog';
+import {
+  Users,
+  Key,
+  Shield,
+  FileText,
+  TrendingUp,
   AlertTriangle,
   Activity,
   Clock,
