@@ -24,7 +24,8 @@ import {
   Home,
   ChevronDown,
   Menu,
-  X
+  X,
+  Building2
 } from 'lucide-react';
 import { useState } from 'react';
 
