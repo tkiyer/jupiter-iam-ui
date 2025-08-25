@@ -32,6 +32,7 @@ import {
   Calendar
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { PaginationControl, usePagination } from '@/components/ui/pagination-control';
 
 const Users: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
