@@ -179,7 +179,7 @@ const businessScenarios: BusinessScenario[] = [
   {
     id: 'financial-report-access',
     title: '财务报表访问权限',
-    description: '财务数据根据用户级别和报表类型��施精细化访问控制',
+    description: '财务数据根据用户级别和报表类型实施精细化访问控制',
     icon: <FileText className="h-5 w-5" />,
     rbacRequirements: [
       '财务专员：查看基础财务报表',
@@ -393,6 +393,16 @@ export default function BusinessScenarios() {
           </div>
         </TabsContent>
 
+        {/* 策略流程 Tab */}
+        <TabsContent value="flow" className="space-y-6">
+          <BusinessPolicyFlow />
+        </TabsContent>
+
+        {/* 场景模拟器 Tab */}
+        <TabsContent value="simulator" className="space-y-6">
+          <BusinessScenarioSimulator />
+        </TabsContent>
+
         {/* RBAC+ABAC集成 Tab */}
         <TabsContent value="integration" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -414,7 +424,7 @@ export default function BusinessScenarios() {
                     <p className="text-sm text-blue-600">为角色分配基础的资源访问权限</p>
                   </div>
                   <div className="p-3 bg-blue-50 rounded">
-                    <h5 className="font-medium text-blue-800">层级结构</h5>
+                    <h5 className="font-medium text-blue-800">���级结构</h5>
                     <p className="text-sm text-blue-600">建立角色继承和权限传递关系</p>
                   </div>
                 </div>
@@ -500,7 +510,7 @@ export default function BusinessScenarios() {
                 <div className="flex items-center gap-4 p-4 border rounded-lg">
                   <div className="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold">3</div>
                   <div>
-                    <h4 className="font-semibold">��务规则应用</h4>
+                    <h4 className="font-semibold">业务规则应用</h4>
                     <p className="text-sm text-muted-foreground">应用特定的业务逻辑和工作流规则</p>
                   </div>
                   <Badge variant="outline">业务层</Badge>
@@ -683,7 +693,7 @@ export default function BusinessScenarios() {
                     <h5 className="font-medium">第三步：分级审批</h5>
                     <p className="text-sm text-muted-foreground">按层级进行审批决策</p>
                     <div className="mt-2 text-xs space-x-1">
-                      <Badge variant="outline">RBAC: 审��权限</Badge>
+                      <Badge variant="outline">RBAC: 审批权限</Badge>
                       <Badge variant="outline">业务: 审批流程</Badge>
                     </div>
                   </div>
