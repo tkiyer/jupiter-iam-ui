@@ -113,6 +113,14 @@ const Permissions: React.FC = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("permissions");
 
+  // Resources related state
+  const [isAddResourceDialogOpen, setIsAddResourceDialogOpen] = useState(false);
+  const [isEditResourceDialogOpen, setIsEditResourceDialogOpen] = useState(false);
+  const [isResourceSettingsDialogOpen, setIsResourceSettingsDialogOpen] = useState(false);
+  const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
+  const [resourceSearchTerm, setResourceSearchTerm] = useState("");
+  const [resourceTypeFilter, setResourceTypeFilter] = useState<string>("all");
+
   // Pagination state
   const {
     currentPage,
