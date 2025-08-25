@@ -14,7 +14,7 @@ import {
   handleToggleMFA,
   handleBulkImport,
   handleExportUsers,
-  handleGetUserActivity
+  handleGetUserActivity,
 } from "./routes/users";
 import {
   handleGetRoles,
@@ -28,7 +28,7 @@ import {
   handleGetRoleHierarchy,
   handleCloneRole,
   handleResolveConflict,
-  handleGetPermissions as handleGetPermissionsFromRoles
+  handleGetPermissions as handleGetPermissionsFromRoles,
 } from "./routes/roles";
 import {
   handleGetPermissions,
@@ -41,7 +41,7 @@ import {
   handleGetPermissionAnalytics,
   handleGetResources,
   handleApplyOptimization,
-  handleDelegatePermission
+  handleDelegatePermission,
 } from "./routes/permissions";
 import {
   handleGetPolicies,
@@ -56,8 +56,14 @@ import {
   handleGetPolicyAnalytics,
   handleActivatePolicy,
   handleDeactivatePolicy,
-  handleEvaluatePolicy
+  handleEvaluatePolicy,
 } from "./routes/policies";
+import {
+  handleGetBusinessPolicies,
+  handleTestBusinessScenario,
+  handleGetBusinessTemplates,
+  handleIntegrationAnalysis,
+} from "./routes/business-policies";
 
 export function createServer() {
   const app = express();
@@ -137,8 +143,17 @@ export function createServer() {
   app.post("/api/policies/:id/activate", handleActivatePolicy);
   app.post("/api/policies/:id/deactivate", handleDeactivatePolicy);
 
+  // Business Policies routes (RBAC+ABAC Integration)
+  app.get("/api/business-policies", handleGetBusinessPolicies);
+  app.post("/api/business-policies/test-scenario", handleTestBusinessScenario);
+  app.get("/api/business-policies/templates", handleGetBusinessTemplates);
+  app.get(
+    "/api/business-policies/integration-analysis",
+    handleIntegrationAnalysis,
+  );
+
   // Access Control routes
-  const accessControlRoutes = require('./routes/access-control').default;
+  const accessControlRoutes = require("./routes/access-control").default;
   app.use("/api/access-control", accessControlRoutes);
 
   return app;

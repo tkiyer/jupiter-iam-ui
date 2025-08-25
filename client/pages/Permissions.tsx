@@ -1,35 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Progress } from '@/components/ui/progress';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  Permission, 
-  PermissionCategory, 
-  Resource, 
-  PermissionAnalytics, 
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Progress } from "@/components/ui/progress";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Permission,
+  PermissionCategory,
+  Resource,
+  PermissionAnalytics,
   PermissionOptimization,
   PermissionCondition,
   FieldRestriction,
-  ResourceEndpoint
-} from '@shared/iam';
-import { 
-  Search, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Download, 
-  Upload, 
+  ResourceEndpoint,
+} from "@shared/iam";
+import {
+  Search,
+  Plus,
+  Edit,
+  Trash2,
+  Download,
+  Upload,
   Filter,
   MoreHorizontal,
   Shield,
@@ -55,26 +81,51 @@ import {
   XCircle,
   FileText,
   Cpu,
-  RefreshCw
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+  RefreshCw,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  PaginationControl,
+  usePagination,
+} from "@/components/ui/pagination-control";
 
 const Permissions: React.FC = () => {
   const [permissions, setPermissions] = useState<Permission[]>([]);
-  const [filteredPermissions, setFilteredPermissions] = useState<Permission[]>([]);
+  const [filteredPermissions, setFilteredPermissions] = useState<Permission[]>(
+    [],
+  );
   const [categories, setCategories] = useState<PermissionCategory[]>([]);
   const [resources, setResources] = useState<Resource[]>([]);
-  const [analytics, setAnalytics] = useState<Record<string, PermissionAnalytics>>({});
-  const [optimizations, setOptimizations] = useState<PermissionOptimization[]>([]);
+  const [analytics, setAnalytics] = useState<
+    Record<string, PermissionAnalytics>
+  >({});
+  const [optimizations, setOptimizations] = useState<PermissionOptimization[]>(
+    [],
+  );
   const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [scopeFilter, setScopeFilter] = useState<string>('all');
-  const [riskFilter, setRiskFilter] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [scopeFilter, setScopeFilter] = useState<string>("all");
+  const [riskFilter, setRiskFilter] = useState<string>("all");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [selectedPermission, setSelectedPermission] = useState<Permission | null>(null);
+  const [selectedPermission, setSelectedPermission] =
+    useState<Permission | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('permissions');
+  const [activeTab, setActiveTab] = useState("permissions");
+
+  // Pagination state
+  const {
+    currentPage,
+    pageSize,
+    totalPages,
+    startIndex,
+    endIndex,
+    handlePageChange,
+    handlePageSizeChange,
+  } = usePagination(filteredPermissions.length, 10);
+
+  // Paginated permissions for display
+  const paginatedPermissions = filteredPermissions.slice(startIndex, endIndex);
 
   useEffect(() => {
     fetchPermissions();
@@ -89,24 +140,34 @@ const Permissions: React.FC = () => {
 
   const fetchPermissions = async () => {
     try {
-      const response = await fetch('/api/permissions');
+      const response = await fetch("/api/permissions");
       const data = await response.json();
       setPermissions(data.permissions || data);
-      
+
       // Fetch analytics for each permission
       if (data.permissions) {
-        const analyticsPromises = data.permissions.map((permission: Permission) => 
-          fetch(`/api/permissions/${permission.id}/analytics`).then(r => r.json())
+        const analyticsPromises = data.permissions.map(
+          (permission: Permission) =>
+            fetch(`/api/permissions/${permission.id}/analytics`).then((r) =>
+              r.json(),
+            ),
         );
         const analyticsResults = await Promise.all(analyticsPromises);
-        const analyticsMap = data.permissions.reduce((acc: Record<string, PermissionAnalytics>, permission: Permission, index: number) => {
-          acc[permission.id] = analyticsResults[index];
-          return acc;
-        }, {});
+        const analyticsMap = data.permissions.reduce(
+          (
+            acc: Record<string, PermissionAnalytics>,
+            permission: Permission,
+            index: number,
+          ) => {
+            acc[permission.id] = analyticsResults[index];
+            return acc;
+          },
+          {},
+        );
         setAnalytics(analyticsMap);
       }
     } catch (error) {
-      console.error('Error fetching permissions:', error);
+      console.error("Error fetching permissions:", error);
     } finally {
       setIsLoading(false);
     }
@@ -114,31 +175,31 @@ const Permissions: React.FC = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('/api/permissions/categories');
+      const response = await fetch("/api/permissions/categories");
       const data = await response.json();
       setCategories(data);
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error("Error fetching categories:", error);
     }
   };
 
   const fetchResources = async () => {
     try {
-      const response = await fetch('/api/resources');
+      const response = await fetch("/api/resources");
       const data = await response.json();
       setResources(data);
     } catch (error) {
-      console.error('Error fetching resources:', error);
+      console.error("Error fetching resources:", error);
     }
   };
 
   const fetchOptimizations = async () => {
     try {
-      const response = await fetch('/api/permissions/optimizations');
+      const response = await fetch("/api/permissions/optimizations");
       const data = await response.json();
       setOptimizations(data);
     } catch (error) {
-      console.error('Error fetching optimizations:', error);
+      console.error("Error fetching optimizations:", error);
     }
   };
 
@@ -146,23 +207,32 @@ const Permissions: React.FC = () => {
     let filtered = permissions;
 
     if (searchTerm) {
-      filtered = filtered.filter(permission => 
-        permission.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        permission.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        permission.resource.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (permission) =>
+          permission.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          permission.description
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          permission.resource.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
-    if (categoryFilter !== 'all') {
-      filtered = filtered.filter(permission => permission.category === categoryFilter);
+    if (categoryFilter !== "all") {
+      filtered = filtered.filter(
+        (permission) => permission.category === categoryFilter,
+      );
     }
 
-    if (scopeFilter !== 'all') {
-      filtered = filtered.filter(permission => permission.scope === scopeFilter);
+    if (scopeFilter !== "all") {
+      filtered = filtered.filter(
+        (permission) => permission.scope === scopeFilter,
+      );
     }
 
-    if (riskFilter !== 'all') {
-      filtered = filtered.filter(permission => permission.risk === riskFilter);
+    if (riskFilter !== "all") {
+      filtered = filtered.filter(
+        (permission) => permission.risk === riskFilter,
+      );
     }
 
     setFilteredPermissions(filtered);
@@ -170,49 +240,64 @@ const Permissions: React.FC = () => {
 
   const getScopeIcon = (scope: string) => {
     switch (scope) {
-      case 'global': return <Globe className="h-4 w-4 text-purple-600" />;
-      case 'resource': return <Database className="h-4 w-4 text-blue-600" />;
-      case 'field': return <FileText className="h-4 w-4 text-green-600" />;
-      case 'api': return <Code className="h-4 w-4 text-orange-600" />;
-      default: return <Shield className="h-4 w-4 text-gray-600" />;
+      case "global":
+        return <Globe className="h-4 w-4 text-purple-600" />;
+      case "resource":
+        return <Database className="h-4 w-4 text-blue-600" />;
+      case "field":
+        return <FileText className="h-4 w-4 text-green-600" />;
+      case "api":
+        return <Code className="h-4 w-4 text-orange-600" />;
+      default:
+        return <Shield className="h-4 w-4 text-gray-600" />;
     }
   };
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
-      case 'critical': return 'bg-red-100 text-red-800 border-red-200';
-      case 'high': return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'low': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case "critical":
+        return "bg-red-100 text-red-800 border-red-200";
+      case "high":
+        return "bg-orange-100 text-orange-800 border-orange-200";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "low":
+        return "bg-green-100 text-green-800 border-green-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
   const getOptimizationColor = (type: string) => {
     switch (type) {
-      case 'cleanup': return 'bg-blue-100 text-blue-800';
-      case 'consolidation': return 'bg-purple-100 text-purple-800';
-      case 'deprecation': return 'bg-yellow-100 text-yellow-800';
-      case 'risk_reduction': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "cleanup":
+        return "bg-blue-100 text-blue-800";
+      case "consolidation":
+        return "bg-purple-100 text-purple-800";
+      case "deprecation":
+        return "bg-yellow-100 text-yellow-800";
+      case "risk_reduction":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const handleCreatePermission = async (permissionData: any) => {
     try {
-      const response = await fetch('/api/permissions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/permissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(permissionData),
       });
-      
+
       if (response.ok) {
         const newPermission = await response.json();
-        setPermissions(prev => [...prev, newPermission]);
+        setPermissions((prev) => [...prev, newPermission]);
         setIsCreateDialogOpen(false);
       }
     } catch (error) {
-      console.error('Error creating permission:', error);
+      console.error("Error creating permission:", error);
     }
   };
 
@@ -232,8 +317,12 @@ const Permissions: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Permission Management</h1>
-          <p className="text-gray-600 mt-1">Granular access control with resource-based permissions</p>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Permission Management
+          </h1>
+          <p className="text-gray-600 mt-1">
+            Granular access control with resource-based permissions
+          </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline" size="sm">
@@ -244,14 +333,17 @@ const Permissions: React.FC = () => {
             <RefreshCw className="mr-2 h-4 w-4" />
             Optimize
           </Button>
-          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <Dialog
+            open={isCreateDialogOpen}
+            onOpenChange={setIsCreateDialogOpen}
+          >
             <DialogTrigger asChild>
               <Button className="bg-blue-600 hover:bg-blue-700">
                 <Plus className="mr-2 h-4 w-4" />
                 Create Permission
               </Button>
             </DialogTrigger>
-            <CreatePermissionDialog 
+            <CreatePermissionDialog
               onCreatePermission={handleCreatePermission}
               categories={categories}
               resources={resources}
@@ -261,12 +353,17 @@ const Permissions: React.FC = () => {
       </div>
 
       {/* Optimization Alerts */}
-      {optimizations.filter(o => o.severity === 'critical').length > 0 && (
+      {optimizations.filter((o) => o.severity === "critical").length > 0 && (
         <Alert className="border-red-200 bg-red-50">
           <AlertTriangle className="h-4 w-4 text-red-600" />
           <AlertDescription className="text-red-800">
-            {optimizations.filter(o => o.severity === 'critical').length} critical optimization opportunities detected. 
-            <Button variant="link" className="p-0 ml-1 text-red-800" onClick={() => setActiveTab('optimization')}>
+            {optimizations.filter((o) => o.severity === "critical").length}{" "}
+            critical optimization opportunities detected.
+            <Button
+              variant="link"
+              className="p-0 ml-1 text-red-800"
+              onClick={() => setActiveTab("optimization")}
+            >
               Review optimizations
             </Button>
           </AlertDescription>
@@ -302,7 +399,10 @@ const Permissions: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                  <Select
+                    value={categoryFilter}
+                    onValueChange={setCategoryFilter}
+                  >
                     <SelectTrigger className="w-40">
                       <SelectValue placeholder="Category" />
                     </SelectTrigger>
@@ -368,7 +468,7 @@ const Permissions: React.FC = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredPermissions.map((permission) => (
+                  {paginatedPermissions.map((permission) => (
                     <TableRow key={permission.id}>
                       <TableCell>
                         <div className="flex items-center space-x-3">
@@ -377,13 +477,19 @@ const Permissions: React.FC = () => {
                             <div className="font-medium text-gray-900 flex items-center gap-2">
                               <span>{permission.name}</span>
                               {permission.isSystemPermission && (
-                                <Badge variant="secondary" className="text-xs">System</Badge>
+                                <Badge variant="secondary" className="text-xs">
+                                  System
+                                </Badge>
                               )}
                               {permission.canDelegate && (
-                                <Badge variant="outline" className="text-xs">Delegatable</Badge>
+                                <Badge variant="outline" className="text-xs">
+                                  Delegatable
+                                </Badge>
                               )}
                             </div>
-                            <p className="text-sm text-gray-500">{permission.description}</p>
+                            <p className="text-sm text-gray-500">
+                              {permission.description}
+                            </p>
                           </div>
                         </div>
                       </TableCell>
@@ -396,23 +502,47 @@ const Permissions: React.FC = () => {
                       <TableCell>
                         <div className="flex items-center space-x-2">
                           {getScopeIcon(permission.scope)}
-                          <span className="text-sm capitalize">{permission.scope}</span>
+                          <span className="text-sm capitalize">
+                            {permission.scope}
+                          </span>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge className={cn("flex items-center gap-1 w-fit", getRiskColor(permission.risk))}>
-                          {permission.risk === 'critical' && <AlertTriangle className="h-3 w-3" />}
-                          {permission.risk === 'high' && <AlertTriangle className="h-3 w-3" />}
-                          {permission.risk === 'medium' && <Clock className="h-3 w-3" />}
-                          {permission.risk === 'low' && <CheckCircle className="h-3 w-3" />}
+                        <Badge
+                          className={cn(
+                            "flex items-center gap-1 w-fit",
+                            getRiskColor(permission.risk),
+                          )}
+                        >
+                          {permission.risk === "critical" && (
+                            <AlertTriangle className="h-3 w-3" />
+                          )}
+                          {permission.risk === "high" && (
+                            <AlertTriangle className="h-3 w-3" />
+                          )}
+                          {permission.risk === "medium" && (
+                            <Clock className="h-3 w-3" />
+                          )}
+                          {permission.risk === "low" && (
+                            <CheckCircle className="h-3 w-3" />
+                          )}
                           {permission.risk}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <div className="text-sm">
-                          <p>{analytics[permission.id]?.usageStats.totalUses || permission.usageCount || 0} uses</p>
+                          <p>
+                            {analytics[permission.id]?.usageStats.totalUses ||
+                              permission.usageCount ||
+                              0}{" "}
+                            uses
+                          </p>
                           <p className="text-gray-500">
-                            {permission.lastUsed ? new Date(permission.lastUsed).toLocaleDateString() : 'Never'}
+                            {permission.lastUsed
+                              ? new Date(
+                                  permission.lastUsed,
+                                ).toLocaleDateString()
+                              : "Never"}
                           </p>
                         </div>
                       </TableCell>
@@ -436,7 +566,11 @@ const Permissions: React.FC = () => {
                           <Button variant="ghost" size="sm">
                             <Copy className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="sm" className="text-red-600">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-600"
+                          >
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -467,14 +601,20 @@ const Permissions: React.FC = () => {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {categories.map((category) => (
-                  <Card key={category.id} className="hover:shadow-md transition-shadow">
+                  <Card
+                    key={category.id}
+                    className="hover:shadow-md transition-shadow"
+                  >
                     <CardHeader className="pb-3">
                       <CardTitle className="text-lg flex items-center">
-                        <div 
+                        <div
                           className={`p-2 rounded-lg mr-3`}
-                          style={{ backgroundColor: category.color + '20' }}
+                          style={{ backgroundColor: category.color + "20" }}
                         >
-                          <Shield className="h-5 w-5" style={{ color: category.color }} />
+                          <Shield
+                            className="h-5 w-5"
+                            style={{ color: category.color }}
+                          />
                         </div>
                         {category.name}
                       </CardTitle>
@@ -482,11 +622,17 @@ const Permissions: React.FC = () => {
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-500">Permissions</span>
-                        <Badge variant="secondary">{category.permissions.length}</Badge>
+                        <span className="text-sm text-gray-500">
+                          Permissions
+                        </span>
+                        <Badge variant="secondary">
+                          {category.permissions.length}
+                        </Badge>
                       </div>
                       {category.isSystemCategory && (
-                        <Badge variant="outline" className="text-xs">System Category</Badge>
+                        <Badge variant="outline" className="text-xs">
+                          System Category
+                        </Badge>
                       )}
                     </CardContent>
                   </Card>
@@ -537,7 +683,10 @@ const Permissions: React.FC = () => {
 
         {/* Analytics Tab */}
         <TabsContent value="analytics" className="space-y-6">
-          <PermissionAnalyticsView permissions={permissions} analytics={analytics} />
+          <PermissionAnalyticsView
+            permissions={permissions}
+            analytics={analytics}
+          />
         </TabsContent>
 
         {/* Optimization Tab */}
@@ -560,15 +709,27 @@ const Permissions: React.FC = () => {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-2">
-                            <Badge className={getOptimizationColor(optimization.type)}>
-                              {optimization.type.replace('_', ' ')}
+                            <Badge
+                              className={getOptimizationColor(
+                                optimization.type,
+                              )}
+                            >
+                              {optimization.type.replace("_", " ")}
                             </Badge>
-                            <Badge variant="outline" className={getRiskColor(optimization.severity)}>
+                            <Badge
+                              variant="outline"
+                              className={getRiskColor(optimization.severity)}
+                            >
                               {optimization.severity}
                             </Badge>
                           </div>
-                          <p className="text-sm text-gray-700 mb-2">{optimization.description}</p>
-                          <p className="text-sm font-medium">Affected permissions: {optimization.permissions.length}</p>
+                          <p className="text-sm text-gray-700 mb-2">
+                            {optimization.description}
+                          </p>
+                          <p className="text-sm font-medium">
+                            Affected permissions:{" "}
+                            {optimization.permissions.length}
+                          </p>
                           <p className="text-xs text-gray-500 mt-1">
                             Recommendation: {optimization.recommendation}
                           </p>
@@ -583,8 +744,12 @@ const Permissions: React.FC = () => {
                               Auto Apply
                             </Button>
                           )}
-                          <Button variant="outline" size="sm">Apply</Button>
-                          <Button variant="ghost" size="sm">Dismiss</Button>
+                          <Button variant="outline" size="sm">
+                            Apply
+                          </Button>
+                          <Button variant="ghost" size="sm">
+                            Dismiss
+                          </Button>
                         </div>
                       </div>
                     </CardContent>
@@ -599,12 +764,16 @@ const Permissions: React.FC = () => {
       {/* Edit Permission Dialog */}
       {selectedPermission && (
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <EditPermissionDialog 
+          <EditPermissionDialog
             permission={selectedPermission}
             categories={categories}
             resources={resources}
             onSave={(updatedPermission) => {
-              setPermissions(prev => prev.map(p => p.id === updatedPermission.id ? updatedPermission : p));
+              setPermissions((prev) =>
+                prev.map((p) =>
+                  p.id === updatedPermission.id ? updatedPermission : p,
+                ),
+              );
               setIsEditDialogOpen(false);
             }}
           />
@@ -621,18 +790,18 @@ const CreatePermissionDialog: React.FC<{
   resources: Resource[];
 }> = ({ onCreatePermission, categories, resources }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    resource: '',
-    action: '',
-    category: '',
-    scope: 'resource',
-    risk: 'low',
+    name: "",
+    description: "",
+    resource: "",
+    action: "",
+    category: "",
+    scope: "resource",
+    risk: "low",
     canDelegate: false,
     complianceRequired: false,
     conditions: [] as PermissionCondition[],
     fieldRestrictions: [] as FieldRestriction[],
-    apiEndpoints: [] as string[]
+    apiEndpoints: [] as string[],
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -656,7 +825,7 @@ const CreatePermissionDialog: React.FC<{
             <TabsTrigger value="fields">Field Access</TabsTrigger>
             <TabsTrigger value="api">API Endpoints</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="basic" className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -665,12 +834,18 @@ const CreatePermissionDialog: React.FC<{
                   id="name"
                   required
                   value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, name: e.target.value }))
+                  }
                 />
               </div>
               <div>
                 <Label>Action</Label>
-                <Select onValueChange={(value) => setFormData(prev => ({ ...prev, action: value }))}>
+                <Select
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, action: value }))
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select action" />
                   </SelectTrigger>
@@ -685,21 +860,30 @@ const CreatePermissionDialog: React.FC<{
                 </Select>
               </div>
             </div>
-            
+
             <div>
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
                 required
                 value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
               />
             </div>
 
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <Label>Resource</Label>
-                <Select onValueChange={(value) => setFormData(prev => ({ ...prev, resource: value }))}>
+                <Select
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, resource: value }))
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select resource" />
                   </SelectTrigger>
@@ -714,7 +898,11 @@ const CreatePermissionDialog: React.FC<{
               </div>
               <div>
                 <Label>Category</Label>
-                <Select onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}>
+                <Select
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, category: value }))
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
@@ -729,7 +917,11 @@ const CreatePermissionDialog: React.FC<{
               </div>
               <div>
                 <Label>Risk Level</Label>
-                <Select onValueChange={(value) => setFormData(prev => ({ ...prev, risk: value }))}>
+                <Select
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, risk: value }))
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select risk" />
                   </SelectTrigger>
@@ -748,7 +940,9 @@ const CreatePermissionDialog: React.FC<{
                 <Checkbox
                   id="canDelegate"
                   checked={formData.canDelegate}
-                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, canDelegate: !!checked }))}
+                  onCheckedChange={(checked) =>
+                    setFormData((prev) => ({ ...prev, canDelegate: !!checked }))
+                  }
                 />
                 <Label htmlFor="canDelegate">Can be delegated</Label>
               </div>
@@ -756,13 +950,18 @@ const CreatePermissionDialog: React.FC<{
                 <Checkbox
                   id="complianceRequired"
                   checked={formData.complianceRequired}
-                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, complianceRequired: !!checked }))}
+                  onCheckedChange={(checked) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      complianceRequired: !!checked,
+                    }))
+                  }
                 />
                 <Label htmlFor="complianceRequired">Compliance required</Label>
               </div>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="conditions" className="space-y-4">
             <div>
               <Label>Access Conditions</Label>
@@ -775,7 +974,7 @@ const CreatePermissionDialog: React.FC<{
               </Button>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="fields" className="space-y-4">
             <div>
               <Label>Field-Level Restrictions</Label>
@@ -788,7 +987,7 @@ const CreatePermissionDialog: React.FC<{
               </Button>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="api" className="space-y-4">
             <div>
               <Label>Protected API Endpoints</Label>
@@ -802,10 +1001,14 @@ const CreatePermissionDialog: React.FC<{
             </div>
           </TabsContent>
         </Tabs>
-        
+
         <div className="flex justify-end space-x-2">
-          <Button type="button" variant="outline">Cancel</Button>
-          <Button type="submit" className="bg-blue-600 hover:bg-blue-700">Create Permission</Button>
+          <Button type="button" variant="outline">
+            Cancel
+          </Button>
+          <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+            Create Permission
+          </Button>
         </div>
       </form>
     </DialogContent>
@@ -825,17 +1028,17 @@ const EditPermissionDialog: React.FC<{
     e.preventDefault();
     try {
       const response = await fetch(`/api/permissions/${permission.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      
+
       if (response.ok) {
         const updatedPermission = await response.json();
         onSave(updatedPermission);
       }
     } catch (error) {
-      console.error('Error updating permission:', error);
+      console.error("Error updating permission:", error);
     }
   };
 
@@ -856,7 +1059,7 @@ const EditPermissionDialog: React.FC<{
             <TabsTrigger value="delegation">Delegation</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="general" className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -864,16 +1067,18 @@ const EditPermissionDialog: React.FC<{
                 <Input
                   id="editName"
                   value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, name: e.target.value }))
+                  }
                 />
               </div>
               <div>
                 <Label>Risk Level</Label>
-                <Select 
+                <Select
                   value={formData.risk}
-                  onValueChange={(value: 'low' | 'medium' | 'high' | 'critical') => 
-                    setFormData(prev => ({ ...prev, risk: value }))
-                  }
+                  onValueChange={(
+                    value: "low" | "medium" | "high" | "critical",
+                  ) => setFormData((prev) => ({ ...prev, risk: value }))}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -887,40 +1092,53 @@ const EditPermissionDialog: React.FC<{
                 </Select>
               </div>
             </div>
-            
+
             <div>
               <Label htmlFor="editDescription">Description</Label>
               <Textarea
                 id="editDescription"
                 value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
               />
             </div>
           </TabsContent>
-          
+
           <TabsContent value="analytics" className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <Card>
                 <CardContent className="p-4">
                   <p className="text-sm font-medium">Total Usage</p>
-                  <p className="text-2xl font-bold">{permission.usageCount || 0}</p>
+                  <p className="text-2xl font-bold">
+                    {permission.usageCount || 0}
+                  </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-4">
                   <p className="text-sm font-medium">Last Used</p>
                   <p className="text-lg font-semibold">
-                    {permission.lastUsed ? new Date(permission.lastUsed).toLocaleDateString() : 'Never'}
+                    {permission.lastUsed
+                      ? new Date(permission.lastUsed).toLocaleDateString()
+                      : "Never"}
                   </p>
                 </CardContent>
               </Card>
             </div>
           </TabsContent>
         </Tabs>
-        
+
         <div className="flex justify-end space-x-2">
-          <Button type="button" variant="outline">Cancel</Button>
-          <Button type="submit" className="bg-blue-600 hover:bg-blue-700">Save Changes</Button>
+          <Button type="button" variant="outline">
+            Cancel
+          </Button>
+          <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+            Save Changes
+          </Button>
         </div>
       </form>
     </DialogContent>
@@ -948,7 +1166,9 @@ const ResourcesTable: React.FC<{ resources: Resource[] }> = ({ resources }) => {
                 <Database className="h-4 w-4 text-blue-600" />
                 <div>
                   <p className="font-medium text-gray-900">{resource.name}</p>
-                  <p className="text-sm text-gray-500">{resource.description}</p>
+                  <p className="text-sm text-gray-500">
+                    {resource.description}
+                  </p>
                 </div>
               </div>
             </TableCell>
@@ -956,10 +1176,14 @@ const ResourcesTable: React.FC<{ resources: Resource[] }> = ({ resources }) => {
               <Badge variant="secondary">{resource.type}</Badge>
             </TableCell>
             <TableCell>
-              <span className="text-sm">{resource.endpoints?.length || 0} endpoints</span>
+              <span className="text-sm">
+                {resource.endpoints?.length || 0} endpoints
+              </span>
             </TableCell>
             <TableCell>
-              <span className="text-sm">{resource.fields?.length || 0} fields</span>
+              <span className="text-sm">
+                {resource.fields?.length || 0} fields
+              </span>
             </TableCell>
             <TableCell>
               <div className="flex items-center space-x-1">
@@ -979,7 +1203,9 @@ const ResourcesTable: React.FC<{ resources: Resource[] }> = ({ resources }) => {
 };
 
 // API Protection View Component
-const APIProtectionView: React.FC<{ resources: Resource[] }> = ({ resources }) => {
+const APIProtectionView: React.FC<{ resources: Resource[] }> = ({
+  resources,
+}) => {
   return (
     <div className="space-y-4">
       {resources.map((resource) => (
@@ -990,16 +1216,25 @@ const APIProtectionView: React.FC<{ resources: Resource[] }> = ({ resources }) =
           <CardContent>
             <div className="space-y-2">
               {resource.endpoints?.map((endpoint, index) => (
-                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-3 border rounded-lg"
+                >
                   <div className="flex items-center space-x-3">
                     <Badge variant="outline">{endpoint.method}</Badge>
                     <code className="text-sm">{endpoint.path}</code>
-                    <span className="text-sm text-gray-500">{endpoint.description}</span>
+                    <span className="text-sm text-gray-500">
+                      {endpoint.description}
+                    </span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Badge variant="secondary">{endpoint.requiredPermissions.length} perms</Badge>
+                    <Badge variant="secondary">
+                      {endpoint.requiredPermissions.length} perms
+                    </Badge>
                     {endpoint.authRequired && (
-                      <Badge className="bg-green-100 text-green-800">Auth Required</Badge>
+                      <Badge className="bg-green-100 text-green-800">
+                        Auth Required
+                      </Badge>
                     )}
                     <Button variant="ghost" size="sm">
                       <Settings className="h-4 w-4" />
@@ -1023,17 +1258,28 @@ const PermissionAnalyticsView: React.FC<{
   analytics: Record<string, PermissionAnalytics>;
 }> = ({ permissions, analytics }) => {
   const totalPermissions = permissions.length;
-  const systemPermissions = permissions.filter(p => p.isSystemPermission).length;
-  const delegatablePermissions = permissions.filter(p => p.canDelegate).length;
-  const criticalPermissions = permissions.filter(p => p.risk === 'critical').length;
+  const systemPermissions = permissions.filter(
+    (p) => p.isSystemPermission,
+  ).length;
+  const delegatablePermissions = permissions.filter(
+    (p) => p.canDelegate,
+  ).length;
+  const criticalPermissions = permissions.filter(
+    (p) => p.risk === "critical",
+  ).length;
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
-      case 'critical': return 'bg-red-100 text-red-800 border-red-200';
-      case 'high': return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'low': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case "critical":
+        return "bg-red-100 text-red-800 border-red-200";
+      case "high":
+        return "bg-orange-100 text-orange-800 border-orange-200";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "low":
+        return "bg-green-100 text-green-800 border-green-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
@@ -1045,8 +1291,12 @@ const PermissionAnalyticsView: React.FC<{
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Permissions</p>
-                <p className="text-3xl font-bold text-gray-900">{totalPermissions}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Permissions
+                </p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {totalPermissions}
+                </p>
               </div>
               <Key className="h-8 w-8 text-blue-600" />
             </div>
@@ -1056,8 +1306,12 @@ const PermissionAnalyticsView: React.FC<{
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">System Permissions</p>
-                <p className="text-3xl font-bold text-gray-900">{systemPermissions}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  System Permissions
+                </p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {systemPermissions}
+                </p>
               </div>
               <Shield className="h-8 w-8 text-purple-600" />
             </div>
@@ -1068,7 +1322,9 @@ const PermissionAnalyticsView: React.FC<{
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Delegatable</p>
-                <p className="text-3xl font-bold text-gray-900">{delegatablePermissions}</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {delegatablePermissions}
+                </p>
               </div>
               <Users className="h-8 w-8 text-green-600" />
             </div>
@@ -1078,8 +1334,12 @@ const PermissionAnalyticsView: React.FC<{
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Critical Risk</p>
-                <p className="text-3xl font-bold text-gray-900">{criticalPermissions}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Critical Risk
+                </p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {criticalPermissions}
+                </p>
               </div>
               <AlertTriangle className="h-8 w-8 text-red-600" />
             </div>
@@ -1094,14 +1354,26 @@ const PermissionAnalyticsView: React.FC<{
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {permissions.slice(0, 10).map(permission => {
+            {permissions.slice(0, 10).map((permission) => {
               const permAnalytics = analytics[permission.id];
-              const usageScore = permAnalytics?.usageStats.totalUses || permission.usageCount || 0;
-              const maxUsage = Math.max(...permissions.map(p => analytics[p.id]?.usageStats.totalUses || p.usageCount || 0));
-              const usagePercent = maxUsage > 0 ? (usageScore / maxUsage) * 100 : 0;
-              
+              const usageScore =
+                permAnalytics?.usageStats.totalUses ||
+                permission.usageCount ||
+                0;
+              const maxUsage = Math.max(
+                ...permissions.map(
+                  (p) =>
+                    analytics[p.id]?.usageStats.totalUses || p.usageCount || 0,
+                ),
+              );
+              const usagePercent =
+                maxUsage > 0 ? (usageScore / maxUsage) * 100 : 0;
+
               return (
-                <div key={permission.id} className="flex items-center justify-between p-4 border rounded-lg">
+                <div
+                  key={permission.id}
+                  className="flex items-center justify-between p-4 border rounded-lg"
+                >
                   <div className="flex-1">
                     <p className="font-medium">{permission.name}</p>
                     <p className="text-sm text-gray-500">
@@ -1120,7 +1392,9 @@ const PermissionAnalyticsView: React.FC<{
                       {permission.risk}
                     </Badge>
                     <p className="text-xs text-gray-500 mt-1">
-                      {permission.lastUsed ? new Date(permission.lastUsed).toLocaleDateString() : 'Never used'}
+                      {permission.lastUsed
+                        ? new Date(permission.lastUsed).toLocaleDateString()
+                        : "Never used"}
                     </p>
                   </div>
                 </div>
