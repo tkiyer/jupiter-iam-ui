@@ -67,6 +67,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PolicyBuilder } from '@/components/policy-builder/PolicyBuilder';
+import { PaginationControl, usePagination } from '@/components/ui/pagination-control';
 
 const Policies: React.FC = () => {
   const [policies, setPolicies] = useState<ABACPolicy[]>([]);
