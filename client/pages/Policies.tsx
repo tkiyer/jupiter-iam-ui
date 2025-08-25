@@ -92,6 +92,20 @@ const Policies: React.FC = () => {
   });
   const [simulationResult, setSimulationResult] = useState<any>(null);
 
+  // Pagination state
+  const {
+    currentPage,
+    pageSize,
+    totalPages,
+    startIndex,
+    endIndex,
+    handlePageChange,
+    handlePageSizeChange,
+  } = usePagination(filteredPolicies.length, 10);
+
+  // Paginated policies for display
+  const paginatedPolicies = filteredPolicies.slice(startIndex, endIndex);
+
   useEffect(() => {
     fetchPolicies();
   }, []);
