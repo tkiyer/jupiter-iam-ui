@@ -58,6 +58,12 @@ import {
   handleDeactivatePolicy,
   handleEvaluatePolicy
 } from "./routes/policies";
+import {
+  handleGetBusinessPolicies,
+  handleTestBusinessScenario,
+  handleGetBusinessTemplates,
+  handleIntegrationAnalysis
+} from "./routes/business-policies";
 
 export function createServer() {
   const app = express();
