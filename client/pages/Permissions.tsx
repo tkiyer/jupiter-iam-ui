@@ -77,6 +77,20 @@ const Permissions: React.FC = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('permissions');
 
+  // Pagination state
+  const {
+    currentPage,
+    pageSize,
+    totalPages,
+    startIndex,
+    endIndex,
+    handlePageChange,
+    handlePageSizeChange,
+  } = usePagination(filteredPermissions.length, 10);
+
+  // Paginated permissions for display
+  const paginatedPermissions = filteredPermissions.slice(startIndex, endIndex);
+
   useEffect(() => {
     fetchPermissions();
     fetchCategories();
