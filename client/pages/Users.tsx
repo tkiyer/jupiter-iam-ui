@@ -45,6 +45,20 @@ const Users: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
+  // Pagination state
+  const {
+    currentPage,
+    pageSize,
+    totalPages,
+    startIndex,
+    endIndex,
+    handlePageChange,
+    handlePageSizeChange,
+  } = usePagination(filteredUsers.length, 10);
+
+  // Paginated users for display
+  const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+
   // Mock data - replace with API calls
   useEffect(() => {
     fetchUsers();
