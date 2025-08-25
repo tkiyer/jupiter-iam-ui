@@ -804,13 +804,138 @@ const CreatePermissionDialog: React.FC<{
     apiEndpoints: [] as string[],
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Get available endpoints for selected resource
+  const selectedResource = resources.find(r => r.name === formData.resource);
+  const availableEndpoints = selectedResource?.endpoints || [];
+  const availableFields = selectedResource?.fields || [];
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Permission name is required";
+    }
+    if (!formData.description.trim()) {
+      newErrors.description = "Description is required";
+    }
+    if (!formData.resource) {
+      newErrors.resource = "Resource is required";
+    }
+    if (!formData.action) {
+      newErrors.action = "Action is required";
+    }
+    if (!formData.category) {
+      newErrors.category = "Category is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onCreatePermission(formData);
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+    try {
+      await onCreatePermission(formData);
+      // Reset form on success
+      setFormData({
+        name: "",
+        description: "",
+        resource: "",
+        action: "",
+        category: "",
+        scope: "resource",
+        risk: "low",
+        canDelegate: false,
+        complianceRequired: false,
+        conditions: [],
+        fieldRestrictions: [],
+        apiEndpoints: [],
+      });
+      setErrors({});
+    } catch (error) {
+      console.error("Error creating permission:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const addCondition = () => {
+    const newCondition: PermissionCondition = {
+      id: `cond-${Date.now()}`,
+      type: "time",
+      operator: "equals",
+      field: "",
+      value: "",
+      description: ""
+    };
+    setFormData(prev => ({
+      ...prev,
+      conditions: [...prev.conditions, newCondition]
+    }));
+  };
+
+  const updateCondition = (id: string, updates: Partial<PermissionCondition>) => {
+    setFormData(prev => ({
+      ...prev,
+      conditions: prev.conditions.map(cond =>
+        cond.id === id ? { ...cond, ...updates } : cond
+      )
+    }));
+  };
+
+  const removeCondition = (id: string) => {
+    setFormData(prev => ({
+      ...prev,
+      conditions: prev.conditions.filter(cond => cond.id !== id)
+    }));
+  };
+
+  const addFieldRestriction = () => {
+    const newRestriction: FieldRestriction = {
+      id: `field-${Date.now()}`,
+      field: "",
+      access: "read",
+      maskingRule: "none"
+    };
+    setFormData(prev => ({
+      ...prev,
+      fieldRestrictions: [...prev.fieldRestrictions, newRestriction]
+    }));
+  };
+
+  const updateFieldRestriction = (id: string, updates: Partial<FieldRestriction>) => {
+    setFormData(prev => ({
+      ...prev,
+      fieldRestrictions: prev.fieldRestrictions.map(restriction =>
+        restriction.id === id ? { ...restriction, ...updates } : restriction
+      )
+    }));
+  };
+
+  const removeFieldRestriction = (id: string) => {
+    setFormData(prev => ({
+      ...prev,
+      fieldRestrictions: prev.fieldRestrictions.filter(restriction => restriction.id !== id)
+    }));
+  };
+
+  const toggleApiEndpoint = (endpointPath: string) => {
+    setFormData(prev => ({
+      ...prev,
+      apiEndpoints: prev.apiEndpoints.includes(endpointPath)
+        ? prev.apiEndpoints.filter(ep => ep !== endpointPath)
+        : [...prev.apiEndpoints, endpointPath]
+    }));
   };
 
   return (
-    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+    <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>Create New Permission</DialogTitle>
         <DialogDescription>
@@ -821,9 +946,9 @@ const CreatePermissionDialog: React.FC<{
         <Tabs defaultValue="basic" className="w-full">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="basic">Basic Info</TabsTrigger>
-            <TabsTrigger value="conditions">Conditions</TabsTrigger>
-            <TabsTrigger value="fields">Field Access</TabsTrigger>
-            <TabsTrigger value="api">API Endpoints</TabsTrigger>
+            <TabsTrigger value="conditions">Conditions ({formData.conditions.length})</TabsTrigger>
+            <TabsTrigger value="fields">Field Access ({formData.fieldRestrictions.length})</TabsTrigger>
+            <TabsTrigger value="api">API Endpoints ({formData.apiEndpoints.length})</TabsTrigger>
           </TabsList>
 
           <TabsContent value="basic" className="space-y-4">
@@ -837,16 +962,19 @@ const CreatePermissionDialog: React.FC<{
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, name: e.target.value }))
                   }
+                  className={errors.name ? "border-red-500" : ""}
                 />
+                {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
               </div>
               <div>
                 <Label>Action</Label>
                 <Select
+                  value={formData.action}
                   onValueChange={(value) =>
                     setFormData((prev) => ({ ...prev, action: value }))
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className={errors.action ? "border-red-500" : ""}>
                     <SelectValue placeholder="Select action" />
                   </SelectTrigger>
                   <SelectContent>
@@ -858,6 +986,7 @@ const CreatePermissionDialog: React.FC<{
                     <SelectItem value="manage">Manage</SelectItem>
                   </SelectContent>
                 </Select>
+                {errors.action && <p className="text-sm text-red-500 mt-1">{errors.action}</p>}
               </div>
             </div>
 
@@ -873,18 +1002,21 @@ const CreatePermissionDialog: React.FC<{
                     description: e.target.value,
                   }))
                 }
+                className={errors.description ? "border-red-500" : ""}
               />
+              {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
             </div>
 
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <Label>Resource</Label>
                 <Select
+                  value={formData.resource}
                   onValueChange={(value) =>
                     setFormData((prev) => ({ ...prev, resource: value }))
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className={errors.resource ? "border-red-500" : ""}>
                     <SelectValue placeholder="Select resource" />
                   </SelectTrigger>
                   <SelectContent>
@@ -895,15 +1027,17 @@ const CreatePermissionDialog: React.FC<{
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.resource && <p className="text-sm text-red-500 mt-1">{errors.resource}</p>}
               </div>
               <div>
                 <Label>Category</Label>
                 <Select
+                  value={formData.category}
                   onValueChange={(value) =>
                     setFormData((prev) => ({ ...prev, category: value }))
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className={errors.category ? "border-red-500" : ""}>
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -914,10 +1048,12 @@ const CreatePermissionDialog: React.FC<{
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.category && <p className="text-sm text-red-500 mt-1">{errors.category}</p>}
               </div>
               <div>
                 <Label>Risk Level</Label>
                 <Select
+                  value={formData.risk}
                   onValueChange={(value) =>
                     setFormData((prev) => ({ ...prev, risk: value }))
                   }
@@ -930,6 +1066,28 @@ const CreatePermissionDialog: React.FC<{
                     <SelectItem value="medium">Medium</SelectItem>
                     <SelectItem value="high">High</SelectItem>
                     <SelectItem value="critical">Critical</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Scope</Label>
+                <Select
+                  value={formData.scope}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, scope: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="global">Global</SelectItem>
+                    <SelectItem value="resource">Resource</SelectItem>
+                    <SelectItem value="field">Field</SelectItem>
+                    <SelectItem value="api">API</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -963,51 +1121,298 @@ const CreatePermissionDialog: React.FC<{
           </TabsContent>
 
           <TabsContent value="conditions" className="space-y-4">
-            <div>
-              <Label>Access Conditions</Label>
-              <p className="text-sm text-gray-500 mb-4">
-                Define contextual conditions for when this permission applies
-              </p>
-              <Button type="button" variant="outline" size="sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label>Access Conditions</Label>
+                <p className="text-sm text-gray-500">
+                  Define contextual conditions for when this permission applies
+                </p>
+              </div>
+              <Button type="button" onClick={addCondition} variant="outline" size="sm">
                 <Plus className="mr-2 h-4 w-4" />
                 Add Condition
               </Button>
             </div>
+
+            <div className="space-y-4">
+              {formData.conditions.map((condition) => (
+                <Card key={condition.id} className="p-4">
+                  <div className="grid grid-cols-4 gap-3 items-end">
+                    <div>
+                      <Label>Type</Label>
+                      <Select
+                        value={condition.type}
+                        onValueChange={(value) => updateCondition(condition.id, { type: value as any })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="time">Time</SelectItem>
+                          <SelectItem value="location">Location</SelectItem>
+                          <SelectItem value="device">Device</SelectItem>
+                          <SelectItem value="attribute">User Attribute</SelectItem>
+                          <SelectItem value="custom">Custom</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Field</Label>
+                      <Input
+                        value={condition.field}
+                        onChange={(e) => updateCondition(condition.id, { field: e.target.value })}
+                        placeholder="e.g., hour, location, role"
+                      />
+                    </div>
+                    <div>
+                      <Label>Operator</Label>
+                      <Select
+                        value={condition.operator}
+                        onValueChange={(value) => updateCondition(condition.id, { operator: value as any })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="equals">Equals</SelectItem>
+                          <SelectItem value="not_equals">Not Equals</SelectItem>
+                          <SelectItem value="greater_than">Greater Than</SelectItem>
+                          <SelectItem value="less_than">Less Than</SelectItem>
+                          <SelectItem value="contains">Contains</SelectItem>
+                          <SelectItem value="in">In</SelectItem>
+                          <SelectItem value="not_in">Not In</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Value</Label>
+                      <Input
+                        value={condition.value}
+                        onChange={(e) => updateCondition(condition.id, { value: e.target.value })}
+                        placeholder="Condition value"
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-3 grid grid-cols-5 gap-3 items-end">
+                    <div className="col-span-4">
+                      <Label>Description</Label>
+                      <Input
+                        value={condition.description}
+                        onChange={(e) => updateCondition(condition.id, { description: e.target.value })}
+                        placeholder="Describe this condition"
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => removeCondition(condition.id)}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+
+              {formData.conditions.length === 0 && (
+                <div className="text-center py-8 text-gray-500">
+                  <Shield className="mx-auto h-12 w-12 mb-4 opacity-50" />
+                  <p>No conditions defined. This permission will apply unconditionally.</p>
+                </div>
+              )}
+            </div>
           </TabsContent>
 
           <TabsContent value="fields" className="space-y-4">
-            <div>
-              <Label>Field-Level Restrictions</Label>
-              <p className="text-sm text-gray-500 mb-4">
-                Control access to specific fields within the resource
-              </p>
-              <Button type="button" variant="outline" size="sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label>Field-Level Restrictions</Label>
+                <p className="text-sm text-gray-500">
+                  Control access to specific fields within the resource
+                </p>
+              </div>
+              <Button
+                type="button"
+                onClick={addFieldRestriction}
+                variant="outline"
+                size="sm"
+                disabled={!formData.resource}
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Field Restriction
               </Button>
             </div>
+
+            {!formData.resource && (
+              <Alert>
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>
+                  Please select a resource in the Basic Info tab to configure field restrictions.
+                </AlertDescription>
+              </Alert>
+            )}
+
+            <div className="space-y-4">
+              {formData.fieldRestrictions.map((restriction) => (
+                <Card key={restriction.id} className="p-4">
+                  <div className="grid grid-cols-3 gap-3 items-end">
+                    <div>
+                      <Label>Field</Label>
+                      <Select
+                        value={restriction.field}
+                        onValueChange={(value) => updateFieldRestriction(restriction.id, { field: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select field" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {availableFields.map((field) => (
+                            <SelectItem key={field.id} value={field.name}>
+                              {field.name} ({field.type})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Access Level</Label>
+                      <Select
+                        value={restriction.access}
+                        onValueChange={(value) => updateFieldRestriction(restriction.id, { access: value as any })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="read">Read Only</SelectItem>
+                          <SelectItem value="write">Read & Write</SelectItem>
+                          <SelectItem value="none">No Access</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Masking Rule</Label>
+                      <Select
+                        value={restriction.maskingRule}
+                        onValueChange={(value) => updateFieldRestriction(restriction.id, { maskingRule: value as any })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">No Masking</SelectItem>
+                          <SelectItem value="partial">Partial Mask</SelectItem>
+                          <SelectItem value="full">Full Mask</SelectItem>
+                          <SelectItem value="hash">Hash</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex justify-end">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => removeFieldRestriction(restriction.id)}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+
+              {formData.fieldRestrictions.length === 0 && formData.resource && (
+                <div className="text-center py-8 text-gray-500">
+                  <FileText className="mx-auto h-12 w-12 mb-4 opacity-50" />
+                  <p>No field restrictions defined. Permission will apply to all fields.</p>
+                </div>
+              )}
+            </div>
           </TabsContent>
 
           <TabsContent value="api" className="space-y-4">
-            <div>
-              <Label>Protected API Endpoints</Label>
-              <p className="text-sm text-gray-500 mb-4">
-                Select API endpoints that require this permission
-              </p>
-              <Button type="button" variant="outline" size="sm">
-                <Plus className="mr-2 h-4 w-4" />
-                Add Endpoint
-              </Button>
+            <div className="flex items-center justify-between">
+              <div>
+                <Label>Protected API Endpoints</Label>
+                <p className="text-sm text-gray-500">
+                  Select API endpoints that require this permission
+                </p>
+              </div>
+            </div>
+
+            {!formData.resource && (
+              <Alert>
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>
+                  Please select a resource in the Basic Info tab to see available API endpoints.
+                </AlertDescription>
+              </Alert>
+            )}
+
+            <div className="space-y-3">
+              {availableEndpoints.map((endpoint) => (
+                <div
+                  key={endpoint.id}
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
+                >
+                  <div className="flex items-center space-x-3">
+                    <Checkbox
+                      checked={formData.apiEndpoints.includes(endpoint.path)}
+                      onCheckedChange={() => toggleApiEndpoint(endpoint.path)}
+                    />
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <Badge variant="outline">{endpoint.method}</Badge>
+                        <code className="text-sm font-mono">{endpoint.path}</code>
+                      </div>
+                      <p className="text-sm text-gray-500 mt-1">
+                        {endpoint.description}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    {endpoint.authRequired && (
+                      <Badge className="bg-green-100 text-green-800">Auth Required</Badge>
+                    )}
+                    {endpoint.rateLimit && (
+                      <Badge variant="secondary">Rate: {endpoint.rateLimit}/min</Badge>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              {availableEndpoints.length === 0 && formData.resource && (
+                <div className="text-center py-8 text-gray-500">
+                  <Code className="mx-auto h-12 w-12 mb-4 opacity-50" />
+                  <p>No API endpoints defined for this resource.</p>
+                </div>
+              )}
             </div>
           </TabsContent>
         </Tabs>
 
         <div className="flex justify-end space-x-2">
-          <Button type="button" variant="outline">
+          <Button type="button" variant="outline" disabled={isSubmitting}>
             Cancel
           </Button>
-          <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-            Create Permission
+          <Button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                Creating...
+              </>
+            ) : (
+              <>
+                <Plus className="mr-2 h-4 w-4" />
+                Create Permission
+              </>
+            )}
           </Button>
         </div>
       </form>
