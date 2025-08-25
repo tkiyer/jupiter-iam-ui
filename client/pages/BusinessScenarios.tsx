@@ -33,6 +33,7 @@ import {
 import BusinessAccessDashboard from '../components/business/BusinessAccessDashboard';
 import BusinessPolicyFlow from '../components/business/BusinessPolicyFlow';
 import BusinessScenarioSimulator from '../components/business/BusinessScenarioSimulator';
+import BusinessWorkflowSystem from '../components/business/BusinessWorkflowSystem';
 
 interface BusinessScenario {
   id: string;
@@ -67,7 +68,7 @@ const businessScenarios: BusinessScenario[] = [
       '费用金额：不同金额需要不同审批级别',
       '部门匹配：只能审批本部门的费用',
       '工作时间：非工作时间限制审批',
-      '紧急情况：紧急费用可跨级审批'
+      '紧急情况：紧急费用可跨级��批'
     ],
     businessRules: [
       '5万以下：部门经理审批',
@@ -235,7 +236,7 @@ export default function BusinessScenarios() {
           reason: 'ABAC: 业务上下文满足策略要求'
         },
         businessRules: [
-          '费用金额在审批权限范围内',
+          '费用金��在审批权限范围内',
           '访问时间符合业务时间窗口',
           '部门匹配验证通过'
         ],
@@ -424,7 +425,7 @@ export default function BusinessScenarios() {
                     <p className="text-sm text-blue-600">为角色分配基础的资源访问权限</p>
                   </div>
                   <div className="p-3 bg-blue-50 rounded">
-                    <h5 className="font-medium text-blue-800">���级结构</h5>
+                    <h5 className="font-medium text-blue-800">层级结构</h5>
                     <p className="text-sm text-blue-600">建立角色继承和权限传递关系</p>
                   </div>
                 </div>
@@ -471,7 +472,7 @@ export default function BusinessScenarios() {
                   </div>
                   <div className="p-3 bg-purple-50 rounded">
                     <h5 className="font-medium text-purple-800">审批流程</h5>
-                    <p className="text-sm text-purple-600">实现多级审批和授权流程</p>
+                    <p className="text-sm text-purple-600">实现多级审批和授权流���</p>
                   </div>
                   <div className="p-3 bg-purple-50 rounded">
                     <h5 className="font-medium text-purple-800">合规检查</h5>
