@@ -670,3 +670,119 @@ export const handleDelegatePermission: RequestHandler = (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+// Resource Management API Endpoints
+
+// POST /api/resources - Create new resource
+export const handleCreateResource: RequestHandler = (req, res) => {
+  try {
+    const resourceData = req.body;
+
+    // Validate required fields
+    if (!resourceData.name || !resourceData.type || !resourceData.description) {
+      return res.status(400).json({ error: "Missing required fields: name, type, description" });
+    }
+
+    // Check if resource already exists
+    const existingResource = mockResources.find(r =>
+      r.name.toLowerCase() === resourceData.name.toLowerCase()
+    );
+
+    if (existingResource) {
+      return res.status(409).json({ error: "Resource with this name already exists" });
+    }
+
+    // Create new resource
+    const newResource = {
+      id: `res-${mockResources.length + 1}`,
+      name: resourceData.name,
+      type: resourceData.type,
+      description: resourceData.description,
+      attributes: resourceData.attributes || {
+        sensitive: false,
+        piiContained: false,
+        complianceRequired: false
+      },
+      endpoints: resourceData.endpoints || [],
+      fields: resourceData.fields || [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    mockResources.push(newResource);
+    res.status(201).json(newResource);
+  } catch (error) {
+    console.error("Error creating resource:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// PUT /api/resources/:id - Update resource
+export const handleUpdateResource: RequestHandler = (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    const resourceIndex = mockResources.findIndex(r => r.id === id);
+    if (resourceIndex === -1) {
+      return res.status(404).json({ error: "Resource not found" });
+    }
+
+    // Update resource data
+    mockResources[resourceIndex] = {
+      ...mockResources[resourceIndex],
+      ...updateData,
+      id, // Ensure ID doesn't change
+      updatedAt: new Date().toISOString()
+    };
+
+    res.json(mockResources[resourceIndex]);
+  } catch (error) {
+    console.error("Error updating resource:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// DELETE /api/resources/:id - Delete resource
+export const handleDeleteResource: RequestHandler = (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const resourceIndex = mockResources.findIndex(r => r.id === id);
+    if (resourceIndex === -1) {
+      return res.status(404).json({ error: "Resource not found" });
+    }
+
+    // Check if resource is referenced by any permissions
+    const referencingPermissions = mockPermissions.filter(p => p.resource === mockResources[resourceIndex].name);
+    if (referencingPermissions.length > 0) {
+      return res.status(400).json({
+        error: "Cannot delete resource that is referenced by existing permissions",
+        referencingPermissions: referencingPermissions.map(p => ({ id: p.id, name: p.name }))
+      });
+    }
+
+    mockResources.splice(resourceIndex, 1);
+    res.status(204).send();
+  } catch (error) {
+    console.error("Error deleting resource:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// GET /api/resources/:id - Get specific resource
+export const handleGetResource: RequestHandler = (req, res) => {
+  try {
+    const { id } = req.params;
+    const resource = mockResources.find(r => r.id === id);
+
+    if (!resource) {
+      return res.status(404).json({ error: "Resource not found" });
+    }
+
+    res.json(resource);
+  } catch (error) {
+    console.error("Error fetching resource:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
