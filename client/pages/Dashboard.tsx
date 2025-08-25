@@ -262,6 +262,12 @@ const Dashboard: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Full Report Dialog */}
+      <FullReportDialog
+        open={isFullReportOpen}
+        onOpenChange={setIsFullReportOpen}
+      />
     </div>
   );
 };
