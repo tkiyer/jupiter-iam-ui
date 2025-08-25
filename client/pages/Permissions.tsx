@@ -383,7 +383,7 @@ const Permissions: React.FC = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredPermissions.map((permission) => (
+                  {paginatedPermissions.map((permission) => (
                     <TableRow key={permission.id}>
                       <TableCell>
                         <div className="flex items-center space-x-3">
