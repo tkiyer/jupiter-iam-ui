@@ -87,6 +87,7 @@ export function createServer() {
 
   // IAM Dashboard routes
   app.get("/api/dashboard/stats", handleDashboardStats);
+  app.get("/api/dashboard/detailed-analytics", handleDetailedAnalytics);
 
   // IAM User Management routes
   app.get("/api/users", handleGetUsers);
