@@ -8,17 +8,31 @@ export const validateDialogAccessibility = () => {
 
   // Check for dialogs without proper titles
   const dialogContents = document.querySelectorAll('[data-radix-dialog-content]');
-  
+
+  let issuesFound = 0;
+
   dialogContents.forEach((content, index) => {
     const hasTitle = content.querySelector('[data-radix-dialog-title]');
-    
-    if (!hasTitle) {
+    const hasVisuallyHiddenTitle = content.querySelector('.sr-only [data-radix-dialog-title], [data-radix-dialog-title].sr-only');
+
+    if (!hasTitle && !hasVisuallyHiddenTitle) {
       console.warn(
-        `Dialog accessibility warning: Dialog at index ${index} is missing a DialogTitle. ` +
-        'Add a DialogTitle or wrap it with VisuallyHidden component for screen reader accessibility.'
+        `🚨 Dialog accessibility issue #${issuesFound + 1}: Dialog at index ${index} is missing a DialogTitle.`,
+        '\n📖 Solution: Add a DialogTitle or wrap it with VisuallyHidden component.',
+        '\n🔗 More info: https://radix-ui.com/primitives/docs/components/dialog',
+        '\n📍 Element:', content
       );
+      issuesFound++;
     }
   });
+
+  if (issuesFound === 0) {
+    console.log('✅ All dialogs have proper accessibility titles');
+  } else {
+    console.warn(`⚠️  Found ${issuesFound} dialog accessibility issue(s)`);
+  }
+
+  return issuesFound;
 };
 
 // Run validation in development mode
