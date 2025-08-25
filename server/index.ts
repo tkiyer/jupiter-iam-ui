@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { handleLogin, handleVerifyToken } from "./routes/auth";
-import { handleDashboardStats } from "./routes/dashboard";
+import { handleDashboardStats, handleDetailedAnalytics } from "./routes/dashboard";
 import {
   handleGetUsers,
   handleGetUser,
