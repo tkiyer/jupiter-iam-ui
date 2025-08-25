@@ -309,6 +309,60 @@ const Permissions: React.FC = () => {
     }
   };
 
+  // Resource management handlers
+  const handleCreateResource = async (resourceData: any) => {
+    try {
+      const response = await fetch("/api/resources", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(resourceData),
+      });
+
+      if (response.ok) {
+        const newResource = await response.json();
+        setResources((prev) => [...prev, newResource]);
+        setIsAddResourceDialogOpen(false);
+      }
+    } catch (error) {
+      console.error("Error creating resource:", error);
+    }
+  };
+
+  const handleUpdateResource = async (resourceData: any) => {
+    try {
+      const response = await fetch(`/api/resources/${resourceData.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(resourceData),
+      });
+
+      if (response.ok) {
+        const updatedResource = await response.json();
+        setResources((prev) =>
+          prev.map((r) => (r.id === updatedResource.id ? updatedResource : r))
+        );
+        setIsEditResourceDialogOpen(false);
+        setSelectedResource(null);
+      }
+    } catch (error) {
+      console.error("Error updating resource:", error);
+    }
+  };
+
+  const handleDeleteResource = async (resourceId: string) => {
+    try {
+      const response = await fetch(`/api/resources/${resourceId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setResources((prev) => prev.filter((r) => r.id !== resourceId));
+      }
+    } catch (error) {
+      console.error("Error deleting resource:", error);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="space-y-6">
