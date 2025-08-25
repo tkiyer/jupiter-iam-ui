@@ -273,6 +273,12 @@ const FullReportDialog: React.FC<FullReportDialogProps> = ({ open, onOpenChange 
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Loading Report</DialogTitle>
+            <DialogDescription>
+              Fetching comprehensive analytics data...
+            </DialogDescription>
+          </DialogHeader>
           <div className="flex items-center justify-center p-8">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
