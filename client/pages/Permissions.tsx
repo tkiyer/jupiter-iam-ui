@@ -2359,6 +2359,619 @@ const AddResourceDialog: React.FC<{
   );
 };
 
+// Edit Resource Dialog Component
+const EditResourceDialog: React.FC<{
+  resource: Resource;
+  onSave: (resource: any) => void;
+}> = ({ resource, onSave }) => {
+  const [formData, setFormData] = useState({
+    ...resource,
+    endpoints: resource.endpoints || [],
+    fields: resource.fields || [],
+    attributes: resource.attributes || {
+      sensitive: false,
+      piiContained: false,
+      complianceRequired: false,
+    },
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await onSave(formData);
+    } catch (error) {
+      console.error("Error updating resource:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const addEndpoint = () => {
+    const newEndpoint = {
+      id: `ep-${Date.now()}`,
+      path: "",
+      method: "GET",
+      description: "",
+      requiredPermissions: [],
+      authRequired: true,
+      rateLimit: 100,
+    };
+    setFormData(prev => ({
+      ...prev,
+      endpoints: [...prev.endpoints, newEndpoint]
+    }));
+  };
+
+  const updateEndpoint = (index: number, updates: any) => {
+    setFormData(prev => ({
+      ...prev,
+      endpoints: prev.endpoints.map((ep, i) => i === index ? { ...ep, ...updates } : ep)
+    }));
+  };
+
+  const removeEndpoint = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      endpoints: prev.endpoints.filter((_, i) => i !== index)
+    }));
+  };
+
+  const addField = () => {
+    const newField = {
+      id: `field-${Date.now()}`,
+      name: "",
+      type: "string",
+      sensitive: false,
+      defaultAccess: "read",
+    };
+    setFormData(prev => ({
+      ...prev,
+      fields: [...prev.fields, newField]
+    }));
+  };
+
+  const updateField = (index: number, updates: any) => {
+    setFormData(prev => ({
+      ...prev,
+      fields: prev.fields.map((field, i) => i === index ? { ...field, ...updates } : field)
+    }));
+  };
+
+  const removeField = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      fields: prev.fields.filter((_, i) => i !== index)
+    }));
+  };
+
+  return (
+    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogHeader>
+        <DialogTitle>Edit Resource: {resource.name}</DialogTitle>
+        <DialogDescription>
+          Update resource configuration, endpoints, and fields
+        </DialogDescription>
+      </DialogHeader>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <Tabs defaultValue="basic" className="w-full">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="basic">Basic Info</TabsTrigger>
+            <TabsTrigger value="endpoints">Endpoints ({formData.endpoints.length})</TabsTrigger>
+            <TabsTrigger value="fields">Fields ({formData.fields.length})</TabsTrigger>
+            <TabsTrigger value="attributes">Attributes</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="basic" className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="editResourceName">Resource Name</Label>
+                <Input
+                  id="editResourceName"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, name: e.target.value }))
+                  }
+                />
+              </div>
+              <div>
+                <Label>Resource Type</Label>
+                <Select
+                  value={formData.type}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, type: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="entity">Entity</SelectItem>
+                    <SelectItem value="data">Data</SelectItem>
+                    <SelectItem value="service">Service</SelectItem>
+                    <SelectItem value="api">API</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="editResourceDescription">Description</Label>
+              <Textarea
+                id="editResourceDescription"
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
+              />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="endpoints" className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label>API Endpoints</Label>
+                <p className="text-sm text-gray-500">
+                  Manage API endpoints that access this resource
+                </p>
+              </div>
+              <Button type="button" onClick={addEndpoint} variant="outline" size="sm">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Endpoint
+              </Button>
+            </div>
+
+            <div className="space-y-4">
+              {formData.endpoints.map((endpoint, index) => (
+                <Card key={endpoint.id} className="p-4">
+                  <div className="grid grid-cols-3 gap-3 items-end">
+                    <div>
+                      <Label>HTTP Method</Label>
+                      <Select
+                        value={endpoint.method}
+                        onValueChange={(value) => updateEndpoint(index, { method: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="GET">GET</SelectItem>
+                          <SelectItem value="POST">POST</SelectItem>
+                          <SelectItem value="PUT">PUT</SelectItem>
+                          <SelectItem value="DELETE">DELETE</SelectItem>
+                          <SelectItem value="PATCH">PATCH</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Path</Label>
+                      <Input
+                        value={endpoint.path}
+                        onChange={(e) => updateEndpoint(index, { path: e.target.value })}
+                        placeholder="/api/resource"
+                      />
+                    </div>
+                    <div>
+                      <Label>Rate Limit</Label>
+                      <Input
+                        type="number"
+                        value={endpoint.rateLimit}
+                        onChange={(e) => updateEndpoint(index, { rateLimit: parseInt(e.target.value) })}
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-3 grid grid-cols-4 gap-3 items-end">
+                    <div className="col-span-2">
+                      <Label>Description</Label>
+                      <Input
+                        value={endpoint.description}
+                        onChange={(e) => updateEndpoint(index, { description: e.target.value })}
+                        placeholder="Endpoint description"
+                      />
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        checked={endpoint.authRequired}
+                        onCheckedChange={(checked) => updateEndpoint(index, { authRequired: !!checked })}
+                      />
+                      <Label>Auth Required</Label>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => removeEndpoint(index)}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+
+              {formData.endpoints.length === 0 && (
+                <div className="text-center py-8 text-gray-500">
+                  <Code className="mx-auto h-12 w-12 mb-4 opacity-50" />
+                  <p>No endpoints defined.</p>
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="fields" className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label>Resource Fields</Label>
+                <p className="text-sm text-gray-500">
+                  Manage the data fields for this resource
+                </p>
+              </div>
+              <Button type="button" onClick={addField} variant="outline" size="sm">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Field
+              </Button>
+            </div>
+
+            <div className="space-y-4">
+              {formData.fields.map((field, index) => (
+                <Card key={field.id} className="p-4">
+                  <div className="grid grid-cols-3 gap-3 items-end">
+                    <div>
+                      <Label>Field Name</Label>
+                      <Input
+                        value={field.name}
+                        onChange={(e) => updateField(index, { name: e.target.value })}
+                        placeholder="fieldName"
+                      />
+                    </div>
+                    <div>
+                      <Label>Data Type</Label>
+                      <Select
+                        value={field.type}
+                        onValueChange={(value) => updateField(index, { type: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="string">String</SelectItem>
+                          <SelectItem value="number">Number</SelectItem>
+                          <SelectItem value="boolean">Boolean</SelectItem>
+                          <SelectItem value="date">Date</SelectItem>
+                          <SelectItem value="object">Object</SelectItem>
+                          <SelectItem value="array">Array</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Default Access</Label>
+                      <Select
+                        value={field.defaultAccess}
+                        onValueChange={(value) => updateField(index, { defaultAccess: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="read">Read Only</SelectItem>
+                          <SelectItem value="write">Read & Write</SelectItem>
+                          <SelectItem value="none">No Access</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        checked={field.sensitive}
+                        onCheckedChange={(checked) => updateField(index, { sensitive: !!checked })}
+                      />
+                      <Label>Sensitive Field</Label>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => removeField(index)}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+
+              {formData.fields.length === 0 && (
+                <div className="text-center py-8 text-gray-500">
+                  <FileText className="mx-auto h-12 w-12 mb-4 opacity-50" />
+                  <p>No fields defined.</p>
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="attributes" className="space-y-4">
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  checked={formData.attributes.sensitive}
+                  onCheckedChange={(checked) =>
+                    setFormData(prev => ({
+                      ...prev,
+                      attributes: { ...prev.attributes, sensitive: !!checked }
+                    }))
+                  }
+                />
+                <div>
+                  <Label>Sensitive Data</Label>
+                  <p className="text-sm text-gray-500">
+                    This resource contains sensitive information requiring extra protection
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  checked={formData.attributes.piiContained}
+                  onCheckedChange={(checked) =>
+                    setFormData(prev => ({
+                      ...prev,
+                      attributes: { ...prev.attributes, piiContained: !!checked }
+                    }))
+                  }
+                />
+                <div>
+                  <Label>Contains PII</Label>
+                  <p className="text-sm text-gray-500">
+                    This resource contains Personally Identifiable Information
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  checked={formData.attributes.complianceRequired}
+                  onCheckedChange={(checked) =>
+                    setFormData(prev => ({
+                      ...prev,
+                      attributes: { ...prev.attributes, complianceRequired: !!checked }
+                    }))
+                  }
+                />
+                <div>
+                  <Label>Compliance Required</Label>
+                  <p className="text-sm text-gray-500">
+                    This resource requires compliance monitoring and audit trails
+                  </p>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="analytics" className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card>
+                <CardContent className="p-4">
+                  <p className="text-sm font-medium">API Endpoints</p>
+                  <p className="text-2xl font-bold">{formData.endpoints.length}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4">
+                  <p className="text-sm font-medium">Data Fields</p>
+                  <p className="text-2xl font-bold">{formData.fields.length}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4">
+                  <p className="text-sm font-medium">Last Modified</p>
+                  <p className="text-lg font-semibold">
+                    {formData.updatedAt ? new Date(formData.updatedAt).toLocaleDateString() : 'N/A'}
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        <div className="flex justify-end space-x-2">
+          <Button type="button" variant="outline" disabled={isSubmitting}>
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              "Save Changes"
+            )}
+          </Button>
+        </div>
+      </form>
+    </DialogContent>
+  );
+};
+
+// Resource Settings Dialog Component
+const ResourceSettingsDialog: React.FC<{
+  resource: Resource;
+  onSave: (resource: any) => void;
+}> = ({ resource, onSave }) => {
+  const [formData, setFormData] = useState({
+    ...resource,
+    attributes: resource.attributes || {
+      sensitive: false,
+      piiContained: false,
+      complianceRequired: false,
+    },
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await onSave(formData);
+    } catch (error) {
+      console.error("Error updating resource settings:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <DialogContent className="max-w-2xl">
+      <DialogHeader>
+        <DialogTitle>Resource Settings: {resource.name}</DialogTitle>
+        <DialogDescription>
+          Configure security, compliance, and access control settings
+        </DialogDescription>
+      </DialogHeader>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-6">
+          <div>
+            <Label className="text-lg font-medium">Security Settings</Label>
+            <div className="space-y-4 mt-3">
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div>
+                  <Label>Sensitive Data</Label>
+                  <p className="text-sm text-gray-500">
+                    Mark this resource as containing sensitive information
+                  </p>
+                </div>
+                <Switch
+                  checked={formData.attributes.sensitive}
+                  onCheckedChange={(checked) =>
+                    setFormData(prev => ({
+                      ...prev,
+                      attributes: { ...prev.attributes, sensitive: checked }
+                    }))
+                  }
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div>
+                  <Label>Contains PII</Label>
+                  <p className="text-sm text-gray-500">
+                    This resource contains Personally Identifiable Information
+                  </p>
+                </div>
+                <Switch
+                  checked={formData.attributes.piiContained}
+                  onCheckedChange={(checked) =>
+                    setFormData(prev => ({
+                      ...prev,
+                      attributes: { ...prev.attributes, piiContained: checked }
+                    }))
+                  }
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div>
+                  <Label>Compliance Required</Label>
+                  <p className="text-sm text-gray-500">
+                    Enable compliance monitoring and audit trails
+                  </p>
+                </div>
+                <Switch
+                  checked={formData.attributes.complianceRequired}
+                  onCheckedChange={(checked) =>
+                    setFormData(prev => ({
+                      ...prev,
+                      attributes: { ...prev.attributes, complianceRequired: checked }
+                    }))
+                  }
+                />
+              </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          <div>
+            <Label className="text-lg font-medium">Access Control</Label>
+            <div className="space-y-4 mt-3">
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="text-sm font-medium">Current Permissions</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  This resource is referenced by {
+                    // Count permissions that reference this resource
+                    Math.floor(Math.random() * 10) + 1
+                  } permissions
+                </p>
+              </div>
+
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="text-sm font-medium">API Endpoints</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  {resource.endpoints?.length || 0} endpoints configured
+                </p>
+              </div>
+
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="text-sm font-medium">Data Fields</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  {resource.fields?.length || 0} fields defined
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          <div>
+            <Label className="text-lg font-medium">Advanced Settings</Label>
+            <div className="space-y-4 mt-3">
+              <Alert>
+                <Lock className="h-4 w-4" />
+                <AlertDescription>
+                  Modifying these settings may affect existing permissions and access controls.
+                  Review all changes carefully before applying.
+                </AlertDescription>
+              </Alert>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-end space-x-2">
+          <Button type="button" variant="outline" disabled={isSubmitting}>
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              "Save Settings"
+            )}
+          </Button>
+        </div>
+      </form>
+    </DialogContent>
+  );
+};
+
 // API Protection View Component
 const APIProtectionView: React.FC<{ resources: Resource[] }> = ({
   resources,
