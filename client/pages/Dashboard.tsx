@@ -121,7 +121,10 @@ const Dashboard: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
           <p className="text-gray-600 mt-1">Monitor and manage your IAM system</p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700">
+        <Button
+          className="bg-blue-600 hover:bg-blue-700"
+          onClick={() => setIsFullReportOpen(true)}
+        >
           <Activity className="mr-2 h-4 w-4" />
           View Full Report
         </Button>
