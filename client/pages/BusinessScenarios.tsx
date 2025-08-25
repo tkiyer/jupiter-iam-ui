@@ -66,9 +66,9 @@ const businessScenarios: BusinessScenario[] = [
     ],
     abacConditions: [
       '费用金额：不同金额需要不同审批级别',
-      '部门匹配：只能审批本部门的费用',
+      '部门��配：只能审批本部门的费用',
       '工作时间：非工作时间限制审批',
-      '紧急情况：紧急费用可跨级��批'
+      '紧急情况：紧急费用可跨级审批'
     ],
     businessRules: [
       '5万以下：部门经理审批',
@@ -98,7 +98,7 @@ const businessScenarios: BusinessScenario[] = [
     abacConditions: [
       '地理区域：只能访问负责区域的客户',
       '客户关系：只能访问分配给自己的客户',
-      '数据分类：敏感数据需要额外权限',
+      '数据分类：敏感数据需要额��权限',
       '访问时间：非工作时间受限'
     ],
     businessRules: [
@@ -133,7 +133,7 @@ const businessScenarios: BusinessScenario[] = [
       '批量操作：需要额外验证'
     ],
     businessRules: [
-      '薪资信息只对HR经理以上开放',
+      '薪资信息只对HR经理以���开放',
       '跨部门查询需要特殊申请',
       '批量导出需要安全审计',
       '敏感操作需要双重验证'
@@ -166,7 +166,7 @@ const businessScenarios: BusinessScenario[] = [
     businessRules: [
       '生产部署只在维护窗口进行',
       '紧急修复需要双人确认',
-      '重大变更需要审批流程',
+      '重大变更需要审批���程',
       '所有部署必须可回滚'
     ],
     exampleCase: {
@@ -201,11 +201,11 @@ const businessScenarios: BusinessScenario[] = [
       '数据导出需要审批记录'
     ],
     exampleCase: {
-      user: '刘专员 (财务专员)',
+      user: '刘���员 (财务专员)',
       action: '查看季度利润报表',
       context: { reportType: 'quarterly_profit', dataGranularity: 'summary', exportRequest: false },
       expectedResult: 'deny',
-      reasoning: 'RBAC: 只有财务专员权限 + ABAC: 季度报表需要经理级别权限'
+      reasoning: 'RBAC: 只有财务��员权限 + ABAC: 季度报表需要经理级别权限'
     }
   }
 ];
@@ -236,9 +236,9 @@ export default function BusinessScenarios() {
           reason: 'ABAC: 业务上下文满足策略要求'
         },
         businessRules: [
-          '费用金��在审批权限范围内',
+          '费用金额在审批权限范围内',
           '访问时间符合业务时间窗口',
-          '部门匹配验证通过'
+          '��门匹配验证通过'
         ],
         evaluationTime: `${(Math.random() * 50 + 10).toFixed(1)}ms`
       };
@@ -274,7 +274,7 @@ export default function BusinessScenarios() {
           <TabsTrigger value="dashboard">实时仪表板</TabsTrigger>
           <TabsTrigger value="scenarios">业务场景</TabsTrigger>
           <TabsTrigger value="flow">策略流程</TabsTrigger>
-          <TabsTrigger value="simulator">场景模拟器</TabsTrigger>
+          <TabsTrigger value="simulator">���景模拟器</TabsTrigger>
           <TabsTrigger value="integration">RBAC+ABAC集成</TabsTrigger>
           <TabsTrigger value="testing">场景测试</TabsTrigger>
           <TabsTrigger value="workflows">业务工作流</TabsTrigger>
@@ -471,8 +471,8 @@ export default function BusinessScenarios() {
                     <p className="text-sm text-purple-600">与业务流程和工作流系统集成</p>
                   </div>
                   <div className="p-3 bg-purple-50 rounded">
-                    <h5 className="font-medium text-purple-800">审批流程</h5>
-                    <p className="text-sm text-purple-600">实现多级审批和授权流���</p>
+                    <h5 className="font-medium text-purple-800">���批流程</h5>
+                    <p className="text-sm text-purple-600">实现多级审批和授权流程</p>
                   </div>
                   <div className="p-3 bg-purple-50 rounded">
                     <h5 className="font-medium text-purple-800">合规检查</h5>
@@ -496,7 +496,7 @@ export default function BusinessScenarios() {
                     <h4 className="font-semibold">RBAC 基础验证</h4>
                     <p className="text-sm text-muted-foreground">验证用户是否具有执行操作的基础角色权限</p>
                   </div>
-                  <Badge variant="outline">基础层</Badge>
+                  <Badge variant="outline">基础���</Badge>
                 </div>
 
                 <div className="flex items-center gap-4 p-4 border rounded-lg">
@@ -663,147 +663,7 @@ export default function BusinessScenarios() {
 
         {/* 业务工作流 Tab */}
         <TabsContent value="workflows" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CreditCard className="h-5 w-5" />
-                  费用审批工作流
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="p-3 border-l-4 border-blue-500 bg-blue-50">
-                    <h5 className="font-medium">第一步：提交申请</h5>
-                    <p className="text-sm text-muted-foreground">员工提交费用报销申请</p>
-                    <div className="mt-2 text-xs">
-                      <Badge variant="outline">RBAC: 员工角色</Badge>
-                    </div>
-                  </div>
-                  
-                  <div className="p-3 border-l-4 border-green-500 bg-green-50">
-                    <h5 className="font-medium">第二步：自动路由</h5>
-                    <p className="text-sm text-muted-foreground">系统根据金额自动分配审批人</p>
-                    <div className="mt-2 text-xs space-x-1">
-                      <Badge variant="outline">ABAC: 金额条件</Badge>
-                      <Badge variant="outline">ABAC: 部门匹配</Badge>
-                    </div>
-                  </div>
-
-                  <div className="p-3 border-l-4 border-purple-500 bg-purple-50">
-                    <h5 className="font-medium">第三步：分级审批</h5>
-                    <p className="text-sm text-muted-foreground">按层级进行审批决策</p>
-                    <div className="mt-2 text-xs space-x-1">
-                      <Badge variant="outline">RBAC: 审批权限</Badge>
-                      <Badge variant="outline">业务: 审批流程</Badge>
-                    </div>
-                  </div>
-
-                  <div className="p-3 border-l-4 border-orange-500 bg-orange-50">
-                    <h5 className="font-medium">第四步：执行支付</h5>
-                    <p className="text-sm text-muted-foreground">财务系统执行付款操作</p>
-                    <div className="mt-2 text-xs">
-                      <Badge variant="outline">RBAC: 财务权限</Badge>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="h-5 w-5" />
-                  生产部署工作流
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="p-3 border-l-4 border-blue-500 bg-blue-50">
-                    <h5 className="font-medium">第一步：变更申请</h5>
-                    <p className="text-sm text-muted-foreground">开发者提交部署申请</p>
-                    <div className="mt-2 text-xs">
-                      <Badge variant="outline">RBAC: 开发者角色</Badge>
-                    </div>
-                  </div>
-                  
-                  <div className="p-3 border-l-4 border-green-500 bg-green-50">
-                    <h5 className="font-medium">第二步：安全检查</h5>
-                    <p className="text-sm text-muted-foreground">自动安全扫描和人工审核</p>
-                    <div className="mt-2 text-xs space-x-1">
-                      <Badge variant="outline">ABAC: 安全策略</Badge>
-                      <Badge variant="outline">ABAC: 变更级别</Badge>
-                    </div>
-                  </div>
-
-                  <div className="p-3 border-l-4 border-purple-500 bg-purple-50">
-                    <h5 className="font-medium">第三步：窗口验证</h5>
-                    <p className="text-sm text-muted-foreground">检查部署时间窗口</p>
-                    <div className="mt-2 text-xs space-x-1">
-                      <Badge variant="outline">ABAC: 时间窗口</Badge>
-                      <Badge variant="outline">业务: 维护计划</Badge>
-                    </div>
-                  </div>
-
-                  <div className="p-3 border-l-4 border-orange-500 bg-orange-50">
-                    <h5 className="font-medium">第四步：执行部署</h5>
-                    <p className="text-sm text-muted-foreground">DevOps执行生产部署</p>
-                    <div className="mt-2 text-xs">
-                      <Badge variant="outline">RBAC: DevOps权限</Badge>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>工作流集成架构</CardTitle>
-              <CardDescription>展示RBAC+ABAC如何与业务工作流系统集成</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <Alert>
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertDescription>
-                    <strong>集成要点：</strong>
-                    RBAC提供基础权限验证，ABAC实现动态策略控制，业务工作流引擎协调整个流程执行。
-                    三者协同工作，确保访问控制既满足安全要求，又符合业务逻辑。
-                  </AlertDescription>
-                </Alert>
-
-                <div className="grid grid-cols-3 gap-4 text-sm">
-                  <div className="p-4 border rounded-lg">
-                    <h5 className="font-medium text-blue-600 mb-2">权限验证</h5>
-                    <ul className="space-y-1 text-xs">
-                      <li>• 用户身份认证</li>
-                      <li>• 角色权限检查</li>
-                      <li>• 基础操作授权</li>
-                    </ul>
-                  </div>
-                  
-                  <div className="p-4 border rounded-lg">
-                    <h5 className="font-medium text-green-600 mb-2">策略控制</h5>
-                    <ul className="space-y-1 text-xs">
-                      <li>• 上下文条件检查</li>
-                      <li>• 动态策略应用</li>
-                      <li>• 细粒度访问控制</li>
-                    </ul>
-                  </div>
-                  
-                  <div className="p-4 border rounded-lg">
-                    <h5 className="font-medium text-purple-600 mb-2">流程协调</h5>
-                    <ul className="space-y-1 text-xs">
-                      <li>• 工作流路由</li>
-                      <li>• 审批流程管理</li>
-                      <li>• 业务规则执行</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <BusinessWorkflowSystem />
         </TabsContent>
       </Tabs>
     </div>
