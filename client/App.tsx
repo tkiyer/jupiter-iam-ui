@@ -71,7 +71,23 @@ class ErrorBoundary extends React.Component<
   }
 }
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: (failureCount, error) => {
+        // Don't retry on ResizeObserver-related errors
+        if (error instanceof Error && error.message.includes('ResizeObserver')) {
+          return false;
+        }
+        return failureCount < 3;
+      },
+    },
+  },
+});
+
+// Debug message to confirm ResizeObserver fix is loaded
+console.log('✅ ResizeObserver error handling initialized');
 
 const App = () => (
   <ErrorBoundary>
