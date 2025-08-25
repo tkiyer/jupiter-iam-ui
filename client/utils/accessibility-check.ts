@@ -35,24 +35,72 @@ export const validateDialogAccessibility = () => {
   return issuesFound;
 };
 
+// Additional accessibility validation functions
+export const validateAllAccessibility = () => {
+  const issues = [];
+
+  // Check dialogs
+  const dialogIssues = validateDialogAccessibility();
+  if (dialogIssues > 0) {
+    issues.push(`${dialogIssues} dialog title issues`);
+  }
+
+  // Check for missing alt text on images
+  const images = document.querySelectorAll('img:not([alt])');
+  if (images.length > 0) {
+    console.warn(`🖼️  Found ${images.length} images without alt text`);
+    issues.push(`${images.length} missing alt text`);
+  }
+
+  // Check for empty button text
+  const emptyButtons = document.querySelectorAll('button:empty:not([aria-label]):not([aria-labelledby])');
+  if (emptyButtons.length > 0) {
+    console.warn(`🔲 Found ${emptyButtons.length} buttons without accessible text`);
+    issues.push(`${emptyButtons.length} unlabeled buttons`);
+  }
+
+  if (issues.length === 0) {
+    console.log('🎉 No accessibility issues detected!');
+  } else {
+    console.warn('🔍 Accessibility issues found:', issues.join(', '));
+  }
+
+  return issues;
+};
+
 // Run validation in development mode
 if (process.env.NODE_ENV === 'development') {
+  let validationTimeout: NodeJS.Timeout;
+
+  // Debounced validation function
+  const debouncedValidation = () => {
+    clearTimeout(validationTimeout);
+    validationTimeout = setTimeout(() => {
+      validateDialogAccessibility();
+    }, 200);
+  };
+
   // Run validation after DOM mutations
   const observer = new MutationObserver((mutations) => {
+    let shouldValidate = false;
+
     mutations.forEach((mutation) => {
       if (mutation.type === 'childList') {
         mutation.addedNodes.forEach((node) => {
           if (node.nodeType === Node.ELEMENT_NODE) {
             const element = node as Element;
-            if (element.matches('[data-radix-dialog-content]') || 
-                element.querySelector('[data-radix-dialog-content]')) {
-              // Delay validation to allow for complete rendering
-              setTimeout(validateDialogAccessibility, 100);
+            if (element.matches('[data-radix-dialog-content], [data-radix-dialog-overlay]') ||
+                element.querySelector('[data-radix-dialog-content], [data-radix-dialog-overlay]')) {
+              shouldValidate = true;
             }
           }
         });
       }
     });
+
+    if (shouldValidate) {
+      debouncedValidation();
+    }
   });
 
   // Start observing when DOM is ready
@@ -62,13 +110,21 @@ if (process.env.NODE_ENV === 'development') {
         childList: true,
         subtree: true
       });
+      // Initial validation
+      setTimeout(validateDialogAccessibility, 1000);
     });
   } else {
     observer.observe(document.body, {
       childList: true,
       subtree: true
     });
+    // Initial validation
+    setTimeout(validateDialogAccessibility, 1000);
   }
+
+  // Global accessibility checker
+  (window as any).__checkAccessibility = validateAllAccessibility;
+  console.log('🔧 Accessibility validation enabled. Run __checkAccessibility() to check all issues.');
 }
 
 export default validateDialogAccessibility;
