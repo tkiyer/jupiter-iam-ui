@@ -432,6 +432,18 @@ const Roles: React.FC = () => {
                   ))}
                 </TableBody>
               </Table>
+
+              {/* Pagination Control */}
+              <div className="mt-4">
+                <PaginationControl
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  pageSize={pageSize}
+                  totalItems={filteredRoles.length}
+                  onPageChange={handlePageChange}
+                  onPageSizeChange={handlePageSizeChange}
+                />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
