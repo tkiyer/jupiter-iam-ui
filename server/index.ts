@@ -143,6 +143,12 @@ export function createServer() {
   app.post("/api/policies/:id/activate", handleActivatePolicy);
   app.post("/api/policies/:id/deactivate", handleDeactivatePolicy);
 
+  // Business Policies routes (RBAC+ABAC Integration)
+  app.get("/api/business-policies", handleGetBusinessPolicies);
+  app.post("/api/business-policies/test-scenario", handleTestBusinessScenario);
+  app.get("/api/business-policies/templates", handleGetBusinessTemplates);
+  app.get("/api/business-policies/integration-analysis", handleIntegrationAnalysis);
+
   // Access Control routes
   const accessControlRoutes = require('./routes/access-control').default;
   app.use("/api/access-control", accessControlRoutes);
