@@ -457,7 +457,7 @@ const Policies: React.FC = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredPolicies.map((policy) => (
+                  {paginatedPolicies.map((policy) => (
                     <TableRow key={policy.id}>
                       <TableCell>
                         <div className="flex items-center space-x-3">
