@@ -318,6 +318,18 @@ const Users: React.FC = () => {
               ))}
             </TableBody>
           </Table>
+
+          {/* Pagination Control */}
+          <div className="mt-4">
+            <PaginationControl
+              currentPage={currentPage}
+              totalPages={totalPages}
+              pageSize={pageSize}
+              totalItems={filteredUsers.length}
+              onPageChange={handlePageChange}
+              onPageSizeChange={handlePageSizeChange}
+            />
+          </div>
         </CardContent>
       </Card>
 
