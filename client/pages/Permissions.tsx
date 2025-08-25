@@ -1698,60 +1698,198 @@ const EditPermissionDialog: React.FC<{
   );
 };
 
-// Resources Table Component
-const ResourcesTable: React.FC<{ resources: Resource[] }> = ({ resources }) => {
+// Enhanced Resources Table Component
+const EnhancedResourcesTable: React.FC<{
+  resources: Resource[];
+  onEdit: (resource: Resource) => void;
+  onSettings: (resource: Resource) => void;
+  onDelete: (resourceId: string) => void;
+}> = ({ resources, onEdit, onSettings, onDelete }) => {
+  const [selectedResources, setSelectedResources] = useState<string[]>([]);
+
+  const toggleResourceSelection = (resourceId: string) => {
+    setSelectedResources(prev =>
+      prev.includes(resourceId)
+        ? prev.filter(id => id !== resourceId)
+        : [...prev, resourceId]
+    );
+  };
+
+  const toggleAllResources = () => {
+    setSelectedResources(prev =>
+      prev.length === resources.length ? [] : resources.map(r => r.id)
+    );
+  };
+
+  const handleBulkDelete = () => {
+    if (confirm(`Are you sure you want to delete ${selectedResources.length} resources?`)) {
+      selectedResources.forEach(onDelete);
+      setSelectedResources([]);
+    }
+  };
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'entity':
+        return 'bg-blue-100 text-blue-800';
+      case 'data':
+        return 'bg-green-100 text-green-800';
+      case 'service':
+        return 'bg-purple-100 text-purple-800';
+      case 'api':
+        return 'bg-orange-100 text-orange-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Resource</TableHead>
-          <TableHead>Type</TableHead>
-          <TableHead>Endpoints</TableHead>
-          <TableHead>Fields</TableHead>
-          <TableHead>Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {resources.map((resource) => (
-          <TableRow key={resource.id}>
-            <TableCell>
-              <div className="flex items-center space-x-3">
-                <Database className="h-4 w-4 text-blue-600" />
-                <div>
-                  <p className="font-medium text-gray-900">{resource.name}</p>
-                  <p className="text-sm text-gray-500">
-                    {resource.description}
-                  </p>
-                </div>
-              </div>
-            </TableCell>
-            <TableCell>
-              <Badge variant="secondary">{resource.type}</Badge>
-            </TableCell>
-            <TableCell>
-              <span className="text-sm">
-                {resource.endpoints?.length || 0} endpoints
-              </span>
-            </TableCell>
-            <TableCell>
-              <span className="text-sm">
-                {resource.fields?.length || 0} fields
-              </span>
-            </TableCell>
-            <TableCell>
-              <div className="flex items-center space-x-1">
-                <Button variant="ghost" size="sm">
-                  <Edit className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="sm">
-                  <Settings className="h-4 w-4" />
-                </Button>
-              </div>
-            </TableCell>
+    <div className="space-y-4">
+      {selectedResources.length > 0 && (
+        <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+          <span className="text-sm font-medium">
+            {selectedResources.length} resource(s) selected
+          </span>
+          <div className="flex space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleBulkDelete}
+              className="text-red-600 hover:text-red-700"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete Selected
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSelectedResources([])}
+            >
+              Clear Selection
+            </Button>
+          </div>
+        </div>
+      )}
+
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-12">
+              <Checkbox
+                checked={selectedResources.length === resources.length && resources.length > 0}
+                onCheckedChange={toggleAllResources}
+              />
+            </TableHead>
+            <TableHead>Resource</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead>Endpoints</TableHead>
+            <TableHead>Fields</TableHead>
+            <TableHead>Attributes</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {resources.map((resource) => (
+            <TableRow key={resource.id}>
+              <TableCell>
+                <Checkbox
+                  checked={selectedResources.includes(resource.id)}
+                  onCheckedChange={() => toggleResourceSelection(resource.id)}
+                />
+              </TableCell>
+              <TableCell>
+                <div className="flex items-center space-x-3">
+                  <Database className="h-4 w-4 text-blue-600" />
+                  <div>
+                    <p className="font-medium text-gray-900">{resource.name}</p>
+                    <p className="text-sm text-gray-500">
+                      {resource.description}
+                    </p>
+                  </div>
+                </div>
+              </TableCell>
+              <TableCell>
+                <Badge className={getTypeColor(resource.type)}>
+                  {resource.type}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <span className="text-sm">
+                  {resource.endpoints?.length || 0} endpoints
+                </span>
+              </TableCell>
+              <TableCell>
+                <span className="text-sm">
+                  {resource.fields?.length || 0} fields
+                </span>
+              </TableCell>
+              <TableCell>
+                <div className="flex flex-wrap gap-1">
+                  {resource.attributes?.sensitive && (
+                    <Badge variant="outline" className="text-xs">
+                      Sensitive
+                    </Badge>
+                  )}
+                  {resource.attributes?.piiContained && (
+                    <Badge variant="outline" className="text-xs">
+                      PII
+                    </Badge>
+                  )}
+                  {resource.attributes?.complianceRequired && (
+                    <Badge variant="outline" className="text-xs">
+                      Compliance
+                    </Badge>
+                  )}
+                </div>
+              </TableCell>
+              <TableCell>
+                <div className="flex items-center space-x-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onEdit(resource)}
+                    title="Edit Resource"
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onSettings(resource)}
+                    title="Resource Settings"
+                  >
+                    <Settings className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      if (confirm(`Are you sure you want to delete the resource "${resource.name}"?`)) {
+                        onDelete(resource.id);
+                      }
+                    }}
+                    className="text-red-600 hover:text-red-700"
+                    title="Delete Resource"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      {resources.length === 0 && (
+        <div className="text-center py-12">
+          <Database className="mx-auto h-12 w-12 text-gray-400" />
+          <h3 className="mt-2 text-sm font-medium text-gray-900">No resources</h3>
+          <p className="mt-1 text-sm text-gray-500">
+            Get started by adding a new protected resource.
+          </p>
+        </div>
+      )}
+    </div>
   );
 };
 
