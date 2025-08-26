@@ -88,10 +88,9 @@ interface RelationshipStats {
 export default function Relationships() {
   const [activeTab, setActiveTab] = useState('overview');
   const [relationshipStats, setRelationshipStats] = useState<RelationshipStats | null>(null);
-  const [userRoleRelations, setUserRoleRelations] = useState<UserRoleRelation[]>([]);
-  const [rolePermissionRelations, setRolePermissionRelations] = useState<RolePermissionRelation[]>([]);
-  const [policyRelations, setPolicyRelations] = useState<PolicyRelation[]>([]);
-  
+  const [selectedNodeId, setSelectedNodeId] = useState<string | undefined>();
+  const [hoveredNode, setHoveredNode] = useState<string | null>(null);
+
   const { users, loading: usersLoading } = useUsers();
   const { roles, loading: rolesLoading } = useRoles();
   const { permissions, loading: permissionsLoading } = usePermissions();
@@ -361,7 +360,7 @@ export default function Relationships() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5" />
-              孤立实体��测
+              孤立实体检测
             </CardTitle>
             <CardDescription>
               发现未关联的实体，可能需要清理
@@ -421,7 +420,7 @@ export default function Relationships() {
                 <tr>
                   <th className="px-6 py-3 text-left">用户</th>
                   <th className="px-6 py-3 text-left">角色</th>
-                  <th className="px-6 py-3 text-left">分配时��</th>
+                  <th className="px-6 py-3 text-left">分配时间</th>
                   <th className="px-6 py-3 text-left">状态</th>
                   <th className="px-6 py-3 text-left">过期时间</th>
                   <th className="px-6 py-3 text-left">操作</th>
@@ -499,7 +498,7 @@ export default function Relationships() {
                 <tr>
                   <th className="px-6 py-3 text-left">角色</th>
                   <th className="px-6 py-3 text-left">权限</th>
-                  <th className="px-6 py-3 text-left">类型</th>
+                  <th className="px-6 py-3 text-left">类���</th>
                   <th className="px-6 py-3 text-left">来源</th>
                   <th className="px-6 py-3 text-left">作用域</th>
                   <th className="px-6 py-3 text-left">操作</th>
