@@ -27,7 +27,7 @@ import {
   X,
   Shield,
   Crown,
-  Users,
+  Users as UsersIcon,
   Building,
   Code,
   TrendingUp,
@@ -107,7 +107,7 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       name: "Team Manager",
       description: "Team leadership with reporting access",
       roles: ["manager", "team_lead", "reports_viewer", "user_management"],
-      icon: Users,
+      icon: UsersIcon,
       color: "from-purple-400 to-purple-600",
       useCase: "For team leads and middle management",
     },
@@ -223,7 +223,7 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
         "budget.view",
         "performance.review",
       ],
-      icon: Users,
+      icon: UsersIcon,
       color: "purple",
     },
     {
@@ -283,7 +283,7 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
         "roles.assign",
         "groups.manage",
       ],
-      icon: Users,
+      icon: UsersIcon,
       color: "red",
     },
     {
@@ -691,43 +691,75 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
 
         {/* Individual Roles Tab */}
         <TabsContent value="individual" className="space-y-4">
-          {/* Search and Filters */}
+          {/* Enhanced Filters Section */}
           <Card>
-            <CardContent className="p-4">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input
-                      placeholder="Search roles by name or description..."
-                      className="pl-10"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                  </div>
+            <CardHeader>
+              <CardTitle className="flex items-center text-base">
+                <Filter className="mr-2 h-4 w-4" />
+                Filter Roles
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 space-y-4">
+              {/* Search */}
+              <div>
+                <Label htmlFor="search-roles" className="text-sm font-medium">
+                  Search Roles
+                </Label>
+                <div className="relative mt-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="search-roles"
+                    placeholder="Search roles by name or description..."
+                    className="pl-10"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
                 </div>
-                <div className="flex gap-2">
+              </div>
+
+              {/* Category and Level Filters */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Category Dropdown */}
+                <div>
+                  <Label
+                    htmlFor="category-select"
+                    className="text-sm font-medium"
+                  >
+                    Category
+                  </Label>
                   <Select
                     value={selectedCategory}
                     onValueChange={setSelectedCategory}
                   >
-                    <SelectTrigger className="w-40">
-                      <SelectValue placeholder="Category" />
+                    <SelectTrigger className="w-full mt-1" id="category-select">
+                      <SelectValue placeholder="Select category..." />
                     </SelectTrigger>
                     <SelectContent>
                       {categories.map((category) => (
                         <SelectItem key={category.id} value={category.id}>
-                          {category.name} ({category.count})
+                          <div className="flex items-center justify-between w-full">
+                            <span>{category.name}</span>
+                            <Badge variant="secondary" className="ml-2 text-xs">
+                              {category.count}
+                            </Badge>
+                          </div>
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+
+                {/* Level Dropdown */}
+                <div>
+                  <Label htmlFor="level-select" className="text-sm font-medium">
+                    Access Level
+                  </Label>
                   <Select
                     value={selectedLevel}
                     onValueChange={setSelectedLevel}
                   >
-                    <SelectTrigger className="w-32">
-                      <SelectValue placeholder="Level" />
+                    <SelectTrigger className="w-full mt-1" id="level-select">
+                      <SelectValue placeholder="Select level..." />
                     </SelectTrigger>
                     <SelectContent>
                       {levels.map((level) => (
@@ -737,6 +769,46 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+              </div>
+
+              {/* Active Filters & Results */}
+              <div className="flex items-center justify-between pt-2">
+                <div className="flex items-center space-x-2">
+                  {selectedCategory !== "all" && (
+                    <Badge variant="outline" className="text-xs">
+                      Category:{" "}
+                      {categories.find((c) => c.id === selectedCategory)?.name}
+                      <X
+                        className="ml-1 h-3 w-3 cursor-pointer"
+                        onClick={() => setSelectedCategory("all")}
+                      />
+                    </Badge>
+                  )}
+                  {selectedLevel !== "all" && (
+                    <Badge variant="outline" className="text-xs">
+                      Level: {levels.find((l) => l.id === selectedLevel)?.name}
+                      <X
+                        className="ml-1 h-3 w-3 cursor-pointer"
+                        onClick={() => setSelectedLevel("all")}
+                      />
+                    </Badge>
+                  )}
+                  {searchTerm && (
+                    <Badge variant="outline" className="text-xs">
+                      Search: "{searchTerm}"
+                      <X
+                        className="ml-1 h-3 w-3 cursor-pointer"
+                        onClick={() => setSearchTerm("")}
+                      />
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-gray-500">
+                    {filteredRoles.length} role
+                    {filteredRoles.length !== 1 ? "s" : ""} found
+                  </span>
                   <Button
                     variant="outline"
                     size="sm"
@@ -745,6 +817,11 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
                       setSelectedCategory("all");
                       setSelectedLevel("all");
                     }}
+                    disabled={
+                      searchTerm === "" &&
+                      selectedCategory === "all" &&
+                      selectedLevel === "all"
+                    }
                   >
                     <RotateCcw className="h-4 w-4" />
                   </Button>

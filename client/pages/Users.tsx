@@ -60,7 +60,7 @@ import {
   ChevronRight,
   X,
   Check,
-  Users,
+  Users as UsersIcon,
   Building,
   Tag,
   Star,
@@ -1357,7 +1357,7 @@ const EnhancedRolesSelector: React.FC<{
     {
       id: "hr",
       name: "Human Resources",
-      icon: Users,
+      icon: UsersIcon,
       count: allRoles.filter((r) => r.category === "hr").length,
     },
     {
