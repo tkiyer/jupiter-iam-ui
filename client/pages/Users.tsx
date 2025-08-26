@@ -1508,22 +1508,32 @@ const EnhancedRolesSelector: React.FC<{
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
-              {commonRolesSuggestions.map((role) => (
-                <Button
-                  key={role.id}
-                  variant={
-                    selectedRoles.includes(role.id) ? "default" : "outline"
-                  }
-                  size="sm"
-                  onClick={() => handleRoleToggle(role.id)}
-                  className="text-xs"
-                >
-                  {selectedRoles.includes(role.id) && (
-                    <Check className="mr-1 h-3 w-3" />
-                  )}
-                  {role.name}
-                </Button>
-              ))}
+              {commonRolesSuggestions.map((role) => {
+                const isSelected = selectedRoles.includes(role.id);
+                return (
+                  <div
+                    key={role.id}
+                    onClick={() => handleRoleToggle(role.id)}
+                    className={cn(
+                      "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 rounded-md px-3 cursor-pointer",
+                      isSelected
+                        ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                        : "border border-input bg-background hover:bg-accent hover:text-accent-foreground"
+                    )}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleRoleToggle(role.id);
+                      }
+                    }}
+                  >
+                    {isSelected && <Check className="mr-1 h-3 w-3" />}
+                    {role.name}
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
