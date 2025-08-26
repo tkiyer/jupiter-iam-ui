@@ -727,38 +727,93 @@ const Permissions: React.FC = () => {
 
         {/* Categories Tab */}
         <TabsContent value="categories" className="space-y-6">
+          {/* Categories Filters */}
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input
+                      placeholder="Search categories by name or description..."
+                      className="pl-10"
+                      value={categorySearchTerm}
+                      onChange={(e) => setCategorySearchTerm(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsCreateCategoryDialogOpen(true)}
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create Category
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center">
                   <Layers className="mr-2 h-5 w-5" />
-                  Permission Categories
+                  Permission Categories ({filteredCategories.length})
                 </div>
-                <Button variant="outline" size="sm">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create Category
-                </Button>
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {categories.map((category) => (
+                {filteredCategories.map((category) => (
                   <Card
                     key={category.id}
                     className="hover:shadow-md transition-shadow"
                   >
                     <CardHeader className="pb-3">
-                      <CardTitle className="text-lg flex items-center">
-                        <div
-                          className={`p-2 rounded-lg mr-3`}
-                          style={{ backgroundColor: category.color + "20" }}
-                        >
-                          <Shield
-                            className="h-5 w-5"
-                            style={{ color: category.color }}
-                          />
+                      <CardTitle className="text-lg flex items-center justify-between">
+                        <div className="flex items-center">
+                          <div
+                            className={`p-2 rounded-lg mr-3`}
+                            style={{ backgroundColor: category.color + "20" }}
+                          >
+                            <Shield
+                              className="h-5 w-5"
+                              style={{ color: category.color }}
+                            />
+                          </div>
+                          {category.name}
                         </div>
-                        {category.name}
+                        {!category.isSystemCategory && (
+                          <div className="flex items-center space-x-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setSelectedCategory(category);
+                                setIsEditCategoryDialogOpen(true);
+                              }}
+                              title="Edit Category"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                if (confirm(`Are you sure you want to delete the category "${category.name}"?`)) {
+                                  handleDeleteCategory(category.id);
+                                }
+                              }}
+                              className="text-red-600 hover:text-red-700"
+                              title="Delete Category"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        )}
                       </CardTitle>
                       <CardDescription>{category.description}</CardDescription>
                     </CardHeader>
@@ -771,15 +826,55 @@ const Permissions: React.FC = () => {
                           {category.permissions.length}
                         </Badge>
                       </div>
-                      {category.isSystemCategory && (
-                        <Badge variant="outline" className="text-xs">
-                          System Category
-                        </Badge>
+                      <div className="flex flex-wrap gap-2">
+                        {category.isSystemCategory && (
+                          <Badge variant="outline" className="text-xs">
+                            System Category
+                          </Badge>
+                        )}
+                        {category.parentCategory && (
+                          <Badge variant="outline" className="text-xs">
+                            Subcategory
+                          </Badge>
+                        )}
+                      </div>
+                      {category.createdAt && (
+                        <p className="text-xs text-gray-500">
+                          Created: {new Date(category.createdAt).toLocaleDateString()}
+                        </p>
                       )}
                     </CardContent>
                   </Card>
                 ))}
               </div>
+
+              {filteredCategories.length === 0 && categories.length > 0 && (
+                <div className="text-center py-12">
+                  <Search className="mx-auto h-12 w-12 text-gray-400" />
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">No categories found</h3>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Try adjusting your search terms.
+                  </p>
+                </div>
+              )}
+
+              {categories.length === 0 && (
+                <div className="text-center py-12">
+                  <Layers className="mx-auto h-12 w-12 text-gray-400" />
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">No categories</h3>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Get started by creating your first permission category.
+                  </p>
+                  <div className="mt-6">
+                    <Button
+                      onClick={() => setIsCreateCategoryDialogOpen(true)}
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Create Category
+                    </Button>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
