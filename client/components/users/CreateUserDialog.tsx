@@ -177,6 +177,15 @@ export const CreateUserDialog: React.FC<CreateUserDialogProps> = ({
             </div>
           </TabsContent>
 
+          <TabsContent value="roles" className="space-y-4">
+            <ModernRolesSelector
+              selectedRoles={formData.roles}
+              onRolesChange={(roles) =>
+                setFormData((prev) => ({ ...prev, roles }))
+              }
+              variant="create"
+            />
+          </TabsContent>
 
           <TabsContent value="attributes" className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
