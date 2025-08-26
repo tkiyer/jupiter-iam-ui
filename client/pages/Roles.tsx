@@ -1044,6 +1044,26 @@ const Roles: React.FC = () => {
           />
         </Dialog>
       )}
+
+      {/* Create Template Dialog */}
+      <Dialog open={isCreateTemplateDialogOpen} onOpenChange={setIsCreateTemplateDialogOpen}>
+        <CreateTemplateDialog
+          onCreateTemplate={handleCreateTemplate}
+          availablePermissions={availablePermissions}
+          existingRoles={roles.filter((r) => r.status === "active")}
+        />
+      </Dialog>
+
+      {/* Edit Template Dialog */}
+      {selectedTemplate && (
+        <Dialog open={isEditTemplateDialogOpen} onOpenChange={setIsEditTemplateDialogOpen}>
+          <EditTemplateDialog
+            template={selectedTemplate}
+            onUpdateTemplate={handleUpdateTemplate}
+            availablePermissions={availablePermissions}
+          />
+        </Dialog>
+      )}
     </div>
   );
 };
