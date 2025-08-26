@@ -113,120 +113,6 @@ export default function Relationships() {
     });
   };
 
-  const buildUserRoleRelations = () => {
-    if (!users || !roles) return;
-
-    const relations: UserRoleRelation[] = [];
-    
-    users.forEach(user => {
-      user.roles.forEach(roleId => {
-        const role = roles.find(r => r.id === roleId);
-        if (role) {
-          relations.push({
-            userId: user.id,
-            userName: `${user.firstName} ${user.lastName}`,
-            roleId: role.id,
-            roleName: role.name,
-            assignedAt: user.createdAt,
-            assignedBy: 'System',
-            isActive: user.status === 'active' && role.status === 'active',
-            expiresAt: role.validUntil
-          });
-        }
-      });
-    });
-
-    setUserRoleRelations(relations);
-  };
-
-  const buildRolePermissionRelations = () => {
-    if (!roles || !permissions) return;
-
-    const relations: RolePermissionRelation[] = [];
-    
-    roles.forEach(role => {
-      // 直接权限
-      role.permissions.forEach(permissionId => {
-        const permission = permissions.find(p => p.id === permissionId);
-        if (permission) {
-          relations.push({
-            roleId: role.id,
-            roleName: role.name,
-            permissionId: permission.id,
-            permissionName: permission.name,
-            inherited: false,
-            source: 'Direct',
-            effectiveScope: permission.scope
-          });
-        }
-      });
-
-      // 继承权限
-      role.inheritedPermissions?.forEach(permissionId => {
-        const permission = permissions.find(p => p.id === permissionId);
-        if (permission) {
-          relations.push({
-            roleId: role.id,
-            roleName: role.name,
-            permissionId: permission.id,
-            permissionName: permission.name,
-            inherited: true,
-            source: role.parentRole || 'Inherited',
-            effectiveScope: permission.scope
-          });
-        }
-      });
-    });
-
-    setRolePermissionRelations(relations);
-  };
-
-  const buildPolicyRelations = () => {
-    if (!policies || !roles || !users) return;
-
-    const relations: PolicyRelation[] = [];
-    
-    policies.forEach(policy => {
-      // 分析策略适用的角色和用户
-      const applicableRoles: string[] = [];
-      const applicableUsers: string[] = [];
-      const applicableResources: string[] = [];
-
-      // 从策略规则中提取适用范围
-      policy.rules.forEach(rule => {
-        // 分析主体条件以确���适用角色
-        rule.subject.forEach(condition => {
-          if (condition.attribute === 'role' || condition.attribute === 'roles') {
-            if (condition.operator === 'equals' && typeof condition.value === 'string') {
-              applicableRoles.push(condition.value);
-            } else if (condition.operator === 'in' && Array.isArray(condition.value)) {
-              applicableRoles.push(...condition.value);
-            }
-          }
-        });
-
-        // 分析资源条件
-        rule.resource.forEach(condition => {
-          if (condition.attribute === 'type' || condition.attribute === 'name') {
-            applicableResources.push(String(condition.value));
-          }
-        });
-      });
-
-      relations.push({
-        policyId: policy.id,
-        policyName: policy.name,
-        effect: policy.effect,
-        applicableRoles: [...new Set(applicableRoles)],
-        applicableUsers: [...new Set(applicableUsers)],
-        applicableResources: [...new Set(applicableResources)],
-        priority: policy.priority,
-        status: policy.status
-      });
-    });
-
-    setPolicyRelations(relations);
-  };
 
   const renderOverviewTab = () => (
     <div className="space-y-6">
@@ -452,7 +338,7 @@ export default function Relationships() {
         </div>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
-          添加关联
+          添加���联
         </Button>
       </div>
 
