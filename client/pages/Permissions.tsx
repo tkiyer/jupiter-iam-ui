@@ -3553,7 +3553,7 @@ const CreateCategoryDialog: React.FC<{
               <SelectValue placeholder="Select parent category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">None (Top-level category)</SelectItem>
+              <SelectItem value="none">None (Top-level category)</SelectItem>
               {/* Note: In a real implementation, you'd list existing categories here */}
             </SelectContent>
           </Select>
