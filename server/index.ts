@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { handleLogin, handleVerifyToken } from "./routes/auth";
-import { handleDashboardStats } from "./routes/dashboard";
+import { handleDashboardStats, handleDetailedAnalytics } from "./routes/dashboard";
 import {
   handleGetUsers,
   handleGetUser,
@@ -29,6 +29,14 @@ import {
   handleCloneRole,
   handleResolveConflict,
   handleGetPermissions as handleGetPermissionsFromRoles,
+  handleCreateRoleTemplate,
+  handleUpdateRoleTemplate,
+  handleDeleteRoleTemplate,
+  handleGetRoleTemplate,
+  handleDuplicateRoleTemplate,
+  handleGetTemplateCategories,
+  handleExportTemplates,
+  handleImportTemplates,
 } from "./routes/roles";
 import {
   handleGetPermissions,
@@ -37,11 +45,19 @@ import {
   handleUpdatePermission,
   handleDeletePermission,
   handleGetPermissionCategories,
+  handleCreatePermissionCategory,
+  handleUpdatePermissionCategory,
+  handleDeletePermissionCategory,
+  handleGetPermissionCategory,
   handleGetOptimizations,
   handleGetPermissionAnalytics,
   handleGetResources,
   handleApplyOptimization,
   handleDelegatePermission,
+  handleCreateResource,
+  handleUpdateResource,
+  handleDeleteResource,
+  handleGetResource,
 } from "./routes/permissions";
 import {
   handleGetPolicies,
@@ -87,6 +103,7 @@ export function createServer() {
 
   // IAM Dashboard routes
   app.get("/api/dashboard/stats", handleDashboardStats);
+  app.get("/api/dashboard/detailed-analytics", handleDetailedAnalytics);
 
   // IAM User Management routes
   app.get("/api/users", handleGetUsers);
@@ -113,9 +130,23 @@ export function createServer() {
   app.get("/api/roles/:id/analytics", handleGetRoleAnalytics);
   app.post("/api/roles/conflicts/:id/resolve", handleResolveConflict);
 
+  // Role Template Management routes
+  app.post("/api/role-templates", handleCreateRoleTemplate);
+  app.get("/api/role-templates/categories", handleGetTemplateCategories);
+  app.post("/api/role-templates/export", handleExportTemplates);
+  app.post("/api/role-templates/import", handleImportTemplates);
+  app.get("/api/role-templates/:id", handleGetRoleTemplate);
+  app.put("/api/role-templates/:id", handleUpdateRoleTemplate);
+  app.delete("/api/role-templates/:id", handleDeleteRoleTemplate);
+  app.post("/api/role-templates/:id/duplicate", handleDuplicateRoleTemplate);
+
   // IAM Permission Management routes (detailed)
   app.get("/api/permissions", handleGetPermissions);
   app.get("/api/permissions/categories", handleGetPermissionCategories);
+  app.post("/api/permissions/categories", handleCreatePermissionCategory);
+  app.get("/api/permissions/categories/:id", handleGetPermissionCategory);
+  app.put("/api/permissions/categories/:id", handleUpdatePermissionCategory);
+  app.delete("/api/permissions/categories/:id", handleDeletePermissionCategory);
   app.get("/api/permissions/optimizations", handleGetOptimizations);
   app.post("/api/permissions", handleCreatePermission);
   app.get("/api/permissions/:id", handleGetPermission);
@@ -127,6 +158,10 @@ export function createServer() {
 
   // Resource management routes
   app.get("/api/resources", handleGetResources);
+  app.post("/api/resources", handleCreateResource);
+  app.get("/api/resources/:id", handleGetResource);
+  app.put("/api/resources/:id", handleUpdateResource);
+  app.delete("/api/resources/:id", handleDeleteResource);
 
   // IAM Policy Management routes (ABAC)
   app.get("/api/policies", handleGetPolicies);

@@ -4,12 +4,13 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { DashboardStats } from '@shared/iam';
-import { 
-  Users, 
-  Key, 
-  Shield, 
-  FileText, 
-  TrendingUp, 
+import FullReportDialog from '@/components/dashboard/FullReportDialog';
+import {
+  Users,
+  Key,
+  Shield,
+  FileText,
+  TrendingUp,
   AlertTriangle,
   Activity,
   Clock,
@@ -20,6 +21,7 @@ import {
 const Dashboard: React.FC = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFullReportOpen, setIsFullReportOpen] = useState(false);
 
   useEffect(() => {
     fetchDashboardStats();
@@ -119,7 +121,10 @@ const Dashboard: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
           <p className="text-gray-600 mt-1">Monitor and manage your IAM system</p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700">
+        <Button
+          className="bg-blue-600 hover:bg-blue-700"
+          onClick={() => setIsFullReportOpen(true)}
+        >
           <Activity className="mr-2 h-4 w-4" />
           View Full Report
         </Button>
@@ -257,6 +262,12 @@ const Dashboard: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Full Report Dialog */}
+      <FullReportDialog
+        open={isFullReportOpen}
+        onOpenChange={setIsFullReportOpen}
+      />
     </div>
   );
 };

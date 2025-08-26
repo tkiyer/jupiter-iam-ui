@@ -215,6 +215,8 @@ export interface PermissionCategory {
   parentCategory?: string;
   permissions: string[];
   isSystemCategory: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // Resource definitions for resource-based access control
