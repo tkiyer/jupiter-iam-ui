@@ -670,57 +670,210 @@ const Roles: React.FC = () => {
 
         {/* Templates Tab */}
         <TabsContent value="templates" className="space-y-6">
+          {/* Template Filters */}
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input
+                      placeholder="Search templates by name, description, or category..."
+                      className="pl-10"
+                      value={templateSearchTerm}
+                      onChange={(e) => setTemplateSearchTerm(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Select
+                    value={templateCategoryFilter}
+                    onValueChange={setTemplateCategoryFilter}
+                  >
+                    <SelectTrigger className="w-40">
+                      <SelectValue placeholder="Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Categories</SelectItem>
+                      {Array.from(new Set(roleTemplates.map(t => t.category))).map(category => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsCreateTemplateDialogOpen(true)}
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create Template
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center">
                   <Layers className="mr-2 h-5 w-5" />
-                  Role Templates
+                  Role Templates ({filteredTemplates.length})
                 </div>
-                <Button variant="outline" size="sm">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create Template
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm">
+                    <Download className="mr-2 h-4 w-4" />
+                    Export Templates
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    <Upload className="mr-2 h-4 w-4" />
+                    Import Templates
+                  </Button>
+                </div>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {(roleTemplates || []).map((template) => (
-                  <Card
-                    key={template.id}
-                    className="hover:shadow-md transition-shadow"
-                  >
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-lg">{template.name}</CardTitle>
-                      <CardDescription>{template.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <Badge variant="secondary">{template.category}</Badge>
-                        <span className="text-sm text-gray-500">
-                          Level {template.level}
-                        </span>
-                      </div>
-                      <div className="text-sm">
-                        <p>
-                          <strong>Permissions:</strong>{" "}
-                          {template.permissions.length}
-                        </p>
-                        <p>
-                          <strong>Usage:</strong> {template.usageCount} times
-                        </p>
-                      </div>
-                      <Button
-                        size="sm"
-                        className="w-full"
-                        onClick={() => handleCreateFromTemplate(template)}
-                      >
-                        Use Template
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+              {filteredTemplates.length === 0 ? (
+                <div className="text-center py-12">
+                  <Layers className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No templates found</h3>
+                  <p className="text-gray-500 mb-4">
+                    {templateSearchTerm || templateCategoryFilter !== "all"
+                      ? "Try adjusting your search or filters"
+                      : "Create your first role template to get started"
+                    }
+                  </p>
+                  <Button onClick={() => setIsCreateTemplateDialogOpen(true)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create Template
+                  </Button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filteredTemplates.map((template) => (
+                    <Card
+                      key={template.id}
+                      className="hover:shadow-md transition-shadow group"
+                    >
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <CardTitle className="text-lg flex items-center gap-2">
+                              {template.name}
+                              {template.isBuiltIn && (
+                                <Badge variant="outline" className="text-xs">
+                                  Built-in
+                                </Badge>
+                              )}
+                            </CardTitle>
+                            <CardDescription className="mt-1">
+                              {template.description}
+                            </CardDescription>
+                          </div>
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Select>
+                              <SelectTrigger className="w-8 h-8 border-none">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </SelectTrigger>
+                              <SelectContent align="end">
+                                <SelectItem
+                                  onSelect={() => handleCreateFromTemplate(template)}
+                                  className="cursor-pointer"
+                                >
+                                  <div className="flex items-center">
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    Create Role
+                                  </div>
+                                </SelectItem>
+                                <SelectItem
+                                  onSelect={() => {
+                                    setSelectedTemplate(template);
+                                    setIsEditTemplateDialogOpen(true);
+                                  }}
+                                  className="cursor-pointer"
+                                >
+                                  <div className="flex items-center">
+                                    <Edit className="mr-2 h-4 w-4" />
+                                    Edit Template
+                                  </div>
+                                </SelectItem>
+                                <SelectItem
+                                  onSelect={() => handleDuplicateTemplate(template)}
+                                  className="cursor-pointer"
+                                >
+                                  <div className="flex items-center">
+                                    <Copy className="mr-2 h-4 w-4" />
+                                    Duplicate
+                                  </div>
+                                </SelectItem>
+                                <SelectItem
+                                  onSelect={() => handleDeleteTemplate(template.id)}
+                                  className="cursor-pointer text-red-600"
+                                  disabled={template.isBuiltIn}
+                                >
+                                  <div className="flex items-center">
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    Delete
+                                  </div>
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <Badge variant="secondary">{template.category}</Badge>
+                          <div className="flex items-center gap-2">
+                            <Crown className="h-3 w-3 text-gray-500" />
+                            <span className="text-sm text-gray-500">
+                              Level {template.level}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 text-sm">
+                          <div className="flex items-center gap-1">
+                            <Shield className="h-3 w-3 text-blue-500" />
+                            <span>{template.permissions.length} permissions</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <TrendingUp className="h-3 w-3 text-green-500" />
+                            <span>{template.usageCount} uses</span>
+                          </div>
+                        </div>
+                        {template.organizationUnit && (
+                          <div className="text-xs text-gray-500 flex items-center gap-1">
+                            <Users className="h-3 w-3" />
+                            {template.organizationUnit}
+                          </div>
+                        )}
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            className="flex-1"
+                            onClick={() => handleCreateFromTemplate(template)}
+                          >
+                            <Plus className="mr-1 h-3 w-3" />
+                            Use Template
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setSelectedTemplate(template);
+                              setIsEditTemplateDialogOpen(true);
+                            }}
+                          >
+                            <Settings className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
