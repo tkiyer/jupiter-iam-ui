@@ -39,6 +39,7 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import PermissionSelector from "@/components/role-management/PermissionSelector";
 import {
   Role,
   CreateRoleRequest,
@@ -889,46 +890,17 @@ const CreateRoleDialog: React.FC<{
 
           <TabsContent value="permissions" className="space-y-4">
             <div>
-              <Label>Select Permissions</Label>
-              <div className="grid grid-cols-2 gap-2 mt-2 max-h-64 overflow-y-auto">
-                {Array.isArray(availablePermissions)
-                  ? availablePermissions.map((permission) => (
-                      <div
-                        key={permission.id}
-                        className="flex items-center space-x-2"
-                      >
-                        <Checkbox
-                          id={permission.id}
-                          checked={formData.permissions.includes(permission.id)}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setFormData((prev) => ({
-                                ...prev,
-                                permissions: [
-                                  ...prev.permissions,
-                                  permission.id,
-                                ],
-                              }));
-                            } else {
-                              setFormData((prev) => ({
-                                ...prev,
-                                permissions: prev.permissions.filter(
-                                  (p) => p !== permission.id,
-                                ),
-                              }));
-                            }
-                          }}
-                        />
-                        <Label htmlFor={permission.id} className="text-sm">
-                          {permission.name}
-                          <span className="text-xs text-gray-500 block">
-                            {permission.description}
-                          </span>
-                        </Label>
-                      </div>
-                    ))
-                  : []}
-              </div>
+              <Label className="text-lg font-semibold mb-4 block">Select Permissions</Label>
+              <PermissionSelector
+                permissions={Array.isArray(availablePermissions) ? availablePermissions : []}
+                selectedPermissions={formData.permissions}
+                onSelectionChange={(selectedIds) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    permissions: selectedIds,
+                  }));
+                }}
+              />
             </div>
           </TabsContent>
 
@@ -1096,48 +1068,19 @@ const EditRoleDialog: React.FC<{
 
           <TabsContent value="permissions" className="space-y-4">
             <div>
-              <Label>
+              <Label className="text-lg font-semibold mb-4 block">
                 Assigned Permissions ({formData.permissions.length})
               </Label>
-              <div className="grid grid-cols-2 gap-2 mt-2 max-h-64 overflow-y-auto">
-                {Array.isArray(availablePermissions)
-                  ? availablePermissions.map((permission) => (
-                      <div
-                        key={permission.id}
-                        className="flex items-center space-x-2"
-                      >
-                        <Checkbox
-                          id={`edit-${permission.id}`}
-                          checked={formData.permissions.includes(permission.id)}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setFormData((prev) => ({
-                                ...prev,
-                                permissions: [
-                                  ...prev.permissions,
-                                  permission.id,
-                                ],
-                              }));
-                            } else {
-                              setFormData((prev) => ({
-                                ...prev,
-                                permissions: prev.permissions.filter(
-                                  (p) => p !== permission.id,
-                                ),
-                              }));
-                            }
-                          }}
-                        />
-                        <Label
-                          htmlFor={`edit-${permission.id}`}
-                          className="text-sm"
-                        >
-                          {permission.name}
-                        </Label>
-                      </div>
-                    ))
-                  : []}
-              </div>
+              <PermissionSelector
+                permissions={Array.isArray(availablePermissions) ? availablePermissions : []}
+                selectedPermissions={formData.permissions}
+                onSelectionChange={(selectedIds) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    permissions: selectedIds,
+                  }));
+                }}
+              />
             </div>
           </TabsContent>
 
