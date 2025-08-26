@@ -126,6 +126,16 @@ export function createServer() {
   app.get("/api/roles/:id/analytics", handleGetRoleAnalytics);
   app.post("/api/roles/conflicts/:id/resolve", handleResolveConflict);
 
+  // Role Template Management routes
+  app.post("/api/role-templates", handleCreateRoleTemplate);
+  app.get("/api/role-templates/categories", handleGetTemplateCategories);
+  app.post("/api/role-templates/export", handleExportTemplates);
+  app.post("/api/role-templates/import", handleImportTemplates);
+  app.get("/api/role-templates/:id", handleGetRoleTemplate);
+  app.put("/api/role-templates/:id", handleUpdateRoleTemplate);
+  app.delete("/api/role-templates/:id", handleDeleteRoleTemplate);
+  app.post("/api/role-templates/:id/duplicate", handleDuplicateRoleTemplate);
+
   // IAM Permission Management routes (detailed)
   app.get("/api/permissions", handleGetPermissions);
   app.get("/api/permissions/categories", handleGetPermissionCategories);
