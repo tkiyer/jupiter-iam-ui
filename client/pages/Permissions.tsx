@@ -116,18 +116,27 @@ const Permissions: React.FC = () => {
 
   // Resources related state
   const [isAddResourceDialogOpen, setIsAddResourceDialogOpen] = useState(false);
-  const [isEditResourceDialogOpen, setIsEditResourceDialogOpen] = useState(false);
-  const [isResourceSettingsDialogOpen, setIsResourceSettingsDialogOpen] = useState(false);
-  const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
+  const [isEditResourceDialogOpen, setIsEditResourceDialogOpen] =
+    useState(false);
+  const [isResourceSettingsDialogOpen, setIsResourceSettingsDialogOpen] =
+    useState(false);
+  const [selectedResource, setSelectedResource] = useState<Resource | null>(
+    null,
+  );
   const [resourceSearchTerm, setResourceSearchTerm] = useState("");
   const [resourceTypeFilter, setResourceTypeFilter] = useState<string>("all");
 
   // Categories related state
-  const [isCreateCategoryDialogOpen, setIsCreateCategoryDialogOpen] = useState(false);
-  const [isEditCategoryDialogOpen, setIsEditCategoryDialogOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<PermissionCategory | null>(null);
+  const [isCreateCategoryDialogOpen, setIsCreateCategoryDialogOpen] =
+    useState(false);
+  const [isEditCategoryDialogOpen, setIsEditCategoryDialogOpen] =
+    useState(false);
+  const [selectedCategory, setSelectedCategory] =
+    useState<PermissionCategory | null>(null);
   const [categorySearchTerm, setCategorySearchTerm] = useState("");
-  const [filteredCategories, setFilteredCategories] = useState<PermissionCategory[]>([]);
+  const [filteredCategories, setFilteredCategories] = useState<
+    PermissionCategory[]
+  >([]);
 
   // Pagination state
   const {
@@ -351,7 +360,7 @@ const Permissions: React.FC = () => {
       if (response.ok) {
         const updatedResource = await response.json();
         setResources((prev) =>
-          prev.map((r) => (r.id === updatedResource.id ? updatedResource : r))
+          prev.map((r) => (r.id === updatedResource.id ? updatedResource : r)),
         );
         setIsEditResourceDialogOpen(false);
         setSelectedResource(null);
@@ -382,8 +391,12 @@ const Permissions: React.FC = () => {
     if (categorySearchTerm) {
       filtered = filtered.filter(
         (category) =>
-          category.name.toLowerCase().includes(categorySearchTerm.toLowerCase()) ||
-          category.description.toLowerCase().includes(categorySearchTerm.toLowerCase())
+          category.name
+            .toLowerCase()
+            .includes(categorySearchTerm.toLowerCase()) ||
+          category.description
+            .toLowerCase()
+            .includes(categorySearchTerm.toLowerCase()),
       );
     }
 
@@ -410,16 +423,19 @@ const Permissions: React.FC = () => {
 
   const handleUpdateCategory = async (categoryData: any) => {
     try {
-      const response = await fetch(`/api/permissions/categories/${categoryData.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(categoryData),
-      });
+      const response = await fetch(
+        `/api/permissions/categories/${categoryData.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(categoryData),
+        },
+      );
 
       if (response.ok) {
         const updatedCategory = await response.json();
         setCategories((prev) =>
-          prev.map((c) => (c.id === updatedCategory.id ? updatedCategory : c))
+          prev.map((c) => (c.id === updatedCategory.id ? updatedCategory : c)),
         );
         setIsEditCategoryDialogOpen(false);
         setSelectedCategory(null);
@@ -431,9 +447,12 @@ const Permissions: React.FC = () => {
 
   const handleDeleteCategory = async (categoryId: string) => {
     try {
-      const response = await fetch(`/api/permissions/categories/${categoryId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/api/permissions/categories/${categoryId}`,
+        {
+          method: "DELETE",
+        },
+      );
 
       if (response.ok) {
         setCategories((prev) => prev.filter((c) => c.id !== categoryId));
@@ -803,7 +822,11 @@ const Permissions: React.FC = () => {
                               variant="ghost"
                               size="sm"
                               onClick={() => {
-                                if (confirm(`Are you sure you want to delete the category "${category.name}"?`)) {
+                                if (
+                                  confirm(
+                                    `Are you sure you want to delete the category "${category.name}"?`,
+                                  )
+                                ) {
                                   handleDeleteCategory(category.id);
                                 }
                               }}
@@ -840,7 +863,8 @@ const Permissions: React.FC = () => {
                       </div>
                       {category.createdAt && (
                         <p className="text-xs text-gray-500">
-                          Created: {new Date(category.createdAt).toLocaleDateString()}
+                          Created:{" "}
+                          {new Date(category.createdAt).toLocaleDateString()}
                         </p>
                       )}
                     </CardContent>
@@ -851,7 +875,9 @@ const Permissions: React.FC = () => {
               {filteredCategories.length === 0 && categories.length > 0 && (
                 <div className="text-center py-12">
                   <Search className="mx-auto h-12 w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">No categories found</h3>
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">
+                    No categories found
+                  </h3>
                   <p className="mt-1 text-sm text-gray-500">
                     Try adjusting your search terms.
                   </p>
@@ -861,14 +887,14 @@ const Permissions: React.FC = () => {
               {categories.length === 0 && (
                 <div className="text-center py-12">
                   <Layers className="mx-auto h-12 w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">No categories</h3>
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">
+                    No categories
+                  </h3>
                   <p className="mt-1 text-sm text-gray-500">
                     Get started by creating your first permission category.
                   </p>
                   <div className="mt-6">
-                    <Button
-                      onClick={() => setIsCreateCategoryDialogOpen(true)}
-                    >
+                    <Button onClick={() => setIsCreateCategoryDialogOpen(true)}>
                       <Plus className="mr-2 h-4 w-4" />
                       Create Category
                     </Button>
@@ -930,22 +956,38 @@ const Permissions: React.FC = () => {
               <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center">
                   <Database className="mr-2 h-5 w-5" />
-                  Protected Resources ({resources.filter(r =>
-                    (resourceSearchTerm === "" ||
-                     r.name.toLowerCase().includes(resourceSearchTerm.toLowerCase()) ||
-                     r.description.toLowerCase().includes(resourceSearchTerm.toLowerCase())) &&
-                    (resourceTypeFilter === "all" || r.type === resourceTypeFilter)
-                  ).length})
+                  Protected Resources (
+                  {
+                    resources.filter(
+                      (r) =>
+                        (resourceSearchTerm === "" ||
+                          r.name
+                            .toLowerCase()
+                            .includes(resourceSearchTerm.toLowerCase()) ||
+                          r.description
+                            .toLowerCase()
+                            .includes(resourceSearchTerm.toLowerCase())) &&
+                        (resourceTypeFilter === "all" ||
+                          r.type === resourceTypeFilter),
+                    ).length
+                  }
+                  )
                 </div>
               </CardTitle>
             </CardHeader>
             <CardContent>
               <EnhancedResourcesTable
-                resources={resources.filter(r =>
-                  (resourceSearchTerm === "" ||
-                   r.name.toLowerCase().includes(resourceSearchTerm.toLowerCase()) ||
-                   r.description.toLowerCase().includes(resourceSearchTerm.toLowerCase())) &&
-                  (resourceTypeFilter === "all" || r.type === resourceTypeFilter)
+                resources={resources.filter(
+                  (r) =>
+                    (resourceSearchTerm === "" ||
+                      r.name
+                        .toLowerCase()
+                        .includes(resourceSearchTerm.toLowerCase()) ||
+                      r.description
+                        .toLowerCase()
+                        .includes(resourceSearchTerm.toLowerCase())) &&
+                    (resourceTypeFilter === "all" ||
+                      r.type === resourceTypeFilter),
                 )}
                 onEdit={(resource) => {
                   setSelectedResource(resource);
@@ -1079,13 +1121,19 @@ const Permissions: React.FC = () => {
       )}
 
       {/* Add Resource Dialog */}
-      <Dialog open={isAddResourceDialogOpen} onOpenChange={setIsAddResourceDialogOpen}>
+      <Dialog
+        open={isAddResourceDialogOpen}
+        onOpenChange={setIsAddResourceDialogOpen}
+      >
         <AddResourceDialog onCreateResource={handleCreateResource} />
       </Dialog>
 
       {/* Edit Resource Dialog */}
       {selectedResource && (
-        <Dialog open={isEditResourceDialogOpen} onOpenChange={setIsEditResourceDialogOpen}>
+        <Dialog
+          open={isEditResourceDialogOpen}
+          onOpenChange={setIsEditResourceDialogOpen}
+        >
           <EditResourceDialog
             resource={selectedResource}
             onSave={handleUpdateResource}
@@ -1095,7 +1143,10 @@ const Permissions: React.FC = () => {
 
       {/* Resource Settings Dialog */}
       {selectedResource && (
-        <Dialog open={isResourceSettingsDialogOpen} onOpenChange={setIsResourceSettingsDialogOpen}>
+        <Dialog
+          open={isResourceSettingsDialogOpen}
+          onOpenChange={setIsResourceSettingsDialogOpen}
+        >
           <ResourceSettingsDialog
             resource={selectedResource}
             onSave={handleUpdateResource}
@@ -1104,13 +1155,19 @@ const Permissions: React.FC = () => {
       )}
 
       {/* Create Category Dialog */}
-      <Dialog open={isCreateCategoryDialogOpen} onOpenChange={setIsCreateCategoryDialogOpen}>
+      <Dialog
+        open={isCreateCategoryDialogOpen}
+        onOpenChange={setIsCreateCategoryDialogOpen}
+      >
         <CreateCategoryDialog onCreateCategory={handleCreateCategory} />
       </Dialog>
 
       {/* Edit Category Dialog */}
       {selectedCategory && (
-        <Dialog open={isEditCategoryDialogOpen} onOpenChange={setIsEditCategoryDialogOpen}>
+        <Dialog
+          open={isEditCategoryDialogOpen}
+          onOpenChange={setIsEditCategoryDialogOpen}
+        >
           <EditCategoryDialog
             category={selectedCategory}
             onSave={handleUpdateCategory}
@@ -1146,7 +1203,7 @@ const CreatePermissionDialog: React.FC<{
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Get available endpoints for selected resource
-  const selectedResource = resources.find(r => r.name === formData.resource);
+  const selectedResource = resources.find((r) => r.name === formData.resource);
   const availableEndpoints = selectedResource?.endpoints || [];
   const availableFields = selectedResource?.fields || [];
 
@@ -1210,27 +1267,30 @@ const CreatePermissionDialog: React.FC<{
       operator: "equals",
       field: "",
       value: "",
-      description: ""
+      description: "",
     };
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      conditions: [...prev.conditions, newCondition]
+      conditions: [...prev.conditions, newCondition],
     }));
   };
 
-  const updateCondition = (id: string, updates: Partial<PermissionCondition>) => {
-    setFormData(prev => ({
+  const updateCondition = (
+    id: string,
+    updates: Partial<PermissionCondition>,
+  ) => {
+    setFormData((prev) => ({
       ...prev,
-      conditions: prev.conditions.map(cond =>
-        cond.id === id ? { ...cond, ...updates } : cond
-      )
+      conditions: prev.conditions.map((cond) =>
+        cond.id === id ? { ...cond, ...updates } : cond,
+      ),
     }));
   };
 
   const removeCondition = (id: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      conditions: prev.conditions.filter(cond => cond.id !== id)
+      conditions: prev.conditions.filter((cond) => cond.id !== id),
     }));
   };
 
@@ -1239,36 +1299,41 @@ const CreatePermissionDialog: React.FC<{
       id: `field-${Date.now()}`,
       field: "",
       access: "read",
-      maskingRule: "none"
+      maskingRule: "none",
     };
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      fieldRestrictions: [...prev.fieldRestrictions, newRestriction]
+      fieldRestrictions: [...prev.fieldRestrictions, newRestriction],
     }));
   };
 
-  const updateFieldRestriction = (id: string, updates: Partial<FieldRestriction>) => {
-    setFormData(prev => ({
+  const updateFieldRestriction = (
+    id: string,
+    updates: Partial<FieldRestriction>,
+  ) => {
+    setFormData((prev) => ({
       ...prev,
-      fieldRestrictions: prev.fieldRestrictions.map(restriction =>
-        restriction.id === id ? { ...restriction, ...updates } : restriction
-      )
+      fieldRestrictions: prev.fieldRestrictions.map((restriction) =>
+        restriction.id === id ? { ...restriction, ...updates } : restriction,
+      ),
     }));
   };
 
   const removeFieldRestriction = (id: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      fieldRestrictions: prev.fieldRestrictions.filter(restriction => restriction.id !== id)
+      fieldRestrictions: prev.fieldRestrictions.filter(
+        (restriction) => restriction.id !== id,
+      ),
     }));
   };
 
   const toggleApiEndpoint = (endpointPath: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       apiEndpoints: prev.apiEndpoints.includes(endpointPath)
-        ? prev.apiEndpoints.filter(ep => ep !== endpointPath)
-        : [...prev.apiEndpoints, endpointPath]
+        ? prev.apiEndpoints.filter((ep) => ep !== endpointPath)
+        : [...prev.apiEndpoints, endpointPath],
     }));
   };
 
@@ -1284,9 +1349,15 @@ const CreatePermissionDialog: React.FC<{
         <Tabs defaultValue="basic" className="w-full">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="basic">Basic Info</TabsTrigger>
-            <TabsTrigger value="conditions">Conditions ({formData.conditions.length})</TabsTrigger>
-            <TabsTrigger value="fields">Field Access ({formData.fieldRestrictions.length})</TabsTrigger>
-            <TabsTrigger value="api">API Endpoints ({formData.apiEndpoints.length})</TabsTrigger>
+            <TabsTrigger value="conditions">
+              Conditions ({formData.conditions.length})
+            </TabsTrigger>
+            <TabsTrigger value="fields">
+              Field Access ({formData.fieldRestrictions.length})
+            </TabsTrigger>
+            <TabsTrigger value="api">
+              API Endpoints ({formData.apiEndpoints.length})
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="basic" className="space-y-4">
@@ -1302,7 +1373,9 @@ const CreatePermissionDialog: React.FC<{
                   }
                   className={errors.name ? "border-red-500" : ""}
                 />
-                {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+                {errors.name && (
+                  <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+                )}
               </div>
               <div>
                 <Label>Action</Label>
@@ -1312,7 +1385,9 @@ const CreatePermissionDialog: React.FC<{
                     setFormData((prev) => ({ ...prev, action: value }))
                   }
                 >
-                  <SelectTrigger className={errors.action ? "border-red-500" : ""}>
+                  <SelectTrigger
+                    className={errors.action ? "border-red-500" : ""}
+                  >
                     <SelectValue placeholder="Select action" />
                   </SelectTrigger>
                   <SelectContent>
@@ -1324,7 +1399,9 @@ const CreatePermissionDialog: React.FC<{
                     <SelectItem value="manage">Manage</SelectItem>
                   </SelectContent>
                 </Select>
-                {errors.action && <p className="text-sm text-red-500 mt-1">{errors.action}</p>}
+                {errors.action && (
+                  <p className="text-sm text-red-500 mt-1">{errors.action}</p>
+                )}
               </div>
             </div>
 
@@ -1342,7 +1419,11 @@ const CreatePermissionDialog: React.FC<{
                 }
                 className={errors.description ? "border-red-500" : ""}
               />
-              {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
+              {errors.description && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.description}
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-3 gap-4">
@@ -1354,7 +1435,9 @@ const CreatePermissionDialog: React.FC<{
                     setFormData((prev) => ({ ...prev, resource: value }))
                   }
                 >
-                  <SelectTrigger className={errors.resource ? "border-red-500" : ""}>
+                  <SelectTrigger
+                    className={errors.resource ? "border-red-500" : ""}
+                  >
                     <SelectValue placeholder="Select resource" />
                   </SelectTrigger>
                   <SelectContent>
@@ -1365,7 +1448,9 @@ const CreatePermissionDialog: React.FC<{
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.resource && <p className="text-sm text-red-500 mt-1">{errors.resource}</p>}
+                {errors.resource && (
+                  <p className="text-sm text-red-500 mt-1">{errors.resource}</p>
+                )}
               </div>
               <div>
                 <Label>Category</Label>
@@ -1375,7 +1460,9 @@ const CreatePermissionDialog: React.FC<{
                     setFormData((prev) => ({ ...prev, category: value }))
                   }
                 >
-                  <SelectTrigger className={errors.category ? "border-red-500" : ""}>
+                  <SelectTrigger
+                    className={errors.category ? "border-red-500" : ""}
+                  >
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -1386,7 +1473,9 @@ const CreatePermissionDialog: React.FC<{
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.category && <p className="text-sm text-red-500 mt-1">{errors.category}</p>}
+                {errors.category && (
+                  <p className="text-sm text-red-500 mt-1">{errors.category}</p>
+                )}
               </div>
               <div>
                 <Label>Risk Level</Label>
@@ -1466,7 +1555,12 @@ const CreatePermissionDialog: React.FC<{
                   Define contextual conditions for when this permission applies
                 </p>
               </div>
-              <Button type="button" onClick={addCondition} variant="outline" size="sm">
+              <Button
+                type="button"
+                onClick={addCondition}
+                variant="outline"
+                size="sm"
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Condition
               </Button>
@@ -1480,7 +1574,9 @@ const CreatePermissionDialog: React.FC<{
                       <Label>Type</Label>
                       <Select
                         value={condition.type}
-                        onValueChange={(value) => updateCondition(condition.id, { type: value as any })}
+                        onValueChange={(value) =>
+                          updateCondition(condition.id, { type: value as any })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -1489,7 +1585,9 @@ const CreatePermissionDialog: React.FC<{
                           <SelectItem value="time">Time</SelectItem>
                           <SelectItem value="location">Location</SelectItem>
                           <SelectItem value="device">Device</SelectItem>
-                          <SelectItem value="attribute">User Attribute</SelectItem>
+                          <SelectItem value="attribute">
+                            User Attribute
+                          </SelectItem>
                           <SelectItem value="custom">Custom</SelectItem>
                         </SelectContent>
                       </Select>
@@ -1498,7 +1596,11 @@ const CreatePermissionDialog: React.FC<{
                       <Label>Field</Label>
                       <Input
                         value={condition.field}
-                        onChange={(e) => updateCondition(condition.id, { field: e.target.value })}
+                        onChange={(e) =>
+                          updateCondition(condition.id, {
+                            field: e.target.value,
+                          })
+                        }
                         placeholder="e.g., hour, location, role"
                       />
                     </div>
@@ -1506,7 +1608,11 @@ const CreatePermissionDialog: React.FC<{
                       <Label>Operator</Label>
                       <Select
                         value={condition.operator}
-                        onValueChange={(value) => updateCondition(condition.id, { operator: value as any })}
+                        onValueChange={(value) =>
+                          updateCondition(condition.id, {
+                            operator: value as any,
+                          })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -1514,7 +1620,9 @@ const CreatePermissionDialog: React.FC<{
                         <SelectContent>
                           <SelectItem value="equals">Equals</SelectItem>
                           <SelectItem value="not_equals">Not Equals</SelectItem>
-                          <SelectItem value="greater_than">Greater Than</SelectItem>
+                          <SelectItem value="greater_than">
+                            Greater Than
+                          </SelectItem>
                           <SelectItem value="less_than">Less Than</SelectItem>
                           <SelectItem value="contains">Contains</SelectItem>
                           <SelectItem value="in">In</SelectItem>
@@ -1526,7 +1634,11 @@ const CreatePermissionDialog: React.FC<{
                       <Label>Value</Label>
                       <Input
                         value={condition.value}
-                        onChange={(e) => updateCondition(condition.id, { value: e.target.value })}
+                        onChange={(e) =>
+                          updateCondition(condition.id, {
+                            value: e.target.value,
+                          })
+                        }
                         placeholder="Condition value"
                       />
                     </div>
@@ -1536,7 +1648,11 @@ const CreatePermissionDialog: React.FC<{
                       <Label>Description</Label>
                       <Input
                         value={condition.description}
-                        onChange={(e) => updateCondition(condition.id, { description: e.target.value })}
+                        onChange={(e) =>
+                          updateCondition(condition.id, {
+                            description: e.target.value,
+                          })
+                        }
                         placeholder="Describe this condition"
                       />
                     </div>
@@ -1556,7 +1672,10 @@ const CreatePermissionDialog: React.FC<{
               {formData.conditions.length === 0 && (
                 <div className="text-center py-8 text-gray-500">
                   <Shield className="mx-auto h-12 w-12 mb-4 opacity-50" />
-                  <p>No conditions defined. This permission will apply unconditionally.</p>
+                  <p>
+                    No conditions defined. This permission will apply
+                    unconditionally.
+                  </p>
                 </div>
               )}
             </div>
@@ -1586,7 +1705,8 @@ const CreatePermissionDialog: React.FC<{
               <Alert>
                 <AlertTriangle className="h-4 w-4" />
                 <AlertDescription>
-                  Please select a resource in the Basic Info tab to configure field restrictions.
+                  Please select a resource in the Basic Info tab to configure
+                  field restrictions.
                 </AlertDescription>
               </Alert>
             )}
@@ -1599,7 +1719,11 @@ const CreatePermissionDialog: React.FC<{
                       <Label>Field</Label>
                       <Select
                         value={restriction.field}
-                        onValueChange={(value) => updateFieldRestriction(restriction.id, { field: value })}
+                        onValueChange={(value) =>
+                          updateFieldRestriction(restriction.id, {
+                            field: value,
+                          })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select field" />
@@ -1617,7 +1741,11 @@ const CreatePermissionDialog: React.FC<{
                       <Label>Access Level</Label>
                       <Select
                         value={restriction.access}
-                        onValueChange={(value) => updateFieldRestriction(restriction.id, { access: value as any })}
+                        onValueChange={(value) =>
+                          updateFieldRestriction(restriction.id, {
+                            access: value as any,
+                          })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -1633,7 +1761,11 @@ const CreatePermissionDialog: React.FC<{
                       <Label>Masking Rule</Label>
                       <Select
                         value={restriction.maskingRule}
-                        onValueChange={(value) => updateFieldRestriction(restriction.id, { maskingRule: value as any })}
+                        onValueChange={(value) =>
+                          updateFieldRestriction(restriction.id, {
+                            maskingRule: value as any,
+                          })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -1664,7 +1796,10 @@ const CreatePermissionDialog: React.FC<{
               {formData.fieldRestrictions.length === 0 && formData.resource && (
                 <div className="text-center py-8 text-gray-500">
                   <FileText className="mx-auto h-12 w-12 mb-4 opacity-50" />
-                  <p>No field restrictions defined. Permission will apply to all fields.</p>
+                  <p>
+                    No field restrictions defined. Permission will apply to all
+                    fields.
+                  </p>
                 </div>
               )}
             </div>
@@ -1684,7 +1819,8 @@ const CreatePermissionDialog: React.FC<{
               <Alert>
                 <AlertTriangle className="h-4 w-4" />
                 <AlertDescription>
-                  Please select a resource in the Basic Info tab to see available API endpoints.
+                  Please select a resource in the Basic Info tab to see
+                  available API endpoints.
                 </AlertDescription>
               </Alert>
             )}
@@ -1703,7 +1839,9 @@ const CreatePermissionDialog: React.FC<{
                     <div>
                       <div className="flex items-center space-x-2">
                         <Badge variant="outline">{endpoint.method}</Badge>
-                        <code className="text-sm font-mono">{endpoint.path}</code>
+                        <code className="text-sm font-mono">
+                          {endpoint.path}
+                        </code>
                       </div>
                       <p className="text-sm text-gray-500 mt-1">
                         {endpoint.description}
@@ -1712,10 +1850,14 @@ const CreatePermissionDialog: React.FC<{
                   </div>
                   <div className="flex items-center space-x-2">
                     {endpoint.authRequired && (
-                      <Badge className="bg-green-100 text-green-800">Auth Required</Badge>
+                      <Badge className="bg-green-100 text-green-800">
+                        Auth Required
+                      </Badge>
                     )}
                     {endpoint.rateLimit && (
-                      <Badge variant="secondary">Rate: {endpoint.rateLimit}/min</Badge>
+                      <Badge variant="secondary">
+                        Rate: {endpoint.rateLimit}/min
+                      </Badge>
                     )}
                   </div>
                 </div>
@@ -1898,21 +2040,25 @@ const EnhancedResourcesTable: React.FC<{
   const [selectedResources, setSelectedResources] = useState<string[]>([]);
 
   const toggleResourceSelection = (resourceId: string) => {
-    setSelectedResources(prev =>
+    setSelectedResources((prev) =>
       prev.includes(resourceId)
-        ? prev.filter(id => id !== resourceId)
-        : [...prev, resourceId]
+        ? prev.filter((id) => id !== resourceId)
+        : [...prev, resourceId],
     );
   };
 
   const toggleAllResources = () => {
-    setSelectedResources(prev =>
-      prev.length === resources.length ? [] : resources.map(r => r.id)
+    setSelectedResources((prev) =>
+      prev.length === resources.length ? [] : resources.map((r) => r.id),
     );
   };
 
   const handleBulkDelete = () => {
-    if (confirm(`Are you sure you want to delete ${selectedResources.length} resources?`)) {
+    if (
+      confirm(
+        `Are you sure you want to delete ${selectedResources.length} resources?`,
+      )
+    ) {
       selectedResources.forEach(onDelete);
       setSelectedResources([]);
     }
@@ -1920,16 +2066,16 @@ const EnhancedResourcesTable: React.FC<{
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'entity':
-        return 'bg-blue-100 text-blue-800';
-      case 'data':
-        return 'bg-green-100 text-green-800';
-      case 'service':
-        return 'bg-purple-100 text-purple-800';
-      case 'api':
-        return 'bg-orange-100 text-orange-800';
+      case "entity":
+        return "bg-blue-100 text-blue-800";
+      case "data":
+        return "bg-green-100 text-green-800";
+      case "service":
+        return "bg-purple-100 text-purple-800";
+      case "api":
+        return "bg-orange-100 text-orange-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -1966,7 +2112,10 @@ const EnhancedResourcesTable: React.FC<{
           <TableRow>
             <TableHead className="w-12">
               <Checkbox
-                checked={selectedResources.length === resources.length && resources.length > 0}
+                checked={
+                  selectedResources.length === resources.length &&
+                  resources.length > 0
+                }
                 onCheckedChange={toggleAllResources}
               />
             </TableHead>
@@ -2054,7 +2203,11 @@ const EnhancedResourcesTable: React.FC<{
                     variant="ghost"
                     size="sm"
                     onClick={() => {
-                      if (confirm(`Are you sure you want to delete the resource "${resource.name}"?`)) {
+                      if (
+                        confirm(
+                          `Are you sure you want to delete the resource "${resource.name}"?`,
+                        )
+                      ) {
                         onDelete(resource.id);
                       }
                     }}
@@ -2073,7 +2226,9 @@ const EnhancedResourcesTable: React.FC<{
       {resources.length === 0 && (
         <div className="text-center py-12">
           <Database className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">No resources</h3>
+          <h3 className="mt-2 text-sm font-medium text-gray-900">
+            No resources
+          </h3>
           <p className="mt-1 text-sm text-gray-500">
             Get started by adding a new protected resource.
           </p>
@@ -2155,23 +2310,25 @@ const AddResourceDialog: React.FC<{
       authRequired: true,
       rateLimit: 100,
     };
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      endpoints: [...prev.endpoints, newEndpoint]
+      endpoints: [...prev.endpoints, newEndpoint],
     }));
   };
 
   const updateEndpoint = (index: number, updates: any) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      endpoints: prev.endpoints.map((ep, i) => i === index ? { ...ep, ...updates } : ep)
+      endpoints: prev.endpoints.map((ep, i) =>
+        i === index ? { ...ep, ...updates } : ep,
+      ),
     }));
   };
 
   const removeEndpoint = (index: number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      endpoints: prev.endpoints.filter((_, i) => i !== index)
+      endpoints: prev.endpoints.filter((_, i) => i !== index),
     }));
   };
 
@@ -2183,23 +2340,25 @@ const AddResourceDialog: React.FC<{
       sensitive: false,
       defaultAccess: "read",
     };
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      fields: [...prev.fields, newField]
+      fields: [...prev.fields, newField],
     }));
   };
 
   const updateField = (index: number, updates: any) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      fields: prev.fields.map((field, i) => i === index ? { ...field, ...updates } : field)
+      fields: prev.fields.map((field, i) =>
+        i === index ? { ...field, ...updates } : field,
+      ),
     }));
   };
 
   const removeField = (index: number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      fields: prev.fields.filter((_, i) => i !== index)
+      fields: prev.fields.filter((_, i) => i !== index),
     }));
   };
 
@@ -2215,8 +2374,12 @@ const AddResourceDialog: React.FC<{
         <Tabs defaultValue="basic" className="w-full">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="basic">Basic Info</TabsTrigger>
-            <TabsTrigger value="endpoints">Endpoints ({formData.endpoints.length})</TabsTrigger>
-            <TabsTrigger value="fields">Fields ({formData.fields.length})</TabsTrigger>
+            <TabsTrigger value="endpoints">
+              Endpoints ({formData.endpoints.length})
+            </TabsTrigger>
+            <TabsTrigger value="fields">
+              Fields ({formData.fields.length})
+            </TabsTrigger>
             <TabsTrigger value="attributes">Attributes</TabsTrigger>
           </TabsList>
 
@@ -2233,7 +2396,9 @@ const AddResourceDialog: React.FC<{
                   }
                   className={errors.name ? "border-red-500" : ""}
                 />
-                {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+                {errors.name && (
+                  <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+                )}
               </div>
               <div>
                 <Label>Resource Type</Label>
@@ -2270,7 +2435,11 @@ const AddResourceDialog: React.FC<{
                 }
                 className={errors.description ? "border-red-500" : ""}
               />
-              {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
+              {errors.description && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.description}
+                </p>
+              )}
             </div>
           </TabsContent>
 
@@ -2282,7 +2451,12 @@ const AddResourceDialog: React.FC<{
                   Define API endpoints that access this resource
                 </p>
               </div>
-              <Button type="button" onClick={addEndpoint} variant="outline" size="sm">
+              <Button
+                type="button"
+                onClick={addEndpoint}
+                variant="outline"
+                size="sm"
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Endpoint
               </Button>
@@ -2296,7 +2470,9 @@ const AddResourceDialog: React.FC<{
                       <Label>HTTP Method</Label>
                       <Select
                         value={endpoint.method}
-                        onValueChange={(value) => updateEndpoint(index, { method: value })}
+                        onValueChange={(value) =>
+                          updateEndpoint(index, { method: value })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -2314,7 +2490,9 @@ const AddResourceDialog: React.FC<{
                       <Label>Path</Label>
                       <Input
                         value={endpoint.path}
-                        onChange={(e) => updateEndpoint(index, { path: e.target.value })}
+                        onChange={(e) =>
+                          updateEndpoint(index, { path: e.target.value })
+                        }
                         placeholder="/api/resource"
                       />
                     </div>
@@ -2323,7 +2501,11 @@ const AddResourceDialog: React.FC<{
                       <Input
                         type="number"
                         value={endpoint.rateLimit}
-                        onChange={(e) => updateEndpoint(index, { rateLimit: parseInt(e.target.value) })}
+                        onChange={(e) =>
+                          updateEndpoint(index, {
+                            rateLimit: parseInt(e.target.value),
+                          })
+                        }
                       />
                     </div>
                   </div>
@@ -2332,14 +2514,18 @@ const AddResourceDialog: React.FC<{
                       <Label>Description</Label>
                       <Input
                         value={endpoint.description}
-                        onChange={(e) => updateEndpoint(index, { description: e.target.value })}
+                        onChange={(e) =>
+                          updateEndpoint(index, { description: e.target.value })
+                        }
                         placeholder="Endpoint description"
                       />
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox
                         checked={endpoint.authRequired}
-                        onCheckedChange={(checked) => updateEndpoint(index, { authRequired: !!checked })}
+                        onCheckedChange={(checked) =>
+                          updateEndpoint(index, { authRequired: !!checked })
+                        }
                       />
                       <Label>Auth Required</Label>
                     </div>
@@ -2359,7 +2545,9 @@ const AddResourceDialog: React.FC<{
               {formData.endpoints.length === 0 && (
                 <div className="text-center py-8 text-gray-500">
                   <Code className="mx-auto h-12 w-12 mb-4 opacity-50" />
-                  <p>No endpoints defined. Add endpoints to specify API access.</p>
+                  <p>
+                    No endpoints defined. Add endpoints to specify API access.
+                  </p>
                 </div>
               )}
             </div>
@@ -2373,7 +2561,12 @@ const AddResourceDialog: React.FC<{
                   Define the data fields for this resource
                 </p>
               </div>
-              <Button type="button" onClick={addField} variant="outline" size="sm">
+              <Button
+                type="button"
+                onClick={addField}
+                variant="outline"
+                size="sm"
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Field
               </Button>
@@ -2387,7 +2580,9 @@ const AddResourceDialog: React.FC<{
                       <Label>Field Name</Label>
                       <Input
                         value={field.name}
-                        onChange={(e) => updateField(index, { name: e.target.value })}
+                        onChange={(e) =>
+                          updateField(index, { name: e.target.value })
+                        }
                         placeholder="fieldName"
                       />
                     </div>
@@ -2395,7 +2590,9 @@ const AddResourceDialog: React.FC<{
                       <Label>Data Type</Label>
                       <Select
                         value={field.type}
-                        onValueChange={(value) => updateField(index, { type: value })}
+                        onValueChange={(value) =>
+                          updateField(index, { type: value })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -2414,7 +2611,9 @@ const AddResourceDialog: React.FC<{
                       <Label>Default Access</Label>
                       <Select
                         value={field.defaultAccess}
-                        onValueChange={(value) => updateField(index, { defaultAccess: value })}
+                        onValueChange={(value) =>
+                          updateField(index, { defaultAccess: value })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -2431,7 +2630,9 @@ const AddResourceDialog: React.FC<{
                     <div className="flex items-center space-x-2">
                       <Checkbox
                         checked={field.sensitive}
-                        onCheckedChange={(checked) => updateField(index, { sensitive: !!checked })}
+                        onCheckedChange={(checked) =>
+                          updateField(index, { sensitive: !!checked })
+                        }
                       />
                       <Label>Sensitive Field</Label>
                     </div>
@@ -2451,7 +2652,9 @@ const AddResourceDialog: React.FC<{
               {formData.fields.length === 0 && (
                 <div className="text-center py-8 text-gray-500">
                   <FileText className="mx-auto h-12 w-12 mb-4 opacity-50" />
-                  <p>No fields defined. Add fields to specify data structure.</p>
+                  <p>
+                    No fields defined. Add fields to specify data structure.
+                  </p>
                 </div>
               )}
             </div>
@@ -2468,16 +2671,20 @@ const AddResourceDialog: React.FC<{
                   <Checkbox
                     checked={formData.attributes.sensitive}
                     onCheckedChange={(checked) =>
-                      setFormData(prev => ({
+                      setFormData((prev) => ({
                         ...prev,
-                        attributes: { ...prev.attributes, sensitive: !!checked }
+                        attributes: {
+                          ...prev.attributes,
+                          sensitive: !!checked,
+                        },
                       }))
                     }
                   />
                   <div>
                     <Label>Sensitive Data</Label>
                     <p className="text-sm text-gray-500">
-                      This resource contains sensitive information requiring extra protection
+                      This resource contains sensitive information requiring
+                      extra protection
                     </p>
                   </div>
                 </div>
@@ -2486,9 +2693,12 @@ const AddResourceDialog: React.FC<{
                   <Checkbox
                     checked={formData.attributes.piiContained}
                     onCheckedChange={(checked) =>
-                      setFormData(prev => ({
+                      setFormData((prev) => ({
                         ...prev,
-                        attributes: { ...prev.attributes, piiContained: !!checked }
+                        attributes: {
+                          ...prev.attributes,
+                          piiContained: !!checked,
+                        },
                       }))
                     }
                   />
@@ -2504,16 +2714,20 @@ const AddResourceDialog: React.FC<{
                   <Checkbox
                     checked={formData.attributes.complianceRequired}
                     onCheckedChange={(checked) =>
-                      setFormData(prev => ({
+                      setFormData((prev) => ({
                         ...prev,
-                        attributes: { ...prev.attributes, complianceRequired: !!checked }
+                        attributes: {
+                          ...prev.attributes,
+                          complianceRequired: !!checked,
+                        },
                       }))
                     }
                   />
                   <div>
                     <Label>Compliance Required</Label>
                     <p className="text-sm text-gray-500">
-                      This resource requires compliance monitoring and audit trails
+                      This resource requires compliance monitoring and audit
+                      trails
                     </p>
                   </div>
                 </div>
@@ -2589,23 +2803,25 @@ const EditResourceDialog: React.FC<{
       authRequired: true,
       rateLimit: 100,
     };
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      endpoints: [...prev.endpoints, newEndpoint]
+      endpoints: [...prev.endpoints, newEndpoint],
     }));
   };
 
   const updateEndpoint = (index: number, updates: any) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      endpoints: prev.endpoints.map((ep, i) => i === index ? { ...ep, ...updates } : ep)
+      endpoints: prev.endpoints.map((ep, i) =>
+        i === index ? { ...ep, ...updates } : ep,
+      ),
     }));
   };
 
   const removeEndpoint = (index: number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      endpoints: prev.endpoints.filter((_, i) => i !== index)
+      endpoints: prev.endpoints.filter((_, i) => i !== index),
     }));
   };
 
@@ -2617,23 +2833,25 @@ const EditResourceDialog: React.FC<{
       sensitive: false,
       defaultAccess: "read",
     };
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      fields: [...prev.fields, newField]
+      fields: [...prev.fields, newField],
     }));
   };
 
   const updateField = (index: number, updates: any) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      fields: prev.fields.map((field, i) => i === index ? { ...field, ...updates } : field)
+      fields: prev.fields.map((field, i) =>
+        i === index ? { ...field, ...updates } : field,
+      ),
     }));
   };
 
   const removeField = (index: number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      fields: prev.fields.filter((_, i) => i !== index)
+      fields: prev.fields.filter((_, i) => i !== index),
     }));
   };
 
@@ -2649,8 +2867,12 @@ const EditResourceDialog: React.FC<{
         <Tabs defaultValue="basic" className="w-full">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="basic">Basic Info</TabsTrigger>
-            <TabsTrigger value="endpoints">Endpoints ({formData.endpoints.length})</TabsTrigger>
-            <TabsTrigger value="fields">Fields ({formData.fields.length})</TabsTrigger>
+            <TabsTrigger value="endpoints">
+              Endpoints ({formData.endpoints.length})
+            </TabsTrigger>
+            <TabsTrigger value="fields">
+              Fields ({formData.fields.length})
+            </TabsTrigger>
             <TabsTrigger value="attributes">Attributes</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
@@ -2711,7 +2933,12 @@ const EditResourceDialog: React.FC<{
                   Manage API endpoints that access this resource
                 </p>
               </div>
-              <Button type="button" onClick={addEndpoint} variant="outline" size="sm">
+              <Button
+                type="button"
+                onClick={addEndpoint}
+                variant="outline"
+                size="sm"
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Endpoint
               </Button>
@@ -2725,7 +2952,9 @@ const EditResourceDialog: React.FC<{
                       <Label>HTTP Method</Label>
                       <Select
                         value={endpoint.method}
-                        onValueChange={(value) => updateEndpoint(index, { method: value })}
+                        onValueChange={(value) =>
+                          updateEndpoint(index, { method: value })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -2743,7 +2972,9 @@ const EditResourceDialog: React.FC<{
                       <Label>Path</Label>
                       <Input
                         value={endpoint.path}
-                        onChange={(e) => updateEndpoint(index, { path: e.target.value })}
+                        onChange={(e) =>
+                          updateEndpoint(index, { path: e.target.value })
+                        }
                         placeholder="/api/resource"
                       />
                     </div>
@@ -2752,7 +2983,11 @@ const EditResourceDialog: React.FC<{
                       <Input
                         type="number"
                         value={endpoint.rateLimit}
-                        onChange={(e) => updateEndpoint(index, { rateLimit: parseInt(e.target.value) })}
+                        onChange={(e) =>
+                          updateEndpoint(index, {
+                            rateLimit: parseInt(e.target.value),
+                          })
+                        }
                       />
                     </div>
                   </div>
@@ -2761,14 +2996,18 @@ const EditResourceDialog: React.FC<{
                       <Label>Description</Label>
                       <Input
                         value={endpoint.description}
-                        onChange={(e) => updateEndpoint(index, { description: e.target.value })}
+                        onChange={(e) =>
+                          updateEndpoint(index, { description: e.target.value })
+                        }
                         placeholder="Endpoint description"
                       />
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox
                         checked={endpoint.authRequired}
-                        onCheckedChange={(checked) => updateEndpoint(index, { authRequired: !!checked })}
+                        onCheckedChange={(checked) =>
+                          updateEndpoint(index, { authRequired: !!checked })
+                        }
                       />
                       <Label>Auth Required</Label>
                     </div>
@@ -2802,7 +3041,12 @@ const EditResourceDialog: React.FC<{
                   Manage the data fields for this resource
                 </p>
               </div>
-              <Button type="button" onClick={addField} variant="outline" size="sm">
+              <Button
+                type="button"
+                onClick={addField}
+                variant="outline"
+                size="sm"
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Field
               </Button>
@@ -2816,7 +3060,9 @@ const EditResourceDialog: React.FC<{
                       <Label>Field Name</Label>
                       <Input
                         value={field.name}
-                        onChange={(e) => updateField(index, { name: e.target.value })}
+                        onChange={(e) =>
+                          updateField(index, { name: e.target.value })
+                        }
                         placeholder="fieldName"
                       />
                     </div>
@@ -2824,7 +3070,9 @@ const EditResourceDialog: React.FC<{
                       <Label>Data Type</Label>
                       <Select
                         value={field.type}
-                        onValueChange={(value) => updateField(index, { type: value })}
+                        onValueChange={(value) =>
+                          updateField(index, { type: value })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -2843,7 +3091,9 @@ const EditResourceDialog: React.FC<{
                       <Label>Default Access</Label>
                       <Select
                         value={field.defaultAccess}
-                        onValueChange={(value) => updateField(index, { defaultAccess: value })}
+                        onValueChange={(value) =>
+                          updateField(index, { defaultAccess: value })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -2860,7 +3110,9 @@ const EditResourceDialog: React.FC<{
                     <div className="flex items-center space-x-2">
                       <Checkbox
                         checked={field.sensitive}
-                        onCheckedChange={(checked) => updateField(index, { sensitive: !!checked })}
+                        onCheckedChange={(checked) =>
+                          updateField(index, { sensitive: !!checked })
+                        }
                       />
                       <Label>Sensitive Field</Label>
                     </div>
@@ -2892,16 +3144,17 @@ const EditResourceDialog: React.FC<{
                 <Checkbox
                   checked={formData.attributes.sensitive}
                   onCheckedChange={(checked) =>
-                    setFormData(prev => ({
+                    setFormData((prev) => ({
                       ...prev,
-                      attributes: { ...prev.attributes, sensitive: !!checked }
+                      attributes: { ...prev.attributes, sensitive: !!checked },
                     }))
                   }
                 />
                 <div>
                   <Label>Sensitive Data</Label>
                   <p className="text-sm text-gray-500">
-                    This resource contains sensitive information requiring extra protection
+                    This resource contains sensitive information requiring extra
+                    protection
                   </p>
                 </div>
               </div>
@@ -2910,9 +3163,12 @@ const EditResourceDialog: React.FC<{
                 <Checkbox
                   checked={formData.attributes.piiContained}
                   onCheckedChange={(checked) =>
-                    setFormData(prev => ({
+                    setFormData((prev) => ({
                       ...prev,
-                      attributes: { ...prev.attributes, piiContained: !!checked }
+                      attributes: {
+                        ...prev.attributes,
+                        piiContained: !!checked,
+                      },
                     }))
                   }
                 />
@@ -2928,16 +3184,20 @@ const EditResourceDialog: React.FC<{
                 <Checkbox
                   checked={formData.attributes.complianceRequired}
                   onCheckedChange={(checked) =>
-                    setFormData(prev => ({
+                    setFormData((prev) => ({
                       ...prev,
-                      attributes: { ...prev.attributes, complianceRequired: !!checked }
+                      attributes: {
+                        ...prev.attributes,
+                        complianceRequired: !!checked,
+                      },
                     }))
                   }
                 />
                 <div>
                   <Label>Compliance Required</Label>
                   <p className="text-sm text-gray-500">
-                    This resource requires compliance monitoring and audit trails
+                    This resource requires compliance monitoring and audit
+                    trails
                   </p>
                 </div>
               </div>
@@ -2949,7 +3209,9 @@ const EditResourceDialog: React.FC<{
               <Card>
                 <CardContent className="p-4">
                   <p className="text-sm font-medium">API Endpoints</p>
-                  <p className="text-2xl font-bold">{formData.endpoints.length}</p>
+                  <p className="text-2xl font-bold">
+                    {formData.endpoints.length}
+                  </p>
                 </CardContent>
               </Card>
               <Card>
@@ -2962,7 +3224,9 @@ const EditResourceDialog: React.FC<{
                 <CardContent className="p-4">
                   <p className="text-sm font-medium">Last Modified</p>
                   <p className="text-lg font-semibold">
-                    {formData.updatedAt ? new Date(formData.updatedAt).toLocaleDateString() : 'N/A'}
+                    {formData.updatedAt
+                      ? new Date(formData.updatedAt).toLocaleDateString()
+                      : "N/A"}
                   </p>
                 </CardContent>
               </Card>
@@ -3045,9 +3309,9 @@ const ResourceSettingsDialog: React.FC<{
                 <Switch
                   checked={formData.attributes.sensitive}
                   onCheckedChange={(checked) =>
-                    setFormData(prev => ({
+                    setFormData((prev) => ({
                       ...prev,
-                      attributes: { ...prev.attributes, sensitive: checked }
+                      attributes: { ...prev.attributes, sensitive: checked },
                     }))
                   }
                 />
@@ -3063,9 +3327,9 @@ const ResourceSettingsDialog: React.FC<{
                 <Switch
                   checked={formData.attributes.piiContained}
                   onCheckedChange={(checked) =>
-                    setFormData(prev => ({
+                    setFormData((prev) => ({
                       ...prev,
-                      attributes: { ...prev.attributes, piiContained: checked }
+                      attributes: { ...prev.attributes, piiContained: checked },
                     }))
                   }
                 />
@@ -3081,9 +3345,12 @@ const ResourceSettingsDialog: React.FC<{
                 <Switch
                   checked={formData.attributes.complianceRequired}
                   onCheckedChange={(checked) =>
-                    setFormData(prev => ({
+                    setFormData((prev) => ({
                       ...prev,
-                      attributes: { ...prev.attributes, complianceRequired: checked }
+                      attributes: {
+                        ...prev.attributes,
+                        complianceRequired: checked,
+                      },
                     }))
                   }
                 />
@@ -3099,10 +3366,12 @@ const ResourceSettingsDialog: React.FC<{
               <div className="p-4 bg-gray-50 rounded-lg">
                 <p className="text-sm font-medium">Current Permissions</p>
                 <p className="text-sm text-gray-500 mt-1">
-                  This resource is referenced by {
+                  This resource is referenced by{" "}
+                  {
                     // Count permissions that reference this resource
                     Math.floor(Math.random() * 10) + 1
-                  } permissions
+                  }{" "}
+                  permissions
                 </p>
               </div>
 
@@ -3130,8 +3399,8 @@ const ResourceSettingsDialog: React.FC<{
               <Alert>
                 <Lock className="h-4 w-4" />
                 <AlertDescription>
-                  Modifying these settings may affect existing permissions and access controls.
-                  Review all changes carefully before applying.
+                  Modifying these settings may affect existing permissions and
+                  access controls. Review all changes carefully before applying.
                 </AlertDescription>
               </Alert>
             </div>
@@ -3376,7 +3645,7 @@ const CreateCategoryDialog: React.FC<{
     description: "",
     color: "#3B82F6",
     icon: "shield",
-    parentCategory: "",
+    parentCategory: "none",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -3404,7 +3673,10 @@ const CreateCategoryDialog: React.FC<{
     try {
       const categoryData = {
         ...formData,
-        parentCategory: formData.parentCategory || undefined,
+        parentCategory:
+          formData.parentCategory && formData.parentCategory !== "none"
+            ? formData.parentCategory
+            : undefined,
       };
       await onCreateCategory(categoryData);
       // Reset form on success
@@ -3413,7 +3685,7 @@ const CreateCategoryDialog: React.FC<{
         description: "",
         color: "#3B82F6",
         icon: "shield",
-        parentCategory: "",
+        parentCategory: "none",
       });
       setErrors({});
     } catch (error) {
@@ -3454,7 +3726,8 @@ const CreateCategoryDialog: React.FC<{
       <DialogHeader>
         <DialogTitle>Create New Category</DialogTitle>
         <DialogDescription>
-          Create a new permission category to organize and group related permissions
+          Create a new permission category to organize and group related
+          permissions
         </DialogDescription>
       </DialogHeader>
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -3471,7 +3744,9 @@ const CreateCategoryDialog: React.FC<{
               className={errors.name ? "border-red-500" : ""}
               placeholder="e.g., User Management"
             />
-            {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+            {errors.name && (
+              <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+            )}
           </div>
           <div>
             <Label>Icon</Label>
@@ -3510,7 +3785,9 @@ const CreateCategoryDialog: React.FC<{
             className={errors.description ? "border-red-500" : ""}
             placeholder="Describe what types of permissions belong to this category"
           />
-          {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
+          {errors.description && (
+            <p className="text-sm text-red-500 mt-1">{errors.description}</p>
+          )}
         </div>
 
         <div>
@@ -3521,7 +3798,9 @@ const CreateCategoryDialog: React.FC<{
                 key={color}
                 type="button"
                 className={`w-8 h-8 rounded-lg border-2 ${
-                  formData.color === color ? "border-gray-900" : "border-gray-200"
+                  formData.color === color
+                    ? "border-gray-900"
+                    : "border-gray-200"
                 }`}
                 style={{ backgroundColor: color }}
                 onClick={() => setFormData((prev) => ({ ...prev, color }))}
@@ -3553,7 +3832,7 @@ const CreateCategoryDialog: React.FC<{
               <SelectValue placeholder="Select parent category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">None (Top-level category)</SelectItem>
+              <SelectItem value="none">None (Top-level category)</SelectItem>
               {/* Note: In a real implementation, you'd list existing categories here */}
             </SelectContent>
           </Select>
@@ -3566,10 +3845,7 @@ const CreateCategoryDialog: React.FC<{
               className="p-2 rounded-lg mr-3"
               style={{ backgroundColor: formData.color + "20" }}
             >
-              <Shield
-                className="h-5 w-5"
-                style={{ color: formData.color }}
-              />
+              <Shield className="h-5 w-5" style={{ color: formData.color }} />
             </div>
             <div>
               <p className="font-medium">{formData.name || "Category Name"}</p>
@@ -3618,7 +3894,7 @@ const EditCategoryDialog: React.FC<{
     description: category.description,
     color: category.color,
     icon: category.icon,
-    parentCategory: category.parentCategory || "",
+    parentCategory: category.parentCategory || "none",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -3646,7 +3922,10 @@ const EditCategoryDialog: React.FC<{
     try {
       const categoryData = {
         ...formData,
-        parentCategory: formData.parentCategory || undefined,
+        parentCategory:
+          formData.parentCategory && formData.parentCategory !== "none"
+            ? formData.parentCategory
+            : undefined,
       };
       await onSave(categoryData);
     } catch (error) {
@@ -3704,9 +3983,13 @@ const EditCategoryDialog: React.FC<{
               className={errors.name ? "border-red-500" : ""}
               disabled={category.isSystemCategory}
             />
-            {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+            {errors.name && (
+              <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+            )}
             {category.isSystemCategory && (
-              <p className="text-xs text-gray-500 mt-1">System categories cannot be renamed</p>
+              <p className="text-xs text-gray-500 mt-1">
+                System categories cannot be renamed
+              </p>
             )}
           </div>
           <div>
@@ -3745,7 +4028,9 @@ const EditCategoryDialog: React.FC<{
             }
             className={errors.description ? "border-red-500" : ""}
           />
-          {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
+          {errors.description && (
+            <p className="text-sm text-red-500 mt-1">{errors.description}</p>
+          )}
         </div>
 
         <div>
@@ -3756,7 +4041,9 @@ const EditCategoryDialog: React.FC<{
                 key={color}
                 type="button"
                 className={`w-8 h-8 rounded-lg border-2 ${
-                  formData.color === color ? "border-gray-900" : "border-gray-200"
+                  formData.color === color
+                    ? "border-gray-900"
+                    : "border-gray-200"
                 }`}
                 style={{ backgroundColor: color }}
                 onClick={() => setFormData((prev) => ({ ...prev, color }))}
@@ -3788,7 +4075,7 @@ const EditCategoryDialog: React.FC<{
               <SelectValue placeholder="Select parent category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">None (Top-level category)</SelectItem>
+              <SelectItem value="none">None (Top-level category)</SelectItem>
               {/* Note: In a real implementation, you'd list existing categories here */}
             </SelectContent>
           </Select>
@@ -3801,10 +4088,7 @@ const EditCategoryDialog: React.FC<{
               className="p-2 rounded-lg mr-3"
               style={{ backgroundColor: formData.color + "20" }}
             >
-              <Shield
-                className="h-5 w-5"
-                style={{ color: formData.color }}
-              />
+              <Shield className="h-5 w-5" style={{ color: formData.color }} />
             </div>
             <div>
               <p className="font-medium">{formData.name}</p>
@@ -3815,9 +4099,12 @@ const EditCategoryDialog: React.FC<{
 
         {category.permissions && category.permissions.length > 0 && (
           <div className="bg-blue-50 p-4 rounded-lg">
-            <Label className="text-sm font-medium text-blue-900">Category Usage</Label>
+            <Label className="text-sm font-medium text-blue-900">
+              Category Usage
+            </Label>
             <p className="text-sm text-blue-700 mt-1">
-              This category contains {category.permissions.length} permission(s). Changes will affect all associated permissions.
+              This category contains {category.permissions.length}{" "}
+              permission(s). Changes will affect all associated permissions.
             </p>
           </div>
         )}
