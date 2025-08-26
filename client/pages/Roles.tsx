@@ -132,6 +132,10 @@ const Roles: React.FC = () => {
     filterRoles();
   }, [roles, searchTerm, statusFilter, levelFilter]);
 
+  useEffect(() => {
+    filterTemplates();
+  }, [roleTemplates, templateSearchTerm, templateCategoryFilter]);
+
   const fetchRoles = async () => {
     try {
       const response = await fetch("/api/roles");
