@@ -539,33 +539,14 @@ const CreateUserDialog: React.FC<{
 
           <TabsContent value="roles" className="space-y-4">
             <div>
-              <Label>Select Roles</Label>
-              <div className="grid grid-cols-2 gap-2 mt-2">
-                {["admin", "manager", "user", "auditor"].map((role) => (
-                  <div key={role} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={role}
-                      checked={formData.roles.includes(role)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setFormData((prev) => ({
-                            ...prev,
-                            roles: [...prev.roles, role],
-                          }));
-                        } else {
-                          setFormData((prev) => ({
-                            ...prev,
-                            roles: prev.roles.filter((r) => r !== role),
-                          }));
-                        }
-                      }}
-                    />
-                    <Label htmlFor={role} className="capitalize">
-                      {role}
-                    </Label>
-                  </div>
-                ))}
-              </div>
+              <Label className="text-base font-medium mb-4 block">Assign Roles</Label>
+              <EnhancedRolesSelector
+                selectedRoles={formData.roles}
+                onRolesChange={(roles) =>
+                  setFormData((prev) => ({ ...prev, roles }))
+                }
+                variant="create"
+              />
             </div>
           </TabsContent>
 
