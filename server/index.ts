@@ -191,5 +191,9 @@ export function createServer() {
   const accessControlRoutes = require("./routes/access-control").default;
   app.use("/api/access-control", accessControlRoutes);
 
+  // Enhanced Access Control routes (Hybrid RBAC-ABAC)
+  const enhancedAccessControlRoutes = require("./routes/enhanced-access-control").default;
+  app.use("/api/access-control-enhanced", enhancedAccessControlRoutes);
+
   return app;
 }
