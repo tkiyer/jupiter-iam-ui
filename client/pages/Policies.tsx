@@ -2388,6 +2388,356 @@ const ActionSelector: React.FC<{
   );
 };
 
+// Policy Testing View Component
+const PolicyTestingView: React.FC<{
+  policy: ABACPolicy;
+}> = ({ policy }) => {
+  const [testScenarios, setTestScenarios] = useState([
+    {
+      id: 1,
+      name: "Executive Access Test",
+      subject: { role: "executive", department: "finance" },
+      resource: { type: "financial_data", classification: "confidential" },
+      action: "read",
+      environment: { time: "14:30", location: "office" },
+      expectedResult: "allow",
+    },
+    {
+      id: 2,
+      name: "Contractor Restriction Test",
+      subject: { employment_type: "contractor" },
+      resource: { data_classification: "sensitive", contains_pii: true },
+      action: "read",
+      environment: { time: "10:00", location: "office" },
+      expectedResult: "deny",
+    },
+  ]);
+
+  const [testResults, setTestResults] = useState<any[]>([]);
+  const [isRunningTests, setIsRunningTests] = useState(false);
+
+  const runAllTests = async () => {
+    setIsRunningTests(true);
+    const results = [];
+
+    for (const scenario of testScenarios) {
+      // Simulate test execution
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      const result = {
+        scenarioId: scenario.id,
+        result: Math.random() > 0.3 ? scenario.expectedResult : (scenario.expectedResult === "allow" ? "deny" : "allow"),
+        executionTime: `${(Math.random() * 10 + 1).toFixed(1)}ms`,
+        matchedRules: [`Rule ${Math.floor(Math.random() * policy.rules.length) + 1}`],
+        passed: Math.random() > 0.2,
+      };
+
+      results.push(result);
+      setTestResults([...results]);
+    }
+
+    setIsRunningTests(false);
+  };
+
+  const addTestScenario = () => {
+    const newScenario = {
+      id: Date.now(),
+      name: `Test Scenario ${testScenarios.length + 1}`,
+      subject: {},
+      resource: {},
+      action: "read",
+      environment: {},
+      expectedResult: "allow" as "allow" | "deny",
+    };
+    setTestScenarios([...testScenarios, newScenario]);
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-medium">Policy Testing</h3>
+          <p className="text-sm text-gray-500">
+            Run test scenarios to validate policy behavior
+          </p>
+        </div>
+        <div className="flex space-x-2">
+          <Button onClick={addTestScenario} variant="outline" size="sm">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Scenario
+          </Button>
+          <Button
+            onClick={runAllTests}
+            disabled={isRunningTests}
+            className="bg-blue-600 hover:bg-blue-700"
+          >
+            {isRunningTests ? (
+              <>
+                <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                Running Tests...
+              </>
+            ) : (
+              <>
+                <Play className="mr-2 h-4 w-4" />
+                Run All Tests
+              </>
+            )}
+          </Button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Test Scenarios */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Test Scenarios</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {testScenarios.map((scenario) => (
+              <Card key={scenario.id} className="border">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium">{scenario.name}</h4>
+                    <Badge
+                      variant={scenario.expectedResult === "allow" ? "default" : "destructive"}
+                      className="text-xs"
+                    >
+                      Expect: {scenario.expectedResult}
+                    </Badge>
+                  </div>
+
+                  <div className="space-y-2 text-sm">
+                    <div>
+                      <span className="font-medium text-blue-700">Subject:</span>
+                      <span className="ml-2">{JSON.stringify(scenario.subject)}</span>
+                    </div>
+                    <div>
+                      <span className="font-medium text-green-700">Resource:</span>
+                      <span className="ml-2">{JSON.stringify(scenario.resource)}</span>
+                    </div>
+                    <div>
+                      <span className="font-medium text-purple-700">Action:</span>
+                      <span className="ml-2">{scenario.action}</span>
+                    </div>
+                    <div>
+                      <span className="font-medium text-orange-700">Environment:</span>
+                      <span className="ml-2">{JSON.stringify(scenario.environment)}</span>
+                    </div>
+                  </div>
+
+                  {/* Show test result if available */}
+                  {testResults.find(r => r.scenarioId === scenario.id) && (
+                    <div className="mt-3 pt-3 border-t">
+                      {(() => {
+                        const result = testResults.find(r => r.scenarioId === scenario.id);
+                        return (
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              {result.passed ? (
+                                <CheckCircle className="h-4 w-4 text-green-600" />
+                              ) : (
+                                <XCircle className="h-4 w-4 text-red-600" />
+                              )}
+                              <span className="text-sm font-medium">
+                                {result.passed ? "Passed" : "Failed"}
+                              </span>
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {result.executionTime}
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Test Results */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base flex items-center">
+              Test Results
+              {testResults.length > 0 && (
+                <Badge variant="secondary" className="ml-2">
+                  {testResults.filter(r => r.passed).length}/{testResults.length} Passed
+                </Badge>
+              )}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {testResults.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <TestTube className="mx-auto h-8 w-8 mb-2" />
+                <p>No test results yet</p>
+                <p className="text-xs">Run tests to see results</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {testResults.map((result) => {
+                  const scenario = testScenarios.find(s => s.id === result.scenarioId);
+                  return (
+                    <div key={result.scenarioId} className="p-3 border rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium text-sm">{scenario?.name}</span>
+                        <div className="flex items-center space-x-2">
+                          {result.passed ? (
+                            <CheckCircle className="h-4 w-4 text-green-600" />
+                          ) : (
+                            <XCircle className="h-4 w-4 text-red-600" />
+                          )}
+                          <span className="text-xs text-gray-500">
+                            {result.executionTime}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="text-xs space-y-1">
+                        <div>
+                          <span className="text-gray-600">Result:</span>
+                          <Badge
+                            variant={result.result === "allow" ? "default" : "destructive"}
+                            className="ml-2 text-xs"
+                          >
+                            {result.result}
+                          </Badge>
+                        </div>
+                        <div>
+                          <span className="text-gray-600">Matched Rules:</span>
+                          <span className="ml-2">{result.matchedRules.join(", ")}</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+// Policy History View Component
+const PolicyHistoryView: React.FC<{
+  policy: ABACPolicy;
+}> = ({ policy }) => {
+  const historyEntries = [
+    {
+      id: 1,
+      action: "created",
+      user: "admin@company.com",
+      timestamp: policy.createdAt,
+      details: "Policy created with initial configuration",
+      changes: [],
+    },
+    {
+      id: 2,
+      action: "updated",
+      user: "security@company.com",
+      timestamp: new Date(Date.now() - 86400000).toISOString(),
+      details: "Priority increased and description updated",
+      changes: [
+        { field: "priority", from: "50", to: "100" },
+        { field: "description", from: "Basic access policy", to: policy.description },
+      ],
+    },
+    {
+      id: 3,
+      action: "activated",
+      user: "admin@company.com",
+      timestamp: new Date(Date.now() - 43200000).toISOString(),
+      details: "Policy status changed to active",
+      changes: [
+        { field: "status", from: "draft", to: "active" },
+      ],
+    },
+  ];
+
+  const getActionIcon = (action: string) => {
+    switch (action) {
+      case "created":
+        return <Plus className="h-4 w-4 text-green-600" />;
+      case "updated":
+        return <Edit className="h-4 w-4 text-blue-600" />;
+      case "activated":
+        return <Play className="h-4 w-4 text-green-600" />;
+      case "deactivated":
+        return <Pause className="h-4 w-4 text-orange-600" />;
+      case "deleted":
+        return <Trash2 className="h-4 w-4 text-red-600" />;
+      default:
+        return <Activity className="h-4 w-4 text-gray-600" />;
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-lg font-medium">Policy History</h3>
+        <p className="text-sm text-gray-500">
+          Track all changes and modifications to this policy
+        </p>
+      </div>
+
+      <Card>
+        <CardContent className="p-0">
+          <div className="divide-y">
+            {historyEntries.map((entry, index) => (
+              <div key={entry.id} className="p-4">
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0 mt-0.5">
+                    {getActionIcon(entry.action)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium text-gray-900 capitalize">
+                        {entry.action}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {new Date(entry.timestamp).toLocaleString()}
+                      </p>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {entry.details}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      by {entry.user}
+                    </p>
+
+                    {entry.changes.length > 0 && (
+                      <div className="mt-2 space-y-1">
+                        {entry.changes.map((change, changeIndex) => (
+                          <div key={changeIndex} className="text-xs bg-gray-50 p-2 rounded">
+                            <span className="font-medium">{change.field}:</span>
+                            <span className="text-red-600 line-through ml-1">{change.from}</span>
+                            <span className="mx-1">→</span>
+                            <span className="text-green-600">{change.to}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="flex justify-center">
+        <Button variant="outline" size="sm">
+          <Clock className="mr-2 h-4 w-4" />
+          Load More History
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 // Policy Validation View Component
 const PolicyValidationView: React.FC<{
   policy: any;
