@@ -3618,7 +3618,7 @@ const EditCategoryDialog: React.FC<{
     description: category.description,
     color: category.color,
     icon: category.icon,
-    parentCategory: category.parentCategory || "",
+    parentCategory: category.parentCategory || "none",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
