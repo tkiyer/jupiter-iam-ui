@@ -498,7 +498,7 @@ export default function Relationships() {
                 <tr>
                   <th className="px-6 py-3 text-left">角色</th>
                   <th className="px-6 py-3 text-left">权限</th>
-                  <th className="px-6 py-3 text-left">类���</th>
+                  <th className="px-6 py-3 text-left">类型</th>
                   <th className="px-6 py-3 text-left">来源</th>
                   <th className="px-6 py-3 text-left">作用域</th>
                   <th className="px-6 py-3 text-left">操作</th>
@@ -699,7 +699,7 @@ export default function Relationships() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <Network className="h-4 w-4" />
               概览
@@ -715,6 +715,10 @@ export default function Relationships() {
             <TabsTrigger value="policy-relation" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
               策略关联
+            </TabsTrigger>
+            <TabsTrigger value="graph" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              关系图
             </TabsTrigger>
           </TabsList>
 
