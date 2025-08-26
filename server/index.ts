@@ -29,6 +29,14 @@ import {
   handleCloneRole,
   handleResolveConflict,
   handleGetPermissions as handleGetPermissionsFromRoles,
+  handleCreateRoleTemplate,
+  handleUpdateRoleTemplate,
+  handleDeleteRoleTemplate,
+  handleGetRoleTemplate,
+  handleDuplicateRoleTemplate,
+  handleGetTemplateCategories,
+  handleExportTemplates,
+  handleImportTemplates,
 } from "./routes/roles";
 import {
   handleGetPermissions,
