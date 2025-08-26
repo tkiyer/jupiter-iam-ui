@@ -1291,21 +1291,20 @@ const EnhancedRolesSelector: React.FC<{
                 if (!role) return null;
 
                 return (
-                  <Badge
+                  <div
                     key={roleId}
-                    variant="secondary"
-                    className="flex items-center gap-1 pr-1"
+                    className="inline-flex items-center gap-1 rounded-md bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"
                   >
                     {role.name}
-                    <Button
-                      variant="ghost"
-                      size="sm"
+                    <button
+                      type="button"
                       onClick={() => handleRoleToggle(roleId)}
-                      className="h-4 w-4 p-0 hover:bg-red-100"
+                      className="ml-1 h-4 w-4 rounded-sm hover:bg-red-100 flex items-center justify-center transition-colors"
+                      aria-label={`Remove ${role.name} role`}
                     >
                       <X className="h-3 w-3" />
-                    </Button>
-                  </Badge>
+                    </button>
+                  </div>
                 );
               })}
             </div>
