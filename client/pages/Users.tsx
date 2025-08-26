@@ -1470,7 +1470,7 @@ const EnhancedRolesSelector: React.FC<{
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
+                if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
                   handleClearAll();
                 }
@@ -1486,12 +1486,12 @@ const EnhancedRolesSelector: React.FC<{
             onClick={() => setShowSelected(!showSelected)}
             className={cn(
               "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 cursor-pointer",
-              showSelected ? "bg-blue-50 text-blue-700" : ""
+              showSelected ? "bg-blue-50 text-blue-700" : "",
             )}
             role="button"
             tabIndex={0}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
+              if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
                 setShowSelected(!showSelected);
               }
@@ -1504,12 +1504,12 @@ const EnhancedRolesSelector: React.FC<{
             onClick={() => setBulkSelectMode(!bulkSelectMode)}
             className={cn(
               "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 cursor-pointer",
-              bulkSelectMode ? "bg-blue-50 text-blue-700" : ""
+              bulkSelectMode ? "bg-blue-50 text-blue-700" : "",
             )}
             role="button"
             tabIndex={0}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
+              if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
                 setBulkSelectMode(!bulkSelectMode);
               }
@@ -1542,12 +1542,12 @@ const EnhancedRolesSelector: React.FC<{
                       "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 rounded-md px-3 cursor-pointer",
                       isSelected
                         ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                        : "border border-input bg-background hover:bg-accent hover:text-accent-foreground"
+                        : "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
                     )}
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
+                      if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault();
                         handleRoleToggle(role.id);
                       }
@@ -1591,7 +1591,7 @@ const EnhancedRolesSelector: React.FC<{
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
+                        if (e.key === "Enter" || e.key === " ") {
                           e.preventDefault();
                           setSelectedCategory(category.id);
                           setCurrentPage(1);
@@ -1643,7 +1643,7 @@ const EnhancedRolesSelector: React.FC<{
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
+                        if (e.key === "Enter" || e.key === " ") {
                           e.preventDefault();
                           handleSelectAll();
                         }
@@ -1657,7 +1657,7 @@ const EnhancedRolesSelector: React.FC<{
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
+                        if (e.key === "Enter" || e.key === " ") {
                           e.preventDefault();
                           handleDeselectAll();
                         }
@@ -1764,12 +1764,15 @@ const EnhancedRolesSelector: React.FC<{
                             "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3",
                             currentPage === 1
                               ? "pointer-events-none opacity-50"
-                              : "cursor-pointer"
+                              : "cursor-pointer",
                           )}
                           role="button"
                           tabIndex={currentPage === 1 ? -1 : 0}
                           onKeyDown={(e) => {
-                            if (currentPage > 1 && (e.key === 'Enter' || e.key === ' ')) {
+                            if (
+                              currentPage > 1 &&
+                              (e.key === "Enter" || e.key === " ")
+                            ) {
                               e.preventDefault();
                               setCurrentPage((prev) => Math.max(1, prev - 1));
                             }
@@ -1787,14 +1790,19 @@ const EnhancedRolesSelector: React.FC<{
                             "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3",
                             currentPage === totalPages
                               ? "pointer-events-none opacity-50"
-                              : "cursor-pointer"
+                              : "cursor-pointer",
                           )}
                           role="button"
                           tabIndex={currentPage === totalPages ? -1 : 0}
                           onKeyDown={(e) => {
-                            if (currentPage < totalPages && (e.key === 'Enter' || e.key === ' ')) {
+                            if (
+                              currentPage < totalPages &&
+                              (e.key === "Enter" || e.key === " ")
+                            ) {
                               e.preventDefault();
-                              setCurrentPage((prev) => Math.min(totalPages, prev + 1));
+                              setCurrentPage((prev) =>
+                                Math.min(totalPages, prev + 1),
+                              );
                             }
                           }}
                         >
@@ -1838,7 +1846,7 @@ const EnhancedRolesSelector: React.FC<{
                       tabIndex={0}
                       aria-label={`Remove ${role.name} role`}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
+                        if (e.key === "Enter" || e.key === " ") {
                           e.preventDefault();
                           handleRoleToggle(roleId);
                         }
