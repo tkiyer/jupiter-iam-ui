@@ -36,38 +36,7 @@ import RolePermissionManager from '../components/relationships/RolePermissionMan
 import PolicyRelationshipViewer from '../components/relationships/PolicyRelationshipViewer';
 import RelationshipGraph from '../components/relationships/RelationshipGraph';
 
-// 关联关系接口定义
-interface UserRoleRelation {
-  userId: string;
-  userName: string;
-  roleId: string;
-  roleName: string;
-  assignedAt: string;
-  assignedBy: string;
-  isActive: boolean;
-  expiresAt?: string;
-}
-
-interface RolePermissionRelation {
-  roleId: string;
-  roleName: string;
-  permissionId: string;
-  permissionName: string;
-  inherited: boolean;
-  source: string;
-  effectiveScope: string;
-}
-
-interface PolicyRelation {
-  policyId: string;
-  policyName: string;
-  effect: 'allow' | 'deny';
-  applicableRoles: string[];
-  applicableUsers: string[];
-  applicableResources: string[];
-  priority: number;
-  status: string;
-}
+// 关联关系统计接口
 
 interface RelationshipStats {
   totalUsers: number;
@@ -333,7 +302,7 @@ export default function Relationships() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm">用���-角色关联</span>
+              <span className="text-sm">用户-角色关联</span>
               <div className="flex items-center gap-2">
                 <Badge variant="secondary">{relationshipStats?.userRoleRelations || 0}</Badge>
                 <CheckCircle2 className="h-4 w-4 text-green-500" />
