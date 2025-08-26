@@ -1752,14 +1752,21 @@ const EnhancedRolesSelector: React.FC<{
                     className="inline-flex items-center gap-1 rounded-md bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"
                   >
                     {role.name}
-                    <button
-                      type="button"
+                    <div
                       onClick={() => handleRoleToggle(roleId)}
-                      className="ml-1 h-4 w-4 rounded-sm hover:bg-red-100 flex items-center justify-center transition-colors"
+                      className="ml-1 h-4 w-4 rounded-sm hover:bg-red-100 flex items-center justify-center transition-colors cursor-pointer"
+                      role="button"
+                      tabIndex={0}
                       aria-label={`Remove ${role.name} role`}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handleRoleToggle(roleId);
+                        }
+                      }}
                     >
                       <X className="h-3 w-3" />
-                    </button>
+                    </div>
                   </div>
                 );
               })}
