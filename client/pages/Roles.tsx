@@ -1944,6 +1944,7 @@ const CreateTemplateDialog: React.FC<{
 
       await onCreateTemplate({
         ...formData,
+        organizationUnit: formData.organizationUnit === "any" ? undefined : formData.organizationUnit,
         permissions,
         usageCount: 0,
       });
