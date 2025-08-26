@@ -283,7 +283,7 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
         "roles.assign",
         "groups.manage",
       ],
-      icon: Users,
+      icon: UsersIcon,
       color: "red",
     },
     {
