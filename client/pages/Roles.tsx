@@ -289,6 +289,27 @@ const Roles: React.FC = () => {
     }
   };
 
+  const filterTemplates = () => {
+    let filtered = roleTemplates;
+
+    if (templateSearchTerm) {
+      filtered = filtered.filter(
+        (template) =>
+          template.name.toLowerCase().includes(templateSearchTerm.toLowerCase()) ||
+          template.description.toLowerCase().includes(templateSearchTerm.toLowerCase()) ||
+          template.category.toLowerCase().includes(templateSearchTerm.toLowerCase()),
+      );
+    }
+
+    if (templateCategoryFilter !== "all") {
+      filtered = filtered.filter(
+        (template) => template.category === templateCategoryFilter,
+      );
+    }
+
+    setFilteredTemplates(filtered);
+  };
+
   const handleCreateFromTemplate = async (template: RoleTemplate) => {
     const roleData: CreateRoleRequest = {
       name: `${template.name} Copy`,
@@ -298,6 +319,77 @@ const Roles: React.FC = () => {
       isTemplate: false,
     };
     await handleCreateRole(roleData);
+  };
+
+  // Template management handlers
+  const handleCreateTemplate = async (templateData: any) => {
+    try {
+      const response = await fetch("/api/role-templates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(templateData),
+      });
+
+      if (response.ok) {
+        const newTemplate = await response.json();
+        setRoleTemplates((prev) => [...prev, newTemplate]);
+        setIsCreateTemplateDialogOpen(false);
+      }
+    } catch (error) {
+      console.error("Error creating template:", error);
+    }
+  };
+
+  const handleUpdateTemplate = async (templateData: any) => {
+    try {
+      const response = await fetch(`/api/role-templates/${templateData.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(templateData),
+      });
+
+      if (response.ok) {
+        const updatedTemplate = await response.json();
+        setRoleTemplates((prev) =>
+          prev.map((t) => (t.id === updatedTemplate.id ? updatedTemplate : t))
+        );
+        setIsEditTemplateDialogOpen(false);
+        setSelectedTemplate(null);
+      }
+    } catch (error) {
+      console.error("Error updating template:", error);
+    }
+  };
+
+  const handleDeleteTemplate = async (templateId: string) => {
+    if (!confirm("Are you sure you want to delete this template?")) return;
+
+    try {
+      const response = await fetch(`/api/role-templates/${templateId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setRoleTemplates((prev) => prev.filter((t) => t.id !== templateId));
+      }
+    } catch (error) {
+      console.error("Error deleting template:", error);
+    }
+  };
+
+  const handleDuplicateTemplate = async (template: RoleTemplate) => {
+    const duplicateData = {
+      ...template,
+      name: `${template.name} Copy`,
+      id: undefined, // Let server generate new ID
+    };
+    await handleCreateTemplate(duplicateData);
+  };
+
+  const handleCreateRoleFromTemplate = async (template: RoleTemplate) => {
+    // Open the create role dialog with template data pre-filled
+    setIsCreateDialogOpen(true);
+    // You can extend this to pre-fill the dialog with template data
   };
 
   if (isLoading) {
