@@ -74,6 +74,8 @@ import {
   Crown,
   Layers,
   User,
+  CheckCircle,
+  Circle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
