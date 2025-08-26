@@ -107,7 +107,7 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       name: "Team Manager",
       description: "Team leadership with reporting access",
       roles: ["manager", "team_lead", "reports_viewer", "user_management"],
-      icon: Users,
+      icon: UsersIcon,
       color: "from-purple-400 to-purple-600",
       useCase: "For team leads and middle management",
     },
