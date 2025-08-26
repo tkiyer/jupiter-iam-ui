@@ -1893,7 +1893,7 @@ const CreateTemplateDialog: React.FC<{
     description: "",
     category: "",
     permissions: [] as string[],
-    organizationUnit: "",
+    organizationUnit: "any",
     level: 1,
     isBuiltIn: false,
     sourceRoleId: "", // To create template from existing role
