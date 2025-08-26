@@ -1432,6 +1432,277 @@ const RoleAnalyticsChart: React.FC<{
   );
 };
 
+// Edit Template Dialog Component
+const EditTemplateDialog: React.FC<{
+  template: RoleTemplate;
+  onUpdateTemplate: (template: any) => void;
+  availablePermissions: Permission[];
+}> = ({ template, onUpdateTemplate, availablePermissions }) => {
+  const [formData, setFormData] = useState<RoleTemplate>(template);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const categories = [
+    "Management", "Administrative", "Technical", "Sales", "Marketing",
+    "HR", "Finance", "Operations", "Security", "Customer Service"
+  ];
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Template name is required";
+    }
+    if (!formData.description.trim()) {
+      newErrors.description = "Description is required";
+    }
+    if (!formData.category) {
+      newErrors.category = "Category is required";
+    }
+    if (formData.permissions.length === 0) {
+      newErrors.permissions = "At least one permission is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+    try {
+      await onUpdateTemplate(formData);
+      setErrors({});
+    } catch (error) {
+      console.error("Error updating template:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogHeader>
+        <DialogTitle>Edit Template: {template.name}</DialogTitle>
+        <DialogDescription>
+          Update template information and permissions
+        </DialogDescription>
+      </DialogHeader>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <Tabs defaultValue="general" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="general">General</TabsTrigger>
+            <TabsTrigger value="permissions">Permissions</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="general" className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="editTemplateName">Template Name</Label>
+                <Input
+                  id="editTemplateName"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, name: e.target.value }))
+                  }
+                  className={errors.name ? "border-red-500" : ""}
+                />
+                {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+              </div>
+              <div>
+                <Label>Category</Label>
+                <Select
+                  value={formData.category}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, category: value }))
+                  }
+                >
+                  <SelectTrigger className={errors.category ? "border-red-500" : ""}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.category && <p className="text-sm text-red-500 mt-1">{errors.category}</p>}
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="editTemplateDescription">Description</Label>
+              <Textarea
+                id="editTemplateDescription"
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, description: e.target.value }))
+                }
+                className={errors.description ? "border-red-500" : ""}
+                rows={3}
+              />
+              {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Organization Unit</Label>
+                <Select
+                  value={formData.organizationUnit || ""}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, organizationUnit: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select unit" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Any Unit</SelectItem>
+                    <SelectItem value="engineering">Engineering</SelectItem>
+                    <SelectItem value="sales">Sales</SelectItem>
+                    <SelectItem value="marketing">Marketing</SelectItem>
+                    <SelectItem value="hr">Human Resources</SelectItem>
+                    <SelectItem value="finance">Finance</SelectItem>
+                    <SelectItem value="operations">Operations</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Suggested Level</Label>
+                <Select
+                  value={formData.level.toString()}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, level: parseInt(value) }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">Level 1 - Basic User</SelectItem>
+                    <SelectItem value="2">Level 2 - Advanced User</SelectItem>
+                    <SelectItem value="3">Level 3 - Supervisor</SelectItem>
+                    <SelectItem value="4">Level 4 - Manager</SelectItem>
+                    <SelectItem value="5">Level 5 - Administrator</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="editIsBuiltIn"
+                checked={formData.isBuiltIn}
+                onCheckedChange={(checked) =>
+                  setFormData((prev) => ({ ...prev, isBuiltIn: !!checked }))
+                }
+              />
+              <Label htmlFor="editIsBuiltIn">Built-in template</Label>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="permissions" className="space-y-4">
+            <div>
+              <Label className="text-lg font-semibold mb-4 block">
+                Template Permissions ({formData.permissions.length})
+              </Label>
+              <PermissionSelector
+                permissions={Array.isArray(availablePermissions) ? availablePermissions : []}
+                selectedPermissions={formData.permissions}
+                onSelectionChange={(selectedIds) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    permissions: selectedIds,
+                  }));
+                }}
+              />
+              {errors.permissions && <p className="text-sm text-red-500 mt-1">{errors.permissions}</p>}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="analytics" className="space-y-4">
+            <div className="grid grid-cols-3 gap-4">
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Usage Count</p>
+                      <p className="text-2xl font-bold text-gray-900">{formData.usageCount}</p>
+                    </div>
+                    <Users className="h-8 w-8 text-blue-600" />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Permissions</p>
+                      <p className="text-2xl font-bold text-gray-900">{formData.permissions.length}</p>
+                    </div>
+                    <Shield className="h-8 w-8 text-green-600" />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Level</p>
+                      <p className="text-2xl font-bold text-gray-900">{formData.level}</p>
+                    </div>
+                    <Crown className="h-8 w-8 text-purple-600" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="mt-4">
+              <Label className="text-sm font-medium">Template Properties</Label>
+              <div className="mt-2 space-y-2">
+                <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                  <span className="text-sm">Built-in Template</span>
+                  <Badge variant={formData.isBuiltIn ? "default" : "secondary"}>
+                    {formData.isBuiltIn ? "Yes" : "No"}
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                  <span className="text-sm">Category</span>
+                  <Badge variant="outline">{formData.category}</Badge>
+                </div>
+                {formData.organizationUnit && (
+                  <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                    <span className="text-sm">Organization Unit</span>
+                    <Badge variant="outline">{formData.organizationUnit}</Badge>
+                  </div>
+                )}
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        <div className="flex justify-end space-x-2">
+          <Button type="button" variant="outline">
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Updating..." : "Update Template"}
+          </Button>
+        </div>
+      </form>
+    </DialogContent>
+  );
+};
+
 // Create Template Dialog Component
 const CreateTemplateDialog: React.FC<{
   onCreateTemplate: (template: any) => void;
