@@ -1102,6 +1102,21 @@ const Permissions: React.FC = () => {
           />
         </Dialog>
       )}
+
+      {/* Create Category Dialog */}
+      <Dialog open={isCreateCategoryDialogOpen} onOpenChange={setIsCreateCategoryDialogOpen}>
+        <CreateCategoryDialog onCreateCategory={handleCreateCategory} />
+      </Dialog>
+
+      {/* Edit Category Dialog */}
+      {selectedCategory && (
+        <Dialog open={isEditCategoryDialogOpen} onOpenChange={setIsEditCategoryDialogOpen}>
+          <EditCategoryDialog
+            category={selectedCategory}
+            onSave={handleUpdateCategory}
+          />
+        </Dialog>
+      )}
     </div>
   );
 };
