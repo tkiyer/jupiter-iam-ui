@@ -1357,7 +1357,7 @@ const EnhancedRolesSelector: React.FC<{
     {
       id: "hr",
       name: "Human Resources",
-      icon: Users,
+      icon: UsersIcon,
       count: allRoles.filter((r) => r.category === "hr").length,
     },
     {
