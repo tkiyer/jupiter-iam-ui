@@ -27,7 +27,7 @@ export interface CreateUserRequest {
   attributes?: Record<string, any>;
 }
 
-// Role Management Types (RBAC)
+// Role Management Types (RBAC + ABAC)
 export interface Role {
   id: string;
   name: string;
@@ -58,6 +58,12 @@ export interface Role {
   // Template information
   isTemplate: boolean;
   templateCategory?: string;
+  // ABAC Integration - Role-level conditions
+  abacConditions?: RoleABACCondition[];
+  // Contextual activation rules
+  activationRules?: ContextualActivationRule[];
+  // Dynamic attribute requirements
+  requiredAttributes?: AttributeRequirement[];
 }
 
 export interface CreateRoleRequest {
@@ -155,7 +161,7 @@ export interface RoleAnalytics {
   recommendations: string[];
 }
 
-// Permission Management Types
+// Permission Management Types (Enhanced RBAC + ABAC)
 export interface Permission {
   id: string;
   name: string;
@@ -184,6 +190,14 @@ export interface Permission {
   risk: 'low' | 'medium' | 'high' | 'critical';
   complianceRequired: boolean;
   autoCleanupDate?: string;
+  // ABAC Integration - Permission-level refinement
+  abacRefinementRules?: PermissionABACRule[];
+  // Dynamic scope evaluation
+  dynamicScope?: DynamicScopeRule[];
+  // Resource ownership checks
+  ownershipChecks?: OwnershipRule[];
+  // Temporal constraints
+  temporalConstraints?: TemporalConstraint[];
 }
 
 // Permission conditions for context-based access
@@ -330,15 +344,8 @@ export interface PermissionUsage {
   reason?: string;
 }
 
-export interface Resource {
-  id: string;
-  name: string;
-  type: string;
-  description: string;
-  attributes: Record<string, any>;
-}
 
-// ABAC Policy Types
+// Enhanced ABAC Policy Types
 export interface ABACPolicy {
   id: string;
   name: string;
@@ -346,21 +353,57 @@ export interface ABACPolicy {
   rules: PolicyRule[];
   effect: 'allow' | 'deny';
   priority: number;
-  status: 'active' | 'inactive';
+  status: 'active' | 'inactive' | 'draft' | 'deprecated';
   createdAt: string;
+  updatedAt?: string;
+  // Policy categorization
+  category: 'global' | 'role_refinement' | 'resource_specific' | 'temporal' | 'contextual';
+  // Applicability scope
+  applicableRoles?: string[];
+  applicableResources?: string[];
+  // Version control
+  version?: string;
+  basedOnPolicy?: string;
+  // Performance optimization
+  evaluationMode: 'strict' | 'optimized' | 'cached';
+  cacheTimeout?: number;
+  // Conflict resolution
+  conflictResolution?: 'deny_wins' | 'allow_wins' | 'priority_based' | 'most_specific';
 }
 
 export interface PolicyRule {
+  id?: string;
+  name?: string;
   subject: AttributeCondition[];
   resource: AttributeCondition[];
   action: string[];
   environment?: AttributeCondition[];
+  // Enhanced rule features
+  weight?: number;
+  isRequired?: boolean;
+  // Logical operators for complex conditions
+  subjectLogic?: 'AND' | 'OR' | 'NOT';
+  resourceLogic?: 'AND' | 'OR' | 'NOT';
+  environmentLogic?: 'AND' | 'OR' | 'NOT';
+  // Time-based conditions
+  timeConstraints?: TimeConstraint[];
+  // Custom evaluation functions
+  customEvaluator?: string;
 }
 
 export interface AttributeCondition {
   attribute: string;
-  operator: 'equals' | 'not_equals' | 'contains' | 'in' | 'not_in' | 'greater_than' | 'less_than';
+  operator: 'equals' | 'not_equals' | 'contains' | 'in' | 'not_in' | 'greater_than' | 'less_than' | 'starts_with' | 'ends_with' | 'matches_regex' | 'exists' | 'is_null' | 'is_empty';
   value: any;
+  // Enhanced features
+  caseSensitive?: boolean;
+  allowPartialMatch?: boolean;
+  // Support for dynamic values and expressions
+  isDynamic?: boolean;
+  expression?: string;
+  // Validation and constraints
+  dataType?: 'string' | 'number' | 'boolean' | 'date' | 'array' | 'object';
+  required?: boolean;
 }
 
 // Access Control Types
