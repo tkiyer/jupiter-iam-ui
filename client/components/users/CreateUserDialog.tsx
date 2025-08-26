@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CreateUserRequest } from "@shared/iam";
+import { ModernRolesSelector } from "@/components/users/ModernRolesSelector";
 
 interface CreateUserDialogProps {
   onCreateUser: (user: CreateUserRequest) => void;
