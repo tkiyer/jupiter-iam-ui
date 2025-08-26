@@ -133,7 +133,12 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       id: "marketing",
       name: "Marketing Specialist",
       description: "Marketing tools and campaign management",
-      roles: ["marketing_user", "campaign_manager", "analytics_viewer", "content_creator"],
+      roles: [
+        "marketing_user",
+        "campaign_manager",
+        "analytics_viewer",
+        "content_creator",
+      ],
       icon: Target,
       color: "from-orange-400 to-orange-600",
       useCase: "For marketing team and content creators",
@@ -168,7 +173,13 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       description: "Advanced development with mentoring",
       category: "engineering",
       level: "advanced",
-      permissions: ["code.read", "code.write", "code.review", "deploy.staging", "mentor.others"],
+      permissions: [
+        "code.read",
+        "code.write",
+        "code.review",
+        "deploy.staging",
+        "mentor.others",
+      ],
       requires: ["developer"],
       icon: Code,
       color: "blue",
@@ -189,7 +200,12 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       description: "Infrastructure and deployment management",
       category: "engineering",
       level: "advanced",
-      permissions: ["infra.manage", "deploy.production", "monitoring.access", "secrets.manage"],
+      permissions: [
+        "infra.manage",
+        "deploy.production",
+        "monitoring.access",
+        "secrets.manage",
+      ],
       icon: Settings,
       color: "gray",
     },
@@ -201,7 +217,12 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       description: "Team and project management",
       category: "management",
       level: "advanced",
-      permissions: ["team.manage", "reports.view", "budget.view", "performance.review"],
+      permissions: [
+        "team.manage",
+        "reports.view",
+        "budget.view",
+        "performance.review",
+      ],
       icon: Users,
       color: "purple",
     },
@@ -222,7 +243,12 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       description: "High-level strategic decisions",
       category: "management",
       level: "expert",
-      permissions: ["all.view", "strategic.decisions", "budget.approve", "hire.approve"],
+      permissions: [
+        "all.view",
+        "strategic.decisions",
+        "budget.approve",
+        "hire.approve",
+      ],
       requires: ["manager"],
       icon: Crown,
       color: "yellow",
@@ -235,7 +261,12 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       description: "Full system administration",
       category: "admin",
       level: "expert",
-      permissions: ["system.admin", "user.manage", "security.config", "audit.access"],
+      permissions: [
+        "system.admin",
+        "user.manage",
+        "security.config",
+        "audit.access",
+      ],
       conflicts: ["limited_user"],
       icon: Shield,
       color: "red",
@@ -246,7 +277,12 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       description: "Manage users and permissions",
       category: "admin",
       level: "advanced",
-      permissions: ["user.create", "user.edit", "roles.assign", "groups.manage"],
+      permissions: [
+        "user.create",
+        "user.edit",
+        "roles.assign",
+        "groups.manage",
+      ],
       icon: Users,
       color: "red",
     },
@@ -268,7 +304,12 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       description: "Access sales tools and customer data",
       category: "sales",
       level: "basic",
-      permissions: ["crm.access", "customers.view", "quotes.create", "sales.reports"],
+      permissions: [
+        "crm.access",
+        "customers.view",
+        "quotes.create",
+        "sales.reports",
+      ],
       icon: TrendingUp,
       color: "green",
     },
@@ -278,7 +319,12 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       description: "Manage sales team and territories",
       category: "sales",
       level: "advanced",
-      permissions: ["sales.manage", "team.sales", "territories.assign", "forecasting.access"],
+      permissions: [
+        "sales.manage",
+        "team.sales",
+        "territories.assign",
+        "forecasting.access",
+      ],
       requires: ["sales_user"],
       icon: TrendingUp,
       color: "green",
@@ -289,7 +335,12 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       description: "Create and manage marketing campaigns",
       category: "marketing",
       level: "basic",
-      permissions: ["campaigns.create", "content.manage", "analytics.view", "social.post"],
+      permissions: [
+        "campaigns.create",
+        "content.manage",
+        "analytics.view",
+        "social.post",
+      ],
       icon: Target,
       color: "orange",
     },
@@ -299,7 +350,12 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       description: "Create and publish content",
       category: "marketing",
       level: "basic",
-      permissions: ["content.create", "content.publish", "media.upload", "seo.tools"],
+      permissions: [
+        "content.create",
+        "content.publish",
+        "media.upload",
+        "seo.tools",
+      ],
       icon: Target,
       color: "orange",
     },
@@ -311,7 +367,12 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       description: "Customer support and ticket management",
       category: "support",
       level: "basic",
-      permissions: ["tickets.manage", "customers.contact", "knowledge.access", "chat.respond"],
+      permissions: [
+        "tickets.manage",
+        "customers.contact",
+        "knowledge.access",
+        "chat.respond",
+      ],
       icon: UserCheck,
       color: "teal",
     },
@@ -321,7 +382,12 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       description: "Manage support team and escalations",
       category: "support",
       level: "advanced",
-      permissions: ["support.manage", "escalations.handle", "team.support", "sla.monitor"],
+      permissions: [
+        "support.manage",
+        "escalations.handle",
+        "team.support",
+        "sla.monitor",
+      ],
       requires: ["support_agent"],
       icon: UserCheck,
       color: "teal",
@@ -354,13 +420,41 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
 
   const categories = [
     { id: "all", name: "All Categories", count: allRoles.length },
-    { id: "engineering", name: "Engineering", count: allRoles.filter(r => r.category === "engineering").length },
-    { id: "management", name: "Management", count: allRoles.filter(r => r.category === "management").length },
-    { id: "admin", name: "Administration", count: allRoles.filter(r => r.category === "admin").length },
-    { id: "sales", name: "Sales", count: allRoles.filter(r => r.category === "sales").length },
-    { id: "marketing", name: "Marketing", count: allRoles.filter(r => r.category === "marketing").length },
-    { id: "support", name: "Support", count: allRoles.filter(r => r.category === "support").length },
-    { id: "limited", name: "Limited Access", count: allRoles.filter(r => r.category === "limited").length },
+    {
+      id: "engineering",
+      name: "Engineering",
+      count: allRoles.filter((r) => r.category === "engineering").length,
+    },
+    {
+      id: "management",
+      name: "Management",
+      count: allRoles.filter((r) => r.category === "management").length,
+    },
+    {
+      id: "admin",
+      name: "Administration",
+      count: allRoles.filter((r) => r.category === "admin").length,
+    },
+    {
+      id: "sales",
+      name: "Sales",
+      count: allRoles.filter((r) => r.category === "sales").length,
+    },
+    {
+      id: "marketing",
+      name: "Marketing",
+      count: allRoles.filter((r) => r.category === "marketing").length,
+    },
+    {
+      id: "support",
+      name: "Support",
+      count: allRoles.filter((r) => r.category === "support").length,
+    },
+    {
+      id: "limited",
+      name: "Limited Access",
+      count: allRoles.filter((r) => r.category === "limited").length,
+    },
   ];
 
   const levels = [
@@ -377,9 +471,11 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       const matchesSearch =
         role.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         role.description.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesCategory = selectedCategory === "all" || role.category === selectedCategory;
-      const matchesLevel = selectedLevel === "all" || role.level === selectedLevel;
+
+      const matchesCategory =
+        selectedCategory === "all" || role.category === selectedCategory;
+      const matchesLevel =
+        selectedLevel === "all" || role.level === selectedLevel;
 
       return matchesSearch && matchesCategory && matchesLevel;
     });
@@ -392,14 +488,16 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
     const suggestions: string[] = [];
 
     selectedRoles.forEach((roleId) => {
-      const role = allRoles.find(r => r.id === roleId);
+      const role = allRoles.find((r) => r.id === roleId);
       if (!role) return;
 
       // Check conflicts
       if (role.conflicts) {
         role.conflicts.forEach((conflictId) => {
           if (selectedRoles.includes(conflictId)) {
-            conflicts.push(`${role.name} conflicts with ${allRoles.find(r => r.id === conflictId)?.name}`);
+            conflicts.push(
+              `${role.name} conflicts with ${allRoles.find((r) => r.id === conflictId)?.name}`,
+            );
           }
         });
       }
@@ -408,8 +506,10 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       if (role.requires) {
         role.requires.forEach((requireId) => {
           if (!selectedRoles.includes(requireId)) {
-            const requiredRole = allRoles.find(r => r.id === requireId);
-            missingRequirements.push(`${role.name} requires ${requiredRole?.name}`);
+            const requiredRole = allRoles.find((r) => r.id === requireId);
+            missingRequirements.push(
+              `${role.name} requires ${requiredRole?.name}`,
+            );
             if (requiredRole && !suggestions.includes(requireId)) {
               suggestions.push(requireId);
             }
@@ -423,7 +523,7 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
 
   const handleRoleToggle = (roleId: string) => {
     if (selectedRoles.includes(roleId)) {
-      onRolesChange(selectedRoles.filter(id => id !== roleId));
+      onRolesChange(selectedRoles.filter((id) => id !== roleId));
     } else {
       onRolesChange([...selectedRoles, roleId]);
     }
@@ -437,17 +537,24 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
   };
 
   const handleAddSuggestions = () => {
-    const newRoles = [...new Set([...selectedRoles, ...roleAnalysis.suggestions])];
+    const newRoles = [
+      ...new Set([...selectedRoles, ...roleAnalysis.suggestions]),
+    ];
     onRolesChange(newRoles);
   };
 
   const getLevelColor = (level: string) => {
     switch (level) {
-      case "basic": return "bg-green-100 text-green-800";
-      case "intermediate": return "bg-blue-100 text-blue-800";
-      case "advanced": return "bg-purple-100 text-purple-800";
-      case "expert": return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "basic":
+        return "bg-green-100 text-green-800";
+      case "intermediate":
+        return "bg-blue-100 text-blue-800";
+      case "advanced":
+        return "bg-purple-100 text-purple-800";
+      case "expert":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -456,8 +563,12 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       {/* Header with Stats */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">Roles & Access Management</h3>
-          <p className="text-sm text-gray-500">Assign roles and permissions for this user</p>
+          <h3 className="text-lg font-semibold text-gray-900">
+            Roles & Access Management
+          </h3>
+          <p className="text-sm text-gray-500">
+            Assign roles and permissions for this user
+          </p>
         </div>
         <div className="flex items-center space-x-4">
           <Badge variant="outline" className="text-sm font-medium">
@@ -496,7 +607,8 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
                 Role Templates
               </CardTitle>
               <p className="text-sm text-gray-600">
-                Choose a pre-configured role template that matches the user's responsibilities
+                Choose a pre-configured role template that matches the user's
+                responsibilities
               </p>
             </CardHeader>
             <CardContent>
@@ -504,31 +616,53 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
                 {roleTemplates.map((template) => {
                   const IconComponent = template.icon;
                   const isActive = activeTemplate === template.id;
-                  
+
                   return (
                     <Card
                       key={template.id}
                       className={cn(
                         "relative overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-md",
-                        isActive && "ring-2 ring-blue-500 scale-105"
+                        isActive && "ring-2 ring-blue-500 scale-105",
                       )}
                       onClick={() => handleTemplateApply(template)}
                     >
-                      <div className={cn("absolute inset-0 bg-gradient-to-br opacity-10", template.color)} />
+                      <div
+                        className={cn(
+                          "absolute inset-0 bg-gradient-to-br opacity-10",
+                          template.color,
+                        )}
+                      />
                       <CardContent className="relative p-4">
                         <div className="flex items-start space-x-3">
-                          <div className={cn("p-2 rounded-lg bg-gradient-to-br", template.color)}>
+                          <div
+                            className={cn(
+                              "p-2 rounded-lg bg-gradient-to-br",
+                              template.color,
+                            )}
+                          >
                             <IconComponent className="h-5 w-5 text-white" />
                           </div>
                           <div className="flex-1">
-                            <h4 className="font-semibold text-gray-900">{template.name}</h4>
-                            <p className="text-sm text-gray-600 mt-1">{template.description}</p>
-                            <p className="text-xs text-gray-500 mt-2">{template.useCase}</p>
+                            <h4 className="font-semibold text-gray-900">
+                              {template.name}
+                            </h4>
+                            <p className="text-sm text-gray-600 mt-1">
+                              {template.description}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-2">
+                              {template.useCase}
+                            </p>
                             <div className="flex flex-wrap gap-1 mt-3">
                               {template.roles.slice(0, 3).map((roleId) => {
-                                const role = allRoles.find(r => r.id === roleId);
+                                const role = allRoles.find(
+                                  (r) => r.id === roleId,
+                                );
                                 return role ? (
-                                  <Badge key={roleId} variant="secondary" className="text-xs">
+                                  <Badge
+                                    key={roleId}
+                                    variant="secondary"
+                                    className="text-xs"
+                                  >
                                     {role.name}
                                   </Badge>
                                 ) : null;
@@ -573,7 +707,10 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <Select
+                    value={selectedCategory}
+                    onValueChange={setSelectedCategory}
+                  >
                     <SelectTrigger className="w-40">
                       <SelectValue placeholder="Category" />
                     </SelectTrigger>
@@ -585,7 +722,10 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
                       ))}
                     </SelectContent>
                   </Select>
-                  <Select value={selectedLevel} onValueChange={setSelectedLevel}>
+                  <Select
+                    value={selectedLevel}
+                    onValueChange={setSelectedLevel}
+                  >
                     <SelectTrigger className="w-32">
                       <SelectValue placeholder="Level" />
                     </SelectTrigger>
@@ -618,38 +758,52 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
             {filteredRoles.map((role) => {
               const isSelected = selectedRoles.includes(role.id);
               const IconComponent = role.icon || Shield;
-              
+
               return (
                 <Card
                   key={role.id}
                   className={cn(
                     "cursor-pointer transition-all duration-200 hover:shadow-md",
-                    isSelected && "ring-2 ring-blue-500 bg-blue-50"
+                    isSelected && "ring-2 ring-blue-500 bg-blue-50",
                   )}
                   onClick={() => handleRoleToggle(role.id)}
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start space-x-3">
-                      <div className={cn(
-                        "p-2 rounded-lg",
-                        isSelected ? "bg-blue-100" : "bg-gray-100"
-                      )}>
-                        <IconComponent className={cn(
-                          "h-4 w-4",
-                          isSelected ? "text-blue-600" : "text-gray-600"
-                        )} />
+                      <div
+                        className={cn(
+                          "p-2 rounded-lg",
+                          isSelected ? "bg-blue-100" : "bg-gray-100",
+                        )}
+                      >
+                        <IconComponent
+                          className={cn(
+                            "h-4 w-4",
+                            isSelected ? "text-blue-600" : "text-gray-600",
+                          )}
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
-                          <h4 className="font-medium text-gray-900 truncate">{role.name}</h4>
-                          {isSelected && <CheckCircle className="h-4 w-4 text-blue-600" />}
+                          <h4 className="font-medium text-gray-900 truncate">
+                            {role.name}
+                          </h4>
+                          {isSelected && (
+                            <CheckCircle className="h-4 w-4 text-blue-600" />
+                          )}
                         </div>
-                        <p className="text-sm text-gray-600 mt-1">{role.description}</p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {role.description}
+                        </p>
                         <div className="flex items-center justify-between mt-2">
-                          <Badge className={cn("text-xs", getLevelColor(role.level))}>
+                          <Badge
+                            className={cn("text-xs", getLevelColor(role.level))}
+                          >
                             {role.level}
                           </Badge>
-                          <span className="text-xs text-gray-500 capitalize">{role.category}</span>
+                          <span className="text-xs text-gray-500 capitalize">
+                            {role.category}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -663,7 +817,9 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
             <Card>
               <CardContent className="p-8 text-center">
                 <Search className="mx-auto h-12 w-12 text-gray-400" />
-                <h3 className="mt-2 text-sm font-medium text-gray-900">No roles found</h3>
+                <h3 className="mt-2 text-sm font-medium text-gray-900">
+                  No roles found
+                </h3>
                 <p className="mt-1 text-sm text-gray-500">
                   Try adjusting your search or filter criteria.
                 </p>
@@ -688,7 +844,9 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
               {selectedRoles.length === 0 ? (
                 <div className="text-center py-8">
                   <Lock className="mx-auto h-12 w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">No roles selected</h3>
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">
+                    No roles selected
+                  </h3>
                   <p className="mt-1 text-sm text-gray-500">
                     Select roles to preview their permissions
                   </p>
@@ -697,15 +855,25 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
                 <div className="space-y-4">
                   {/* All permissions */}
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-2">Granted Permissions</h4>
+                    <h4 className="font-medium text-gray-900 mb-2">
+                      Granted Permissions
+                    </h4>
                     <div className="flex flex-wrap gap-2">
-                      {[...new Set(
-                        selectedRoles
-                          .map(roleId => allRoles.find(r => r.id === roleId))
-                          .filter(Boolean)
-                          .flatMap(role => role!.permissions)
-                      )].map((permission) => (
-                        <Badge key={permission} variant="outline" className="text-xs">
+                      {[
+                        ...new Set(
+                          selectedRoles
+                            .map((roleId) =>
+                              allRoles.find((r) => r.id === roleId),
+                            )
+                            .filter(Boolean)
+                            .flatMap((role) => role!.permissions),
+                        ),
+                      ].map((permission) => (
+                        <Badge
+                          key={permission}
+                          variant="outline"
+                          className="text-xs"
+                        >
                           <Unlock className="mr-1 h-3 w-3" />
                           {permission}
                         </Badge>
@@ -715,14 +883,21 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
 
                   {/* Selected roles breakdown */}
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-2">Selected Roles</h4>
+                    <h4 className="font-medium text-gray-900 mb-2">
+                      Selected Roles
+                    </h4>
                     <div className="space-y-2">
                       {selectedRoles.map((roleId) => {
-                        const role = allRoles.find(r => r.id === roleId);
+                        const role = allRoles.find((r) => r.id === roleId);
                         return role ? (
-                          <div key={roleId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                          <div
+                            key={roleId}
+                            className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                          >
                             <div className="flex items-center space-x-2">
-                              <Badge className={getLevelColor(role.level)}>{role.level}</Badge>
+                              <Badge className={getLevelColor(role.level)}>
+                                {role.level}
+                              </Badge>
                               <span className="font-medium">{role.name}</span>
                             </div>
                             <Button
@@ -746,58 +921,68 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
       </Tabs>
 
       {/* Conflicts and Requirements Alert */}
-      {showConflicts && (roleAnalysis.conflicts.length > 0 || roleAnalysis.missingRequirements.length > 0) && (
-        <Card className="border-yellow-200 bg-yellow-50">
-          <CardContent className="p-4">
-            <div className="flex items-start space-x-3">
-              <AlertTriangle className="h-5 w-5 text-yellow-600 mt-0.5" />
-              <div className="flex-1">
-                <h4 className="font-medium text-yellow-800">Role Configuration Issues</h4>
-                
-                {roleAnalysis.conflicts.length > 0 && (
-                  <div className="mt-2">
-                    <p className="text-sm text-yellow-700 font-medium">Conflicts:</p>
-                    <ul className="text-sm text-yellow-700 mt-1 space-y-1">
-                      {roleAnalysis.conflicts.map((conflict, index) => (
-                        <li key={index}>• {conflict}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+      {showConflicts &&
+        (roleAnalysis.conflicts.length > 0 ||
+          roleAnalysis.missingRequirements.length > 0) && (
+          <Card className="border-yellow-200 bg-yellow-50">
+            <CardContent className="p-4">
+              <div className="flex items-start space-x-3">
+                <AlertTriangle className="h-5 w-5 text-yellow-600 mt-0.5" />
+                <div className="flex-1">
+                  <h4 className="font-medium text-yellow-800">
+                    Role Configuration Issues
+                  </h4>
 
-                {roleAnalysis.missingRequirements.length > 0 && (
-                  <div className="mt-2">
-                    <p className="text-sm text-yellow-700 font-medium">Missing Requirements:</p>
-                    <ul className="text-sm text-yellow-700 mt-1 space-y-1">
-                      {roleAnalysis.missingRequirements.map((requirement, index) => (
-                        <li key={index}>• {requirement}</li>
-                      ))}
-                    </ul>
-                    {roleAnalysis.suggestions.length > 0 && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleAddSuggestions}
-                        className="mt-2 bg-white"
-                      >
-                        <Plus className="mr-2 h-4 w-4" />
-                        Add Required Roles
-                      </Button>
-                    )}
-                  </div>
-                )}
+                  {roleAnalysis.conflicts.length > 0 && (
+                    <div className="mt-2">
+                      <p className="text-sm text-yellow-700 font-medium">
+                        Conflicts:
+                      </p>
+                      <ul className="text-sm text-yellow-700 mt-1 space-y-1">
+                        {roleAnalysis.conflicts.map((conflict, index) => (
+                          <li key={index}>• {conflict}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {roleAnalysis.missingRequirements.length > 0 && (
+                    <div className="mt-2">
+                      <p className="text-sm text-yellow-700 font-medium">
+                        Missing Requirements:
+                      </p>
+                      <ul className="text-sm text-yellow-700 mt-1 space-y-1">
+                        {roleAnalysis.missingRequirements.map(
+                          (requirement, index) => (
+                            <li key={index}>• {requirement}</li>
+                          ),
+                        )}
+                      </ul>
+                      {roleAnalysis.suggestions.length > 0 && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleAddSuggestions}
+                          className="mt-2 bg-white"
+                        >
+                          <Plus className="mr-2 h-4 w-4" />
+                          Add Required Roles
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowConflicts(false)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowConflicts(false)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+            </CardContent>
+          </Card>
+        )}
 
       {/* Quick Actions */}
       <div className="flex items-center justify-between">
@@ -813,7 +998,8 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
           </Button>
         </div>
         <div className="text-sm text-gray-500">
-          {selectedRoles.length} role{selectedRoles.length !== 1 ? 's' : ''} selected
+          {selectedRoles.length} role{selectedRoles.length !== 1 ? "s" : ""}{" "}
+          selected
         </div>
       </div>
     </div>
