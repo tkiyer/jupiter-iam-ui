@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CreateUserRequest } from "@shared/iam";
-import { EnhancedRolesSelector } from "@/components/users/EnhancedRolesSelector";
+import { ModernRolesSelector } from "@/components/users/ModernRolesSelector";
 
 interface CreateUserDialogProps {
   onCreateUser: (user: CreateUserRequest) => void;
@@ -178,18 +178,13 @@ export const CreateUserDialog: React.FC<CreateUserDialogProps> = ({
           </TabsContent>
 
           <TabsContent value="roles" className="space-y-4">
-            <div>
-              <Label className="text-base font-medium mb-4 block">
-                Assign Roles
-              </Label>
-              <EnhancedRolesSelector
-                selectedRoles={formData.roles}
-                onRolesChange={(roles) =>
-                  setFormData((prev) => ({ ...prev, roles }))
-                }
-                variant="create"
-              />
-            </div>
+            <ModernRolesSelector
+              selectedRoles={formData.roles}
+              onRolesChange={(roles) =>
+                setFormData((prev) => ({ ...prev, roles }))
+              }
+              variant="create"
+            />
           </TabsContent>
 
           <TabsContent value="attributes" className="space-y-4">
