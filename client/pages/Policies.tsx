@@ -818,6 +818,66 @@ const CreatePolicyDialog: React.FC<{
       newErrors.rules = "At least one rule is required";
     }
 
+    // Advanced settings validation
+    const advanced = formData.advancedSettings;
+
+    // Time restrictions validation
+    if (advanced.timeRestrictions.enabled) {
+      if (advanced.timeRestrictions.dateRange.start && advanced.timeRestrictions.dateRange.end) {
+        const startDate = new Date(advanced.timeRestrictions.dateRange.start);
+        const endDate = new Date(advanced.timeRestrictions.dateRange.end);
+        if (startDate >= endDate) {
+          newErrors.timeRange = "End date must be after start date";
+        }
+      }
+    }
+
+    // Location restrictions validation
+    if (advanced.locationRestrictions.enabled) {
+      const hasAnyLocationRule =
+        advanced.locationRestrictions.allowedIPs.length > 0 ||
+        advanced.locationRestrictions.blockedIPs.length > 0 ||
+        advanced.locationRestrictions.allowedCountries.length > 0 ||
+        advanced.locationRestrictions.blockedCountries.length > 0 ||
+        advanced.locationRestrictions.requireVPN;
+
+      if (!hasAnyLocationRule) {
+        newErrors.locationRestrictions = "At least one location restriction must be configured when enabled";
+      }
+    }
+
+    // Custom expressions validation
+    if (advanced.customExpressions.enabled) {
+      advanced.customExpressions.expressions.forEach((expr, index) => {
+        if (!expr.name.trim()) {
+          newErrors[`expression_${index}_name`] = "Expression name is required";
+        }
+        if (!expr.expression.trim()) {
+          newErrors[`expression_${index}_expression`] = "Expression code is required";
+        }
+      });
+    }
+
+    // Integration settings validation
+    advanced.integrationSettings.webhooks.forEach((webhook, index) => {
+      if (webhook.enabled && !webhook.url.trim()) {
+        newErrors[`webhook_${index}_url`] = "Webhook URL is required when enabled";
+      }
+      if (webhook.enabled && webhook.url && !webhook.url.startsWith('http')) {
+        newErrors[`webhook_${index}_url`] = "Webhook URL must start with http:// or https://";
+      }
+    });
+
+    if (advanced.integrationSettings.externalValidation.enabled) {
+      if (!advanced.integrationSettings.externalValidation.endpoint.trim()) {
+        newErrors.externalValidationEndpoint = "External validation endpoint is required when enabled";
+      }
+      if (advanced.integrationSettings.externalValidation.endpoint &&
+          !advanced.integrationSettings.externalValidation.endpoint.startsWith('http')) {
+        newErrors.externalValidationEndpoint = "Validation endpoint must start with http:// or https://";
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
