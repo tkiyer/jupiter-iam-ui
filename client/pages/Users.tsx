@@ -1543,17 +1543,26 @@ const EnhancedRolesSelector: React.FC<{
                   const isSelected = selectedCategory === category.id;
 
                   return (
-                    <button
+                    <div
                       key={category.id}
                       onClick={() => {
                         setSelectedCategory(category.id);
                         setCurrentPage(1);
                       }}
                       className={cn(
-                        "w-full flex items-center justify-between p-3 text-left hover:bg-gray-50 transition-colors",
+                        "w-full flex items-center justify-between p-3 text-left hover:bg-gray-50 transition-colors cursor-pointer",
                         isSelected &&
                           "bg-blue-50 text-blue-700 border-r-2 border-blue-600",
                       )}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setSelectedCategory(category.id);
+                          setCurrentPage(1);
+                        }
+                      }}
                     >
                       <div className="flex items-center space-x-2">
                         <Icon className="h-4 w-4" />
@@ -1564,7 +1573,7 @@ const EnhancedRolesSelector: React.FC<{
                       <span className="inline-flex items-center rounded-md bg-secondary px-2 py-1 text-xs font-medium text-secondary-foreground">
                         {category.count}
                       </span>
-                    </button>
+                    </div>
                   );
                 })}
               </div>
