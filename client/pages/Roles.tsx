@@ -99,6 +99,14 @@ const Roles: React.FC = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("roles");
 
+  // Template management state
+  const [isCreateTemplateDialogOpen, setIsCreateTemplateDialogOpen] = useState(false);
+  const [isEditTemplateDialogOpen, setIsEditTemplateDialogOpen] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<RoleTemplate | null>(null);
+  const [templateSearchTerm, setTemplateSearchTerm] = useState("");
+  const [templateCategoryFilter, setTemplateCategoryFilter] = useState<string>("all");
+  const [filteredTemplates, setFilteredTemplates] = useState<RoleTemplate[]>([]);
+
   // Pagination state
   const {
     currentPage,
