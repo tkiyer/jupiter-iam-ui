@@ -1732,28 +1732,50 @@ const EnhancedRolesSelector: React.FC<{
                         of {filteredRoles.length} roles
                       </div>
                       <div className="flex space-x-1">
-                        <Button
-                          variant="outline"
-                          size="sm"
+                        <div
                           onClick={() =>
                             setCurrentPage((prev) => Math.max(1, prev - 1))
                           }
-                          disabled={currentPage === 1}
+                          className={cn(
+                            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3",
+                            currentPage === 1
+                              ? "pointer-events-none opacity-50"
+                              : "cursor-pointer"
+                          )}
+                          role="button"
+                          tabIndex={currentPage === 1 ? -1 : 0}
+                          onKeyDown={(e) => {
+                            if (currentPage > 1 && (e.key === 'Enter' || e.key === ' ')) {
+                              e.preventDefault();
+                              setCurrentPage((prev) => Math.max(1, prev - 1));
+                            }
+                          }}
                         >
                           Previous
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
+                        </div>
+                        <div
                           onClick={() =>
                             setCurrentPage((prev) =>
                               Math.min(totalPages, prev + 1),
                             )
                           }
-                          disabled={currentPage === totalPages}
+                          className={cn(
+                            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3",
+                            currentPage === totalPages
+                              ? "pointer-events-none opacity-50"
+                              : "cursor-pointer"
+                          )}
+                          role="button"
+                          tabIndex={currentPage === totalPages ? -1 : 0}
+                          onKeyDown={(e) => {
+                            if (currentPage < totalPages && (e.key === 'Enter' || e.key === ' ')) {
+                              e.preventDefault();
+                              setCurrentPage((prev) => Math.min(totalPages, prev + 1));
+                            }
+                          }}
                         >
                           Next
-                        </Button>
+                        </div>
                       </div>
                     </div>
                   )}
