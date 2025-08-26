@@ -539,7 +539,9 @@ const CreateUserDialog: React.FC<{
 
           <TabsContent value="roles" className="space-y-4">
             <div>
-              <Label className="text-base font-medium mb-4 block">Assign Roles</Label>
+              <Label className="text-base font-medium mb-4 block">
+                Assign Roles
+              </Label>
               <EnhancedRolesSelector
                 selectedRoles={formData.roles}
                 onRolesChange={(roles) =>
@@ -753,7 +755,9 @@ const EditUserDialog: React.FC<{
 
           <TabsContent value="roles" className="space-y-4">
             <div>
-              <Label className="text-base font-medium mb-4 block">Manage Roles</Label>
+              <Label className="text-base font-medium mb-4 block">
+                Manage Roles
+              </Label>
               <EnhancedRolesSelector
                 selectedRoles={formData.roles}
                 onRolesChange={(roles) =>
@@ -859,7 +863,9 @@ const EnhancedRolesSelector: React.FC<{
 }> = ({ selectedRoles, onRolesChange, variant = "create" }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(["common"]));
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
+    new Set(["common"]),
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const [showSelected, setShowSelected] = useState(false);
   const [bulkSelectMode, setBulkSelectMode] = useState(false);
@@ -868,121 +874,540 @@ const EnhancedRolesSelector: React.FC<{
   // Mock roles data - in real implementation, this would come from API
   const allRoles = [
     // Common roles
-    { id: "admin", name: "Administrator", description: "Full system access", category: "common", isCore: true },
-    { id: "manager", name: "Manager", description: "Team management access", category: "common", isCore: true },
-    { id: "user", name: "User", description: "Standard user access", category: "common", isCore: true },
-    { id: "auditor", name: "Auditor", description: "Audit and compliance access", category: "common", isCore: true },
+    {
+      id: "admin",
+      name: "Administrator",
+      description: "Full system access",
+      category: "common",
+      isCore: true,
+    },
+    {
+      id: "manager",
+      name: "Manager",
+      description: "Team management access",
+      category: "common",
+      isCore: true,
+    },
+    {
+      id: "user",
+      name: "User",
+      description: "Standard user access",
+      category: "common",
+      isCore: true,
+    },
+    {
+      id: "auditor",
+      name: "Auditor",
+      description: "Audit and compliance access",
+      category: "common",
+      isCore: true,
+    },
 
     // Engineering roles
-    { id: "eng_lead", name: "Engineering Lead", description: "Lead engineering teams", category: "engineering", parent: "manager" },
-    { id: "senior_dev", name: "Senior Developer", description: "Senior development role", category: "engineering" },
-    { id: "junior_dev", name: "Junior Developer", description: "Junior development role", category: "engineering" },
-    { id: "devops", name: "DevOps Engineer", description: "Infrastructure and deployment", category: "engineering" },
-    { id: "qa_lead", name: "QA Lead", description: "Quality assurance leadership", category: "engineering" },
-    { id: "qa_engineer", name: "QA Engineer", description: "Quality assurance testing", category: "engineering" },
-    { id: "architect", name: "Solution Architect", description: "System architecture design", category: "engineering" },
-    { id: "tech_writer", name: "Technical Writer", description: "Technical documentation", category: "engineering" },
+    {
+      id: "eng_lead",
+      name: "Engineering Lead",
+      description: "Lead engineering teams",
+      category: "engineering",
+      parent: "manager",
+    },
+    {
+      id: "senior_dev",
+      name: "Senior Developer",
+      description: "Senior development role",
+      category: "engineering",
+    },
+    {
+      id: "junior_dev",
+      name: "Junior Developer",
+      description: "Junior development role",
+      category: "engineering",
+    },
+    {
+      id: "devops",
+      name: "DevOps Engineer",
+      description: "Infrastructure and deployment",
+      category: "engineering",
+    },
+    {
+      id: "qa_lead",
+      name: "QA Lead",
+      description: "Quality assurance leadership",
+      category: "engineering",
+    },
+    {
+      id: "qa_engineer",
+      name: "QA Engineer",
+      description: "Quality assurance testing",
+      category: "engineering",
+    },
+    {
+      id: "architect",
+      name: "Solution Architect",
+      description: "System architecture design",
+      category: "engineering",
+    },
+    {
+      id: "tech_writer",
+      name: "Technical Writer",
+      description: "Technical documentation",
+      category: "engineering",
+    },
 
     // Sales roles
-    { id: "sales_dir", name: "Sales Director", description: "Sales team management", category: "sales", parent: "manager" },
-    { id: "sales_mgr", name: "Sales Manager", description: "Regional sales management", category: "sales", parent: "manager" },
-    { id: "account_exec", name: "Account Executive", description: "Client account management", category: "sales" },
-    { id: "sales_rep", name: "Sales Representative", description: "Direct sales activities", category: "sales" },
-    { id: "presales", name: "Pre-Sales Engineer", description: "Technical sales support", category: "sales" },
-    { id: "sales_ops", name: "Sales Operations", description: "Sales process optimization", category: "sales" },
+    {
+      id: "sales_dir",
+      name: "Sales Director",
+      description: "Sales team management",
+      category: "sales",
+      parent: "manager",
+    },
+    {
+      id: "sales_mgr",
+      name: "Sales Manager",
+      description: "Regional sales management",
+      category: "sales",
+      parent: "manager",
+    },
+    {
+      id: "account_exec",
+      name: "Account Executive",
+      description: "Client account management",
+      category: "sales",
+    },
+    {
+      id: "sales_rep",
+      name: "Sales Representative",
+      description: "Direct sales activities",
+      category: "sales",
+    },
+    {
+      id: "presales",
+      name: "Pre-Sales Engineer",
+      description: "Technical sales support",
+      category: "sales",
+    },
+    {
+      id: "sales_ops",
+      name: "Sales Operations",
+      description: "Sales process optimization",
+      category: "sales",
+    },
 
     // Marketing roles
-    { id: "marketing_dir", name: "Marketing Director", description: "Marketing strategy and leadership", category: "marketing", parent: "manager" },
-    { id: "product_marketing", name: "Product Marketing Manager", description: "Product marketing strategy", category: "marketing" },
-    { id: "content_marketing", name: "Content Marketing Manager", description: "Content strategy and creation", category: "marketing" },
-    { id: "digital_marketing", name: "Digital Marketing Specialist", description: "Digital marketing campaigns", category: "marketing" },
-    { id: "seo_specialist", name: "SEO Specialist", description: "Search engine optimization", category: "marketing" },
-    { id: "social_media", name: "Social Media Manager", description: "Social media strategy", category: "marketing" },
+    {
+      id: "marketing_dir",
+      name: "Marketing Director",
+      description: "Marketing strategy and leadership",
+      category: "marketing",
+      parent: "manager",
+    },
+    {
+      id: "product_marketing",
+      name: "Product Marketing Manager",
+      description: "Product marketing strategy",
+      category: "marketing",
+    },
+    {
+      id: "content_marketing",
+      name: "Content Marketing Manager",
+      description: "Content strategy and creation",
+      category: "marketing",
+    },
+    {
+      id: "digital_marketing",
+      name: "Digital Marketing Specialist",
+      description: "Digital marketing campaigns",
+      category: "marketing",
+    },
+    {
+      id: "seo_specialist",
+      name: "SEO Specialist",
+      description: "Search engine optimization",
+      category: "marketing",
+    },
+    {
+      id: "social_media",
+      name: "Social Media Manager",
+      description: "Social media strategy",
+      category: "marketing",
+    },
 
     // Finance roles
-    { id: "cfo", name: "Chief Financial Officer", description: "Financial leadership", category: "finance", parent: "admin" },
-    { id: "finance_mgr", name: "Finance Manager", description: "Financial operations management", category: "finance", parent: "manager" },
-    { id: "accountant", name: "Accountant", description: "Accounting and bookkeeping", category: "finance" },
-    { id: "finance_analyst", name: "Financial Analyst", description: "Financial analysis and reporting", category: "finance" },
-    { id: "payroll", name: "Payroll Specialist", description: "Payroll processing", category: "finance" },
-    { id: "budget_analyst", name: "Budget Analyst", description: "Budget planning and analysis", category: "finance" },
+    {
+      id: "cfo",
+      name: "Chief Financial Officer",
+      description: "Financial leadership",
+      category: "finance",
+      parent: "admin",
+    },
+    {
+      id: "finance_mgr",
+      name: "Finance Manager",
+      description: "Financial operations management",
+      category: "finance",
+      parent: "manager",
+    },
+    {
+      id: "accountant",
+      name: "Accountant",
+      description: "Accounting and bookkeeping",
+      category: "finance",
+    },
+    {
+      id: "finance_analyst",
+      name: "Financial Analyst",
+      description: "Financial analysis and reporting",
+      category: "finance",
+    },
+    {
+      id: "payroll",
+      name: "Payroll Specialist",
+      description: "Payroll processing",
+      category: "finance",
+    },
+    {
+      id: "budget_analyst",
+      name: "Budget Analyst",
+      description: "Budget planning and analysis",
+      category: "finance",
+    },
 
     // HR roles
-    { id: "hr_dir", name: "HR Director", description: "Human resources leadership", category: "hr", parent: "manager" },
-    { id: "hr_mgr", name: "HR Manager", description: "HR operations management", category: "hr", parent: "manager" },
-    { id: "recruiter", name: "Recruiter", description: "Talent acquisition", category: "hr" },
-    { id: "hr_generalist", name: "HR Generalist", description: "General HR support", category: "hr" },
-    { id: "benefits_admin", name: "Benefits Administrator", description: "Employee benefits management", category: "hr" },
-    { id: "training_spec", name: "Training Specialist", description: "Employee training and development", category: "hr" },
+    {
+      id: "hr_dir",
+      name: "HR Director",
+      description: "Human resources leadership",
+      category: "hr",
+      parent: "manager",
+    },
+    {
+      id: "hr_mgr",
+      name: "HR Manager",
+      description: "HR operations management",
+      category: "hr",
+      parent: "manager",
+    },
+    {
+      id: "recruiter",
+      name: "Recruiter",
+      description: "Talent acquisition",
+      category: "hr",
+    },
+    {
+      id: "hr_generalist",
+      name: "HR Generalist",
+      description: "General HR support",
+      category: "hr",
+    },
+    {
+      id: "benefits_admin",
+      name: "Benefits Administrator",
+      description: "Employee benefits management",
+      category: "hr",
+    },
+    {
+      id: "training_spec",
+      name: "Training Specialist",
+      description: "Employee training and development",
+      category: "hr",
+    },
 
     // IT roles
-    { id: "it_dir", name: "IT Director", description: "IT infrastructure leadership", category: "it", parent: "manager" },
-    { id: "sysadmin", name: "System Administrator", description: "System administration", category: "it" },
-    { id: "network_admin", name: "Network Administrator", description: "Network infrastructure", category: "it" },
-    { id: "security_analyst", name: "Security Analyst", description: "Information security", category: "it" },
-    { id: "helpdesk", name: "Helpdesk Specialist", description: "Technical support", category: "it" },
-    { id: "dba", name: "Database Administrator", description: "Database management", category: "it" },
+    {
+      id: "it_dir",
+      name: "IT Director",
+      description: "IT infrastructure leadership",
+      category: "it",
+      parent: "manager",
+    },
+    {
+      id: "sysadmin",
+      name: "System Administrator",
+      description: "System administration",
+      category: "it",
+    },
+    {
+      id: "network_admin",
+      name: "Network Administrator",
+      description: "Network infrastructure",
+      category: "it",
+    },
+    {
+      id: "security_analyst",
+      name: "Security Analyst",
+      description: "Information security",
+      category: "it",
+    },
+    {
+      id: "helpdesk",
+      name: "Helpdesk Specialist",
+      description: "Technical support",
+      category: "it",
+    },
+    {
+      id: "dba",
+      name: "Database Administrator",
+      description: "Database management",
+      category: "it",
+    },
 
     // Operations roles
-    { id: "ops_mgr", name: "Operations Manager", description: "Operations management", category: "operations", parent: "manager" },
-    { id: "project_mgr", name: "Project Manager", description: "Project coordination", category: "operations" },
-    { id: "business_analyst", name: "Business Analyst", description: "Business process analysis", category: "operations" },
-    { id: "data_analyst", name: "Data Analyst", description: "Data analysis and reporting", category: "operations" },
-    { id: "compliance", name: "Compliance Officer", description: "Regulatory compliance", category: "operations" },
-    { id: "vendor_mgr", name: "Vendor Manager", description: "Vendor relationship management", category: "operations" },
+    {
+      id: "ops_mgr",
+      name: "Operations Manager",
+      description: "Operations management",
+      category: "operations",
+      parent: "manager",
+    },
+    {
+      id: "project_mgr",
+      name: "Project Manager",
+      description: "Project coordination",
+      category: "operations",
+    },
+    {
+      id: "business_analyst",
+      name: "Business Analyst",
+      description: "Business process analysis",
+      category: "operations",
+    },
+    {
+      id: "data_analyst",
+      name: "Data Analyst",
+      description: "Data analysis and reporting",
+      category: "operations",
+    },
+    {
+      id: "compliance",
+      name: "Compliance Officer",
+      description: "Regulatory compliance",
+      category: "operations",
+    },
+    {
+      id: "vendor_mgr",
+      name: "Vendor Manager",
+      description: "Vendor relationship management",
+      category: "operations",
+    },
 
     // Customer Support roles
-    { id: "support_mgr", name: "Support Manager", description: "Customer support management", category: "support", parent: "manager" },
-    { id: "support_lead", name: "Support Team Lead", description: "Support team leadership", category: "support" },
-    { id: "support_agent", name: "Support Agent", description: "Customer support", category: "support" },
-    { id: "tech_support", name: "Technical Support Specialist", description: "Technical customer support", category: "support" },
-    { id: "customer_success", name: "Customer Success Manager", description: "Customer relationship management", category: "support" },
+    {
+      id: "support_mgr",
+      name: "Support Manager",
+      description: "Customer support management",
+      category: "support",
+      parent: "manager",
+    },
+    {
+      id: "support_lead",
+      name: "Support Team Lead",
+      description: "Support team leadership",
+      category: "support",
+    },
+    {
+      id: "support_agent",
+      name: "Support Agent",
+      description: "Customer support",
+      category: "support",
+    },
+    {
+      id: "tech_support",
+      name: "Technical Support Specialist",
+      description: "Technical customer support",
+      category: "support",
+    },
+    {
+      id: "customer_success",
+      name: "Customer Success Manager",
+      description: "Customer relationship management",
+      category: "support",
+    },
 
     // Executive roles
-    { id: "ceo", name: "Chief Executive Officer", description: "Executive leadership", category: "executive", parent: "admin", isCore: true },
-    { id: "cto", name: "Chief Technology Officer", description: "Technology leadership", category: "executive", parent: "admin" },
-    { id: "coo", name: "Chief Operating Officer", description: "Operations leadership", category: "executive", parent: "admin" },
-    { id: "vp_eng", name: "VP of Engineering", description: "Engineering leadership", category: "executive", parent: "admin" },
-    { id: "vp_sales", name: "VP of Sales", description: "Sales leadership", category: "executive", parent: "admin" },
-    { id: "vp_marketing", name: "VP of Marketing", description: "Marketing leadership", category: "executive", parent: "admin" },
+    {
+      id: "ceo",
+      name: "Chief Executive Officer",
+      description: "Executive leadership",
+      category: "executive",
+      parent: "admin",
+      isCore: true,
+    },
+    {
+      id: "cto",
+      name: "Chief Technology Officer",
+      description: "Technology leadership",
+      category: "executive",
+      parent: "admin",
+    },
+    {
+      id: "coo",
+      name: "Chief Operating Officer",
+      description: "Operations leadership",
+      category: "executive",
+      parent: "admin",
+    },
+    {
+      id: "vp_eng",
+      name: "VP of Engineering",
+      description: "Engineering leadership",
+      category: "executive",
+      parent: "admin",
+    },
+    {
+      id: "vp_sales",
+      name: "VP of Sales",
+      description: "Sales leadership",
+      category: "executive",
+      parent: "admin",
+    },
+    {
+      id: "vp_marketing",
+      name: "VP of Marketing",
+      description: "Marketing leadership",
+      category: "executive",
+      parent: "admin",
+    },
 
     // Contractor roles
-    { id: "contractor", name: "Contractor", description: "External contractor access", category: "contractor" },
-    { id: "consultant", name: "Consultant", description: "External consultant access", category: "contractor" },
-    { id: "vendor", name: "Vendor", description: "Vendor access", category: "contractor" },
-    { id: "intern", name: "Intern", description: "Internship access", category: "contractor" },
+    {
+      id: "contractor",
+      name: "Contractor",
+      description: "External contractor access",
+      category: "contractor",
+    },
+    {
+      id: "consultant",
+      name: "Consultant",
+      description: "External consultant access",
+      category: "contractor",
+    },
+    {
+      id: "vendor",
+      name: "Vendor",
+      description: "Vendor access",
+      category: "contractor",
+    },
+    {
+      id: "intern",
+      name: "Intern",
+      description: "Internship access",
+      category: "contractor",
+    },
 
     // Guest/Temporary roles
-    { id: "guest", name: "Guest", description: "Limited guest access", category: "guest" },
-    { id: "temp", name: "Temporary Employee", description: "Temporary access", category: "guest" },
-    { id: "readonly", name: "Read-only", description: "View-only access", category: "guest" },
-    { id: "demo", name: "Demo User", description: "Demonstration access", category: "guest" },
+    {
+      id: "guest",
+      name: "Guest",
+      description: "Limited guest access",
+      category: "guest",
+    },
+    {
+      id: "temp",
+      name: "Temporary Employee",
+      description: "Temporary access",
+      category: "guest",
+    },
+    {
+      id: "readonly",
+      name: "Read-only",
+      description: "View-only access",
+      category: "guest",
+    },
+    {
+      id: "demo",
+      name: "Demo User",
+      description: "Demonstration access",
+      category: "guest",
+    },
   ];
 
   const categories = [
     { id: "all", name: "All Roles", icon: Layers, count: allRoles.length },
-    { id: "common", name: "Common Roles", icon: Star, count: allRoles.filter(r => r.isCore).length },
-    { id: "engineering", name: "Engineering", icon: Code, count: allRoles.filter(r => r.category === "engineering").length },
-    { id: "sales", name: "Sales", icon: TrendingUp, count: allRoles.filter(r => r.category === "sales").length },
-    { id: "marketing", name: "Marketing", icon: Target, count: allRoles.filter(r => r.category === "marketing").length },
-    { id: "finance", name: "Finance", icon: Building, count: allRoles.filter(r => r.category === "finance").length },
-    { id: "hr", name: "Human Resources", icon: Users, count: allRoles.filter(r => r.category === "hr").length },
-    { id: "it", name: "IT", icon: Shield, count: allRoles.filter(r => r.category === "it").length },
-    { id: "operations", name: "Operations", icon: Settings, count: allRoles.filter(r => r.category === "operations").length },
-    { id: "support", name: "Support", icon: UserCheck, count: allRoles.filter(r => r.category === "support").length },
-    { id: "executive", name: "Executive", icon: Crown, count: allRoles.filter(r => r.category === "executive").length },
-    { id: "contractor", name: "Contractor", icon: Copy, count: allRoles.filter(r => r.category === "contractor").length },
-    { id: "guest", name: "Guest", icon: Eye, count: allRoles.filter(r => r.category === "guest").length },
+    {
+      id: "common",
+      name: "Common Roles",
+      icon: Star,
+      count: allRoles.filter((r) => r.isCore).length,
+    },
+    {
+      id: "engineering",
+      name: "Engineering",
+      icon: Code,
+      count: allRoles.filter((r) => r.category === "engineering").length,
+    },
+    {
+      id: "sales",
+      name: "Sales",
+      icon: TrendingUp,
+      count: allRoles.filter((r) => r.category === "sales").length,
+    },
+    {
+      id: "marketing",
+      name: "Marketing",
+      icon: Target,
+      count: allRoles.filter((r) => r.category === "marketing").length,
+    },
+    {
+      id: "finance",
+      name: "Finance",
+      icon: Building,
+      count: allRoles.filter((r) => r.category === "finance").length,
+    },
+    {
+      id: "hr",
+      name: "Human Resources",
+      icon: Users,
+      count: allRoles.filter((r) => r.category === "hr").length,
+    },
+    {
+      id: "it",
+      name: "IT",
+      icon: Shield,
+      count: allRoles.filter((r) => r.category === "it").length,
+    },
+    {
+      id: "operations",
+      name: "Operations",
+      icon: Settings,
+      count: allRoles.filter((r) => r.category === "operations").length,
+    },
+    {
+      id: "support",
+      name: "Support",
+      icon: UserCheck,
+      count: allRoles.filter((r) => r.category === "support").length,
+    },
+    {
+      id: "executive",
+      name: "Executive",
+      icon: Crown,
+      count: allRoles.filter((r) => r.category === "executive").length,
+    },
+    {
+      id: "contractor",
+      name: "Contractor",
+      icon: Copy,
+      count: allRoles.filter((r) => r.category === "contractor").length,
+    },
+    {
+      id: "guest",
+      name: "Guest",
+      icon: Eye,
+      count: allRoles.filter((r) => r.category === "guest").length,
+    },
   ];
 
   // Filter roles based on search, category, and show selected filter
-  const filteredRoles = allRoles.filter(role => {
-    const matchesSearch = role.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         role.description.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredRoles = allRoles.filter((role) => {
+    const matchesSearch =
+      role.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      role.description.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesCategory = selectedCategory === "all" ||
-                           (selectedCategory === "common" && role.isCore) ||
-                           role.category === selectedCategory;
+    const matchesCategory =
+      selectedCategory === "all" ||
+      (selectedCategory === "common" && role.isCore) ||
+      role.category === selectedCategory;
 
     const matchesSelected = !showSelected || selectedRoles.includes(role.id);
 
@@ -992,26 +1417,26 @@ const EnhancedRolesSelector: React.FC<{
   const totalPages = Math.ceil(filteredRoles.length / itemsPerPage);
   const paginatedRoles = filteredRoles.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   const handleRoleToggle = (roleId: string) => {
     if (selectedRoles.includes(roleId)) {
-      onRolesChange(selectedRoles.filter(id => id !== roleId));
+      onRolesChange(selectedRoles.filter((id) => id !== roleId));
     } else {
       onRolesChange([...selectedRoles, roleId]);
     }
   };
 
   const handleSelectAll = () => {
-    const allVisibleRoleIds = filteredRoles.map(role => role.id);
+    const allVisibleRoleIds = filteredRoles.map((role) => role.id);
     const uniqueRoles = [...new Set([...selectedRoles, ...allVisibleRoleIds])];
     onRolesChange(uniqueRoles);
   };
 
   const handleDeselectAll = () => {
-    const visibleRoleIds = new Set(filteredRoles.map(role => role.id));
-    onRolesChange(selectedRoles.filter(id => !visibleRoleIds.has(id)));
+    const visibleRoleIds = new Set(filteredRoles.map((role) => role.id));
+    onRolesChange(selectedRoles.filter((id) => !visibleRoleIds.has(id)));
   };
 
   const handleClearAll = () => {
@@ -1028,7 +1453,7 @@ const EnhancedRolesSelector: React.FC<{
     setExpandedCategories(newExpanded);
   };
 
-  const commonRolesSuggestions = allRoles.filter(r => r.isCore).slice(0, 4);
+  const commonRolesSuggestions = allRoles.filter((r) => r.isCore).slice(0, 4);
 
   return (
     <div className="space-y-6">
@@ -1086,12 +1511,16 @@ const EnhancedRolesSelector: React.FC<{
               {commonRolesSuggestions.map((role) => (
                 <Button
                   key={role.id}
-                  variant={selectedRoles.includes(role.id) ? "default" : "outline"}
+                  variant={
+                    selectedRoles.includes(role.id) ? "default" : "outline"
+                  }
                   size="sm"
                   onClick={() => handleRoleToggle(role.id)}
                   className="text-xs"
                 >
-                  {selectedRoles.includes(role.id) && <Check className="mr-1 h-3 w-3" />}
+                  {selectedRoles.includes(role.id) && (
+                    <Check className="mr-1 h-3 w-3" />
+                  )}
                   {role.name}
                 </Button>
               ))}
@@ -1122,12 +1551,15 @@ const EnhancedRolesSelector: React.FC<{
                       }}
                       className={cn(
                         "w-full flex items-center justify-between p-3 text-left hover:bg-gray-50 transition-colors",
-                        isSelected && "bg-blue-50 text-blue-700 border-r-2 border-blue-600"
+                        isSelected &&
+                          "bg-blue-50 text-blue-700 border-r-2 border-blue-600",
                       )}
                     >
                       <div className="flex items-center space-x-2">
                         <Icon className="h-4 w-4" />
-                        <span className="text-sm font-medium">{category.name}</span>
+                        <span className="text-sm font-medium">
+                          {category.name}
+                        </span>
                       </div>
                       <span className="inline-flex items-center rounded-md bg-secondary px-2 py-1 text-xs font-medium text-secondary-foreground">
                         {category.count}
@@ -1162,10 +1594,18 @@ const EnhancedRolesSelector: React.FC<{
                 </div>
                 {bulkSelectMode && filteredRoles.length > 0 && (
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={handleSelectAll}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleSelectAll}
+                    >
                       Select All ({filteredRoles.length})
                     </Button>
-                    <Button variant="outline" size="sm" onClick={handleDeselectAll}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleDeselectAll}
+                    >
                       Deselect All
                     </Button>
                   </div>
@@ -1179,8 +1619,9 @@ const EnhancedRolesSelector: React.FC<{
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm">
-                  {selectedCategory === "all" ? "All Roles" :
-                   categories.find(c => c.id === selectedCategory)?.name}
+                  {selectedCategory === "all"
+                    ? "All Roles"
+                    : categories.find((c) => c.id === selectedCategory)?.name}
                   ({filteredRoles.length})
                 </CardTitle>
                 {totalPages > 1 && (
@@ -1195,21 +1636,25 @@ const EnhancedRolesSelector: React.FC<{
                 <div className="text-center py-8 text-gray-500">
                   <Search className="mx-auto h-8 w-8 mb-2" />
                   <p>No roles found</p>
-                  <p className="text-sm">Try adjusting your search or category filter</p>
+                  <p className="text-sm">
+                    Try adjusting your search or category filter
+                  </p>
                 </div>
               ) : (
                 <>
                   <div className="space-y-2 mb-4">
                     {paginatedRoles.map((role) => {
                       const isSelected = selectedRoles.includes(role.id);
-                      const parentRole = role.parent ? allRoles.find(r => r.id === role.parent) : null;
+                      const parentRole = role.parent
+                        ? allRoles.find((r) => r.id === role.parent)
+                        : null;
 
                       return (
                         <div
                           key={role.id}
                           className={cn(
                             "flex items-center space-x-3 p-3 rounded-lg border transition-colors hover:bg-gray-50",
-                            isSelected && "bg-blue-50 border-blue-200"
+                            isSelected && "bg-blue-50 border-blue-200",
                           )}
                         >
                           <Checkbox
@@ -1246,13 +1691,20 @@ const EnhancedRolesSelector: React.FC<{
                   {totalPages > 1 && (
                     <div className="flex items-center justify-between pt-4 border-t">
                       <div className="text-sm text-gray-500">
-                        Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredRoles.length)} of {filteredRoles.length} roles
+                        Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                        {Math.min(
+                          currentPage * itemsPerPage,
+                          filteredRoles.length,
+                        )}{" "}
+                        of {filteredRoles.length} roles
                       </div>
                       <div className="flex space-x-1">
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                          onClick={() =>
+                            setCurrentPage((prev) => Math.max(1, prev - 1))
+                          }
                           disabled={currentPage === 1}
                         >
                           Previous
@@ -1260,7 +1712,11 @@ const EnhancedRolesSelector: React.FC<{
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                          onClick={() =>
+                            setCurrentPage((prev) =>
+                              Math.min(totalPages, prev + 1),
+                            )
+                          }
                           disabled={currentPage === totalPages}
                         >
                           Next
@@ -1287,7 +1743,7 @@ const EnhancedRolesSelector: React.FC<{
           <CardContent>
             <div className="flex flex-wrap gap-2">
               {selectedRoles.map((roleId) => {
-                const role = allRoles.find(r => r.id === roleId);
+                const role = allRoles.find((r) => r.id === roleId);
                 if (!role) return null;
 
                 return (

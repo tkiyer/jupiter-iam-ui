@@ -767,11 +767,19 @@ const CreatePolicyDialog: React.FC<{
         contextualEvaluation: false,
         attributeResolution: "lazy" as "lazy" | "eager",
         cacheTimeout: 300,
-        customAttributes: [] as { key: string; source: string; defaultValue: string }[],
+        customAttributes: [] as {
+          key: string;
+          source: string;
+          defaultValue: string;
+        }[],
       },
       customExpressions: {
         enabled: false,
-        expressions: [] as { name: string; expression: string; description: string }[],
+        expressions: [] as {
+          name: string;
+          expression: string;
+          description: string;
+        }[],
         allowJavaScript: false,
         maxExecutionTime: 1000,
       },
@@ -823,7 +831,10 @@ const CreatePolicyDialog: React.FC<{
 
     // Time restrictions validation
     if (advanced.timeRestrictions.enabled) {
-      if (advanced.timeRestrictions.dateRange.start && advanced.timeRestrictions.dateRange.end) {
+      if (
+        advanced.timeRestrictions.dateRange.start &&
+        advanced.timeRestrictions.dateRange.end
+      ) {
         const startDate = new Date(advanced.timeRestrictions.dateRange.start);
         const endDate = new Date(advanced.timeRestrictions.dateRange.end);
         if (startDate >= endDate) {
@@ -842,7 +853,8 @@ const CreatePolicyDialog: React.FC<{
         advanced.locationRestrictions.requireVPN;
 
       if (!hasAnyLocationRule) {
-        newErrors.locationRestrictions = "At least one location restriction must be configured when enabled";
+        newErrors.locationRestrictions =
+          "At least one location restriction must be configured when enabled";
       }
     }
 
@@ -853,7 +865,8 @@ const CreatePolicyDialog: React.FC<{
           newErrors[`expression_${index}_name`] = "Expression name is required";
         }
         if (!expr.expression.trim()) {
-          newErrors[`expression_${index}_expression`] = "Expression code is required";
+          newErrors[`expression_${index}_expression`] =
+            "Expression code is required";
         }
       });
     }
@@ -861,20 +874,28 @@ const CreatePolicyDialog: React.FC<{
     // Integration settings validation
     advanced.integrationSettings.webhooks.forEach((webhook, index) => {
       if (webhook.enabled && !webhook.url.trim()) {
-        newErrors[`webhook_${index}_url`] = "Webhook URL is required when enabled";
+        newErrors[`webhook_${index}_url`] =
+          "Webhook URL is required when enabled";
       }
-      if (webhook.enabled && webhook.url && !webhook.url.startsWith('http')) {
-        newErrors[`webhook_${index}_url`] = "Webhook URL must start with http:// or https://";
+      if (webhook.enabled && webhook.url && !webhook.url.startsWith("http")) {
+        newErrors[`webhook_${index}_url`] =
+          "Webhook URL must start with http:// or https://";
       }
     });
 
     if (advanced.integrationSettings.externalValidation.enabled) {
       if (!advanced.integrationSettings.externalValidation.endpoint.trim()) {
-        newErrors.externalValidationEndpoint = "External validation endpoint is required when enabled";
+        newErrors.externalValidationEndpoint =
+          "External validation endpoint is required when enabled";
       }
-      if (advanced.integrationSettings.externalValidation.endpoint &&
-          !advanced.integrationSettings.externalValidation.endpoint.startsWith('http')) {
-        newErrors.externalValidationEndpoint = "Validation endpoint must start with http:// or https://";
+      if (
+        advanced.integrationSettings.externalValidation.endpoint &&
+        !advanced.integrationSettings.externalValidation.endpoint.startsWith(
+          "http",
+        )
+      ) {
+        newErrors.externalValidationEndpoint =
+          "Validation endpoint must start with http:// or https://";
       }
     }
 
@@ -948,7 +969,9 @@ const CreatePolicyDialog: React.FC<{
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="basic">Basic Info</TabsTrigger>
-            <TabsTrigger value="rules">Rules ({formData.rules.length})</TabsTrigger>
+            <TabsTrigger value="rules">
+              Rules ({formData.rules.length})
+            </TabsTrigger>
             <TabsTrigger value="conditions">Advanced</TabsTrigger>
             <TabsTrigger value="validation">Validation</TabsTrigger>
           </TabsList>
@@ -967,7 +990,9 @@ const CreatePolicyDialog: React.FC<{
                   className={errors.name ? "border-red-500" : ""}
                   placeholder="e.g., Executive Financial Access"
                 />
-                {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+                {errors.name && (
+                  <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+                )}
               </div>
               <div>
                 <Label>Policy Effect *</Label>
@@ -1014,7 +1039,11 @@ const CreatePolicyDialog: React.FC<{
                 placeholder="Describe what this policy controls and when it applies"
                 rows={3}
               />
-              {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
+              {errors.description && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.description}
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -1037,7 +1066,9 @@ const CreatePolicyDialog: React.FC<{
                 <p className="text-xs text-gray-500 mt-1">
                   Higher numbers = higher priority (1-1000)
                 </p>
-                {errors.priority && <p className="text-sm text-red-500 mt-1">{errors.priority}</p>}
+                {errors.priority && (
+                  <p className="text-sm text-red-500 mt-1">{errors.priority}</p>
+                )}
               </div>
               <div>
                 <Label>Initial Status</Label>
@@ -1079,7 +1110,10 @@ const CreatePolicyDialog: React.FC<{
               <Input
                 placeholder="Enter tags separated by commas (e.g., finance, executive, sensitive)"
                 onChange={(e) => {
-                  const tags = e.target.value.split(',').map(tag => tag.trim()).filter(Boolean);
+                  const tags = e.target.value
+                    .split(",")
+                    .map((tag) => tag.trim())
+                    .filter(Boolean);
                   setFormData((prev) => ({ ...prev, tags }));
                 }}
               />
@@ -1109,13 +1143,17 @@ const CreatePolicyDialog: React.FC<{
               </Button>
             </div>
 
-            {errors.rules && <p className="text-sm text-red-500">{errors.rules}</p>}
+            {errors.rules && (
+              <p className="text-sm text-red-500">{errors.rules}</p>
+            )}
 
             {formData.rules.length === 0 ? (
               <Card className="border-dashed">
                 <CardContent className="flex flex-col items-center justify-center py-12">
                   <FileText className="h-12 w-12 text-gray-400 mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No rules defined</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    No rules defined
+                  </h3>
                   <p className="text-gray-500 mb-4 text-center">
                     Add at least one rule to define access conditions
                   </p>
@@ -1142,20 +1180,35 @@ const CreatePolicyDialog: React.FC<{
 
           <TabsContent value="conditions" className="space-y-6">
             <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Advanced Policy Settings</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Advanced Policy Settings
+              </h3>
               <p className="text-sm text-gray-500 mb-6">
-                Configure advanced conditions, restrictions, and integrations for your ABAC policy
+                Configure advanced conditions, restrictions, and integrations
+                for your ABAC policy
               </p>
             </div>
 
             <Tabs defaultValue="time" className="w-full">
               <TabsList className="grid w-full grid-cols-6">
-                <TabsTrigger value="time" className="text-xs">Time</TabsTrigger>
-                <TabsTrigger value="location" className="text-xs">Location</TabsTrigger>
-                <TabsTrigger value="dynamic" className="text-xs">Dynamic</TabsTrigger>
-                <TabsTrigger value="expressions" className="text-xs">Expressions</TabsTrigger>
-                <TabsTrigger value="compliance" className="text-xs">Compliance</TabsTrigger>
-                <TabsTrigger value="integration" className="text-xs">Integration</TabsTrigger>
+                <TabsTrigger value="time" className="text-xs">
+                  Time
+                </TabsTrigger>
+                <TabsTrigger value="location" className="text-xs">
+                  Location
+                </TabsTrigger>
+                <TabsTrigger value="dynamic" className="text-xs">
+                  Dynamic
+                </TabsTrigger>
+                <TabsTrigger value="expressions" className="text-xs">
+                  Expressions
+                </TabsTrigger>
+                <TabsTrigger value="compliance" className="text-xs">
+                  Compliance
+                </TabsTrigger>
+                <TabsTrigger value="integration" className="text-xs">
+                  Integration
+                </TabsTrigger>
               </TabsList>
 
               {/* Time-based Restrictions */}
@@ -1165,10 +1218,14 @@ const CreatePolicyDialog: React.FC<{
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <Clock className="h-5 w-5 text-blue-600" />
-                        <CardTitle className="text-base">Time-based Restrictions</CardTitle>
+                        <CardTitle className="text-base">
+                          Time-based Restrictions
+                        </CardTitle>
                       </div>
                       <Switch
-                        checked={formData.advancedSettings.timeRestrictions.enabled}
+                        checked={
+                          formData.advancedSettings.timeRestrictions.enabled
+                        }
                         onCheckedChange={(checked) =>
                           setFormData((prev) => ({
                             ...prev,
@@ -1184,7 +1241,8 @@ const CreatePolicyDialog: React.FC<{
                       />
                     </div>
                     <CardDescription>
-                      Control when this policy can be applied based on time constraints
+                      Control when this policy can be applied based on time
+                      constraints
                     </CardDescription>
                   </CardHeader>
                   {formData.advancedSettings.timeRestrictions.enabled && (
@@ -1194,7 +1252,10 @@ const CreatePolicyDialog: React.FC<{
                           <Label>Business Hours Start</Label>
                           <Input
                             type="time"
-                            value={formData.advancedSettings.timeRestrictions.businessHours.start}
+                            value={
+                              formData.advancedSettings.timeRestrictions
+                                .businessHours.start
+                            }
                             onChange={(e) =>
                               setFormData((prev) => ({
                                 ...prev,
@@ -1203,7 +1264,8 @@ const CreatePolicyDialog: React.FC<{
                                   timeRestrictions: {
                                     ...prev.advancedSettings.timeRestrictions,
                                     businessHours: {
-                                      ...prev.advancedSettings.timeRestrictions.businessHours,
+                                      ...prev.advancedSettings.timeRestrictions
+                                        .businessHours,
                                       start: e.target.value,
                                     },
                                   },
@@ -1216,7 +1278,10 @@ const CreatePolicyDialog: React.FC<{
                           <Label>Business Hours End</Label>
                           <Input
                             type="time"
-                            value={formData.advancedSettings.timeRestrictions.businessHours.end}
+                            value={
+                              formData.advancedSettings.timeRestrictions
+                                .businessHours.end
+                            }
                             onChange={(e) =>
                               setFormData((prev) => ({
                                 ...prev,
@@ -1225,7 +1290,8 @@ const CreatePolicyDialog: React.FC<{
                                   timeRestrictions: {
                                     ...prev.advancedSettings.timeRestrictions,
                                     businessHours: {
-                                      ...prev.advancedSettings.timeRestrictions.businessHours,
+                                      ...prev.advancedSettings.timeRestrictions
+                                        .businessHours,
                                       end: e.target.value,
                                     },
                                   },
@@ -1239,30 +1305,48 @@ const CreatePolicyDialog: React.FC<{
                       <div>
                         <Label>Allowed Days</Label>
                         <div className="grid grid-cols-4 gap-2 mt-2">
-                          {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => (
-                            <div key={day} className="flex items-center space-x-2">
+                          {[
+                            "Monday",
+                            "Tuesday",
+                            "Wednesday",
+                            "Thursday",
+                            "Friday",
+                            "Saturday",
+                            "Sunday",
+                          ].map((day) => (
+                            <div
+                              key={day}
+                              className="flex items-center space-x-2"
+                            >
                               <Checkbox
                                 id={day}
-                                checked={formData.advancedSettings.timeRestrictions.allowedDays.includes(day)}
+                                checked={formData.advancedSettings.timeRestrictions.allowedDays.includes(
+                                  day,
+                                )}
                                 onCheckedChange={(checked) => {
-                                  const currentDays = formData.advancedSettings.timeRestrictions.allowedDays;
+                                  const currentDays =
+                                    formData.advancedSettings.timeRestrictions
+                                      .allowedDays;
                                   const newDays = checked
                                     ? [...currentDays, day]
-                                    : currentDays.filter(d => d !== day);
+                                    : currentDays.filter((d) => d !== day);
 
                                   setFormData((prev) => ({
                                     ...prev,
                                     advancedSettings: {
                                       ...prev.advancedSettings,
                                       timeRestrictions: {
-                                        ...prev.advancedSettings.timeRestrictions,
+                                        ...prev.advancedSettings
+                                          .timeRestrictions,
                                         allowedDays: newDays,
                                       },
                                     },
                                   }));
                                 }}
                               />
-                              <Label htmlFor={day} className="text-xs">{day.slice(0, 3)}</Label>
+                              <Label htmlFor={day} className="text-xs">
+                                {day.slice(0, 3)}
+                              </Label>
                             </div>
                           ))}
                         </div>
@@ -1272,7 +1356,10 @@ const CreatePolicyDialog: React.FC<{
                         <div>
                           <Label>Timezone</Label>
                           <Select
-                            value={formData.advancedSettings.timeRestrictions.timezone}
+                            value={
+                              formData.advancedSettings.timeRestrictions
+                                .timezone
+                            }
                             onValueChange={(value) =>
                               setFormData((prev) => ({
                                 ...prev,
@@ -1291,14 +1378,28 @@ const CreatePolicyDialog: React.FC<{
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="UTC">UTC</SelectItem>
-                              <SelectItem value="America/New_York">Eastern Time</SelectItem>
-                              <SelectItem value="America/Chicago">Central Time</SelectItem>
-                              <SelectItem value="America/Denver">Mountain Time</SelectItem>
-                              <SelectItem value="America/Los_Angeles">Pacific Time</SelectItem>
-                              <SelectItem value="Europe/London">London</SelectItem>
-                              <SelectItem value="Europe/Paris">Paris</SelectItem>
+                              <SelectItem value="America/New_York">
+                                Eastern Time
+                              </SelectItem>
+                              <SelectItem value="America/Chicago">
+                                Central Time
+                              </SelectItem>
+                              <SelectItem value="America/Denver">
+                                Mountain Time
+                              </SelectItem>
+                              <SelectItem value="America/Los_Angeles">
+                                Pacific Time
+                              </SelectItem>
+                              <SelectItem value="Europe/London">
+                                London
+                              </SelectItem>
+                              <SelectItem value="Europe/Paris">
+                                Paris
+                              </SelectItem>
                               <SelectItem value="Asia/Tokyo">Tokyo</SelectItem>
-                              <SelectItem value="Asia/Shanghai">Shanghai</SelectItem>
+                              <SelectItem value="Asia/Shanghai">
+                                Shanghai
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -1309,7 +1410,10 @@ const CreatePolicyDialog: React.FC<{
                           <Label>Effective From</Label>
                           <Input
                             type="date"
-                            value={formData.advancedSettings.timeRestrictions.dateRange.start}
+                            value={
+                              formData.advancedSettings.timeRestrictions
+                                .dateRange.start
+                            }
                             onChange={(e) =>
                               setFormData((prev) => ({
                                 ...prev,
@@ -1318,7 +1422,8 @@ const CreatePolicyDialog: React.FC<{
                                   timeRestrictions: {
                                     ...prev.advancedSettings.timeRestrictions,
                                     dateRange: {
-                                      ...prev.advancedSettings.timeRestrictions.dateRange,
+                                      ...prev.advancedSettings.timeRestrictions
+                                        .dateRange,
                                       start: e.target.value,
                                     },
                                   },
@@ -1331,7 +1436,10 @@ const CreatePolicyDialog: React.FC<{
                           <Label>Expires On</Label>
                           <Input
                             type="date"
-                            value={formData.advancedSettings.timeRestrictions.dateRange.end}
+                            value={
+                              formData.advancedSettings.timeRestrictions
+                                .dateRange.end
+                            }
                             onChange={(e) =>
                               setFormData((prev) => ({
                                 ...prev,
@@ -1340,7 +1448,8 @@ const CreatePolicyDialog: React.FC<{
                                   timeRestrictions: {
                                     ...prev.advancedSettings.timeRestrictions,
                                     dateRange: {
-                                      ...prev.advancedSettings.timeRestrictions.dateRange,
+                                      ...prev.advancedSettings.timeRestrictions
+                                        .dateRange,
                                       end: e.target.value,
                                     },
                                   },
@@ -1362,10 +1471,14 @@ const CreatePolicyDialog: React.FC<{
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <Globe className="h-5 w-5 text-green-600" />
-                        <CardTitle className="text-base">Location-based Restrictions</CardTitle>
+                        <CardTitle className="text-base">
+                          Location-based Restrictions
+                        </CardTitle>
                       </div>
                       <Switch
-                        checked={formData.advancedSettings.locationRestrictions.enabled}
+                        checked={
+                          formData.advancedSettings.locationRestrictions.enabled
+                        }
                         onCheckedChange={(checked) =>
                           setFormData((prev) => ({
                             ...prev,
@@ -1381,7 +1494,8 @@ const CreatePolicyDialog: React.FC<{
                       />
                     </div>
                     <CardDescription>
-                      Control access based on IP addresses, geographic locations, and network requirements
+                      Control access based on IP addresses, geographic
+                      locations, and network requirements
                     </CardDescription>
                   </CardHeader>
                   {formData.advancedSettings.locationRestrictions.enabled && (
@@ -1390,9 +1504,13 @@ const CreatePolicyDialog: React.FC<{
                         <Label>Allowed IP Addresses/Ranges</Label>
                         <Textarea
                           placeholder="Enter IP addresses or CIDR ranges, one per line&#10;Example:&#10;192.168.1.0/24&#10;10.0.0.1&#10;203.0.113.0/24"
-                          value={formData.advancedSettings.locationRestrictions.allowedIPs.join('\n')}
+                          value={formData.advancedSettings.locationRestrictions.allowedIPs.join(
+                            "\n",
+                          )}
                           onChange={(e) => {
-                            const ips = e.target.value.split('\n').filter(ip => ip.trim());
+                            const ips = e.target.value
+                              .split("\n")
+                              .filter((ip) => ip.trim());
                             setFormData((prev) => ({
                               ...prev,
                               advancedSettings: {
@@ -1412,9 +1530,13 @@ const CreatePolicyDialog: React.FC<{
                         <Label>Blocked IP Addresses/Ranges</Label>
                         <Textarea
                           placeholder="Enter IP addresses or CIDR ranges to block, one per line"
-                          value={formData.advancedSettings.locationRestrictions.blockedIPs.join('\n')}
+                          value={formData.advancedSettings.locationRestrictions.blockedIPs.join(
+                            "\n",
+                          )}
                           onChange={(e) => {
-                            const ips = e.target.value.split('\n').filter(ip => ip.trim());
+                            const ips = e.target.value
+                              .split("\n")
+                              .filter((ip) => ip.trim());
                             setFormData((prev) => ({
                               ...prev,
                               advancedSettings: {
@@ -1435,15 +1557,21 @@ const CreatePolicyDialog: React.FC<{
                           <Label>Allowed Countries</Label>
                           <Input
                             placeholder="e.g., US, CA, GB (ISO codes)"
-                            value={formData.advancedSettings.locationRestrictions.allowedCountries.join(', ')}
+                            value={formData.advancedSettings.locationRestrictions.allowedCountries.join(
+                              ", ",
+                            )}
                             onChange={(e) => {
-                              const countries = e.target.value.split(',').map(c => c.trim()).filter(Boolean);
+                              const countries = e.target.value
+                                .split(",")
+                                .map((c) => c.trim())
+                                .filter(Boolean);
                               setFormData((prev) => ({
                                 ...prev,
                                 advancedSettings: {
                                   ...prev.advancedSettings,
                                   locationRestrictions: {
-                                    ...prev.advancedSettings.locationRestrictions,
+                                    ...prev.advancedSettings
+                                      .locationRestrictions,
                                     allowedCountries: countries,
                                   },
                                 },
@@ -1455,15 +1583,21 @@ const CreatePolicyDialog: React.FC<{
                           <Label>Blocked Countries</Label>
                           <Input
                             placeholder="e.g., XX, YY (ISO codes)"
-                            value={formData.advancedSettings.locationRestrictions.blockedCountries.join(', ')}
+                            value={formData.advancedSettings.locationRestrictions.blockedCountries.join(
+                              ", ",
+                            )}
                             onChange={(e) => {
-                              const countries = e.target.value.split(',').map(c => c.trim()).filter(Boolean);
+                              const countries = e.target.value
+                                .split(",")
+                                .map((c) => c.trim())
+                                .filter(Boolean);
                               setFormData((prev) => ({
                                 ...prev,
                                 advancedSettings: {
                                   ...prev.advancedSettings,
                                   locationRestrictions: {
-                                    ...prev.advancedSettings.locationRestrictions,
+                                    ...prev.advancedSettings
+                                      .locationRestrictions,
                                     blockedCountries: countries,
                                   },
                                 },
@@ -1476,7 +1610,10 @@ const CreatePolicyDialog: React.FC<{
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="requireVPN"
-                          checked={formData.advancedSettings.locationRestrictions.requireVPN}
+                          checked={
+                            formData.advancedSettings.locationRestrictions
+                              .requireVPN
+                          }
                           onCheckedChange={(checked) =>
                             setFormData((prev) => ({
                               ...prev,
@@ -1490,7 +1627,9 @@ const CreatePolicyDialog: React.FC<{
                             }))
                           }
                         />
-                        <Label htmlFor="requireVPN">Require VPN Connection</Label>
+                        <Label htmlFor="requireVPN">
+                          Require VPN Connection
+                        </Label>
                       </div>
                     </CardContent>
                   )}
@@ -1504,10 +1643,14 @@ const CreatePolicyDialog: React.FC<{
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <Zap className="h-5 w-5 text-purple-600" />
-                        <CardTitle className="text-base">Dynamic Attributes</CardTitle>
+                        <CardTitle className="text-base">
+                          Dynamic Attributes
+                        </CardTitle>
                       </div>
                       <Switch
-                        checked={formData.advancedSettings.dynamicAttributes.enabled}
+                        checked={
+                          formData.advancedSettings.dynamicAttributes.enabled
+                        }
                         onCheckedChange={(checked) =>
                           setFormData((prev) => ({
                             ...prev,
@@ -1523,7 +1666,8 @@ const CreatePolicyDialog: React.FC<{
                       />
                     </div>
                     <CardDescription>
-                      Configure dynamic attribute resolution and contextual evaluation
+                      Configure dynamic attribute resolution and contextual
+                      evaluation
                     </CardDescription>
                   </CardHeader>
                   {formData.advancedSettings.dynamicAttributes.enabled && (
@@ -1531,7 +1675,10 @@ const CreatePolicyDialog: React.FC<{
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="contextualEvaluation"
-                          checked={formData.advancedSettings.dynamicAttributes.contextualEvaluation}
+                          checked={
+                            formData.advancedSettings.dynamicAttributes
+                              .contextualEvaluation
+                          }
                           onCheckedChange={(checked) =>
                             setFormData((prev) => ({
                               ...prev,
@@ -1545,14 +1692,19 @@ const CreatePolicyDialog: React.FC<{
                             }))
                           }
                         />
-                        <Label htmlFor="contextualEvaluation">Enable Contextual Evaluation</Label>
+                        <Label htmlFor="contextualEvaluation">
+                          Enable Contextual Evaluation
+                        </Label>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <Label>Attribute Resolution</Label>
                           <Select
-                            value={formData.advancedSettings.dynamicAttributes.attributeResolution}
+                            value={
+                              formData.advancedSettings.dynamicAttributes
+                                .attributeResolution
+                            }
                             onValueChange={(value: "lazy" | "eager") =>
                               setFormData((prev) => ({
                                 ...prev,
@@ -1570,8 +1722,12 @@ const CreatePolicyDialog: React.FC<{
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="lazy">Lazy (On-demand)</SelectItem>
-                              <SelectItem value="eager">Eager (Pre-load)</SelectItem>
+                              <SelectItem value="lazy">
+                                Lazy (On-demand)
+                              </SelectItem>
+                              <SelectItem value="eager">
+                                Eager (Pre-load)
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -1581,7 +1737,10 @@ const CreatePolicyDialog: React.FC<{
                             type="number"
                             min="0"
                             max="3600"
-                            value={formData.advancedSettings.dynamicAttributes.cacheTimeout}
+                            value={
+                              formData.advancedSettings.dynamicAttributes
+                                .cacheTimeout
+                            }
                             onChange={(e) =>
                               setFormData((prev) => ({
                                 ...prev,
@@ -1589,7 +1748,8 @@ const CreatePolicyDialog: React.FC<{
                                   ...prev.advancedSettings,
                                   dynamicAttributes: {
                                     ...prev.advancedSettings.dynamicAttributes,
-                                    cacheTimeout: parseInt(e.target.value) || 300,
+                                    cacheTimeout:
+                                      parseInt(e.target.value) || 300,
                                   },
                                 },
                               }))
@@ -1601,106 +1761,136 @@ const CreatePolicyDialog: React.FC<{
                       <div>
                         <Label>Custom Attributes</Label>
                         <div className="space-y-3 mt-2">
-                          {formData.advancedSettings.dynamicAttributes.customAttributes.map((attr, index) => (
-                            <div key={index} className="grid grid-cols-12 gap-2 items-end">
-                              <div className="col-span-3">
-                                <Input
-                                  placeholder="Attribute key"
-                                  value={attr.key}
-                                  onChange={(e) => {
-                                    const newAttrs = [...formData.advancedSettings.dynamicAttributes.customAttributes];
-                                    newAttrs[index].key = e.target.value;
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      advancedSettings: {
-                                        ...prev.advancedSettings,
-                                        dynamicAttributes: {
-                                          ...prev.advancedSettings.dynamicAttributes,
-                                          customAttributes: newAttrs,
+                          {formData.advancedSettings.dynamicAttributes.customAttributes.map(
+                            (attr, index) => (
+                              <div
+                                key={index}
+                                className="grid grid-cols-12 gap-2 items-end"
+                              >
+                                <div className="col-span-3">
+                                  <Input
+                                    placeholder="Attribute key"
+                                    value={attr.key}
+                                    onChange={(e) => {
+                                      const newAttrs = [
+                                        ...formData.advancedSettings
+                                          .dynamicAttributes.customAttributes,
+                                      ];
+                                      newAttrs[index].key = e.target.value;
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        advancedSettings: {
+                                          ...prev.advancedSettings,
+                                          dynamicAttributes: {
+                                            ...prev.advancedSettings
+                                              .dynamicAttributes,
+                                            customAttributes: newAttrs,
+                                          },
                                         },
-                                      },
-                                    }));
-                                  }}
-                                />
-                              </div>
-                              <div className="col-span-4">
-                                <Input
-                                  placeholder="Source/Expression"
-                                  value={attr.source}
-                                  onChange={(e) => {
-                                    const newAttrs = [...formData.advancedSettings.dynamicAttributes.customAttributes];
-                                    newAttrs[index].source = e.target.value;
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      advancedSettings: {
-                                        ...prev.advancedSettings,
-                                        dynamicAttributes: {
-                                          ...prev.advancedSettings.dynamicAttributes,
-                                          customAttributes: newAttrs,
+                                      }));
+                                    }}
+                                  />
+                                </div>
+                                <div className="col-span-4">
+                                  <Input
+                                    placeholder="Source/Expression"
+                                    value={attr.source}
+                                    onChange={(e) => {
+                                      const newAttrs = [
+                                        ...formData.advancedSettings
+                                          .dynamicAttributes.customAttributes,
+                                      ];
+                                      newAttrs[index].source = e.target.value;
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        advancedSettings: {
+                                          ...prev.advancedSettings,
+                                          dynamicAttributes: {
+                                            ...prev.advancedSettings
+                                              .dynamicAttributes,
+                                            customAttributes: newAttrs,
+                                          },
                                         },
-                                      },
-                                    }));
-                                  }}
-                                />
-                              </div>
-                              <div className="col-span-4">
-                                <Input
-                                  placeholder="Default value"
-                                  value={attr.defaultValue}
-                                  onChange={(e) => {
-                                    const newAttrs = [...formData.advancedSettings.dynamicAttributes.customAttributes];
-                                    newAttrs[index].defaultValue = e.target.value;
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      advancedSettings: {
-                                        ...prev.advancedSettings,
-                                        dynamicAttributes: {
-                                          ...prev.advancedSettings.dynamicAttributes,
-                                          customAttributes: newAttrs,
+                                      }));
+                                    }}
+                                  />
+                                </div>
+                                <div className="col-span-4">
+                                  <Input
+                                    placeholder="Default value"
+                                    value={attr.defaultValue}
+                                    onChange={(e) => {
+                                      const newAttrs = [
+                                        ...formData.advancedSettings
+                                          .dynamicAttributes.customAttributes,
+                                      ];
+                                      newAttrs[index].defaultValue =
+                                        e.target.value;
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        advancedSettings: {
+                                          ...prev.advancedSettings,
+                                          dynamicAttributes: {
+                                            ...prev.advancedSettings
+                                              .dynamicAttributes,
+                                            customAttributes: newAttrs,
+                                          },
                                         },
-                                      },
-                                    }));
-                                  }}
-                                />
-                              </div>
-                              <div className="col-span-1">
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => {
-                                    const newAttrs = formData.advancedSettings.dynamicAttributes.customAttributes.filter((_, i) => i !== index);
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      advancedSettings: {
-                                        ...prev.advancedSettings,
-                                        dynamicAttributes: {
-                                          ...prev.advancedSettings.dynamicAttributes,
-                                          customAttributes: newAttrs,
+                                      }));
+                                    }}
+                                  />
+                                </div>
+                                <div className="col-span-1">
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => {
+                                      const newAttrs =
+                                        formData.advancedSettings.dynamicAttributes.customAttributes.filter(
+                                          (_, i) => i !== index,
+                                        );
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        advancedSettings: {
+                                          ...prev.advancedSettings,
+                                          dynamicAttributes: {
+                                            ...prev.advancedSettings
+                                              .dynamicAttributes,
+                                            customAttributes: newAttrs,
+                                          },
                                         },
-                                      },
-                                    }));
-                                  }}
-                                  className="text-red-600"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
+                                      }));
+                                    }}
+                                    className="text-red-600"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
                               </div>
-                            </div>
-                          ))}
+                            ),
+                          )}
                           <Button
                             type="button"
                             variant="outline"
                             size="sm"
                             onClick={() => {
-                              const newAttr = { key: "", source: "", defaultValue: "" };
+                              const newAttr = {
+                                key: "",
+                                source: "",
+                                defaultValue: "",
+                              };
                               setFormData((prev) => ({
                                 ...prev,
                                 advancedSettings: {
                                   ...prev.advancedSettings,
                                   dynamicAttributes: {
                                     ...prev.advancedSettings.dynamicAttributes,
-                                    customAttributes: [...prev.advancedSettings.dynamicAttributes.customAttributes, newAttr],
+                                    customAttributes: [
+                                      ...prev.advancedSettings.dynamicAttributes
+                                        .customAttributes,
+                                      newAttr,
+                                    ],
                                   },
                                 },
                               }));
@@ -1723,10 +1913,14 @@ const CreatePolicyDialog: React.FC<{
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <Code className="h-5 w-5 text-orange-600" />
-                        <CardTitle className="text-base">Custom Expressions</CardTitle>
+                        <CardTitle className="text-base">
+                          Custom Expressions
+                        </CardTitle>
                       </div>
                       <Switch
-                        checked={formData.advancedSettings.customExpressions.enabled}
+                        checked={
+                          formData.advancedSettings.customExpressions.enabled
+                        }
                         onCheckedChange={(checked) =>
                           setFormData((prev) => ({
                             ...prev,
@@ -1742,7 +1936,8 @@ const CreatePolicyDialog: React.FC<{
                       />
                     </div>
                     <CardDescription>
-                      Define custom logical expressions for complex policy evaluation
+                      Define custom logical expressions for complex policy
+                      evaluation
                     </CardDescription>
                   </CardHeader>
                   {formData.advancedSettings.customExpressions.enabled && (
@@ -1751,7 +1946,10 @@ const CreatePolicyDialog: React.FC<{
                         <div className="flex items-center space-x-2">
                           <Checkbox
                             id="allowJavaScript"
-                            checked={formData.advancedSettings.customExpressions.allowJavaScript}
+                            checked={
+                              formData.advancedSettings.customExpressions
+                                .allowJavaScript
+                            }
                             onCheckedChange={(checked) =>
                               setFormData((prev) => ({
                                 ...prev,
@@ -1765,7 +1963,9 @@ const CreatePolicyDialog: React.FC<{
                               }))
                             }
                           />
-                          <Label htmlFor="allowJavaScript">Allow JavaScript Expressions</Label>
+                          <Label htmlFor="allowJavaScript">
+                            Allow JavaScript Expressions
+                          </Label>
                         </div>
                         <div>
                           <Label>Max Execution Time (ms)</Label>
@@ -1773,7 +1973,10 @@ const CreatePolicyDialog: React.FC<{
                             type="number"
                             min="100"
                             max="10000"
-                            value={formData.advancedSettings.customExpressions.maxExecutionTime}
+                            value={
+                              formData.advancedSettings.customExpressions
+                                .maxExecutionTime
+                            }
                             onChange={(e) =>
                               setFormData((prev) => ({
                                 ...prev,
@@ -1781,7 +1984,8 @@ const CreatePolicyDialog: React.FC<{
                                   ...prev.advancedSettings,
                                   customExpressions: {
                                     ...prev.advancedSettings.customExpressions,
-                                    maxExecutionTime: parseInt(e.target.value) || 1000,
+                                    maxExecutionTime:
+                                      parseInt(e.target.value) || 1000,
                                   },
                                 },
                               }))
@@ -1793,105 +1997,133 @@ const CreatePolicyDialog: React.FC<{
                       <div>
                         <Label>Custom Expressions</Label>
                         <div className="space-y-3 mt-2">
-                          {formData.advancedSettings.customExpressions.expressions.map((expr, index) => (
-                            <Card key={index} className="border">
-                              <CardContent className="p-4 space-y-3">
-                                <div className="flex items-center justify-between">
-                                  <Input
-                                    placeholder="Expression name"
-                                    value={expr.name}
+                          {formData.advancedSettings.customExpressions.expressions.map(
+                            (expr, index) => (
+                              <Card key={index} className="border">
+                                <CardContent className="p-4 space-y-3">
+                                  <div className="flex items-center justify-between">
+                                    <Input
+                                      placeholder="Expression name"
+                                      value={expr.name}
+                                      onChange={(e) => {
+                                        const newExprs = [
+                                          ...formData.advancedSettings
+                                            .customExpressions.expressions,
+                                        ];
+                                        newExprs[index].name = e.target.value;
+                                        setFormData((prev) => ({
+                                          ...prev,
+                                          advancedSettings: {
+                                            ...prev.advancedSettings,
+                                            customExpressions: {
+                                              ...prev.advancedSettings
+                                                .customExpressions,
+                                              expressions: newExprs,
+                                            },
+                                          },
+                                        }));
+                                      }}
+                                      className="flex-1 mr-2"
+                                    />
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => {
+                                        const newExprs =
+                                          formData.advancedSettings.customExpressions.expressions.filter(
+                                            (_, i) => i !== index,
+                                          );
+                                        setFormData((prev) => ({
+                                          ...prev,
+                                          advancedSettings: {
+                                            ...prev.advancedSettings,
+                                            customExpressions: {
+                                              ...prev.advancedSettings
+                                                .customExpressions,
+                                              expressions: newExprs,
+                                            },
+                                          },
+                                        }));
+                                      }}
+                                      className="text-red-600"
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </div>
+                                  <Textarea
+                                    placeholder="Enter expression (e.g., user.department === 'finance' && time.hour >= 9 && time.hour <= 17)"
+                                    value={expr.expression}
                                     onChange={(e) => {
-                                      const newExprs = [...formData.advancedSettings.customExpressions.expressions];
-                                      newExprs[index].name = e.target.value;
+                                      const newExprs = [
+                                        ...formData.advancedSettings
+                                          .customExpressions.expressions,
+                                      ];
+                                      newExprs[index].expression =
+                                        e.target.value;
                                       setFormData((prev) => ({
                                         ...prev,
                                         advancedSettings: {
                                           ...prev.advancedSettings,
                                           customExpressions: {
-                                            ...prev.advancedSettings.customExpressions,
+                                            ...prev.advancedSettings
+                                              .customExpressions,
                                             expressions: newExprs,
                                           },
                                         },
                                       }));
                                     }}
-                                    className="flex-1 mr-2"
+                                    rows={3}
+                                    className="font-mono text-sm"
                                   />
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => {
-                                      const newExprs = formData.advancedSettings.customExpressions.expressions.filter((_, i) => i !== index);
+                                  <Input
+                                    placeholder="Description"
+                                    value={expr.description}
+                                    onChange={(e) => {
+                                      const newExprs = [
+                                        ...formData.advancedSettings
+                                          .customExpressions.expressions,
+                                      ];
+                                      newExprs[index].description =
+                                        e.target.value;
                                       setFormData((prev) => ({
                                         ...prev,
                                         advancedSettings: {
                                           ...prev.advancedSettings,
                                           customExpressions: {
-                                            ...prev.advancedSettings.customExpressions,
+                                            ...prev.advancedSettings
+                                              .customExpressions,
                                             expressions: newExprs,
                                           },
                                         },
                                       }));
                                     }}
-                                    className="text-red-600"
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                                <Textarea
-                                  placeholder="Enter expression (e.g., user.department === 'finance' && time.hour >= 9 && time.hour <= 17)"
-                                  value={expr.expression}
-                                  onChange={(e) => {
-                                    const newExprs = [...formData.advancedSettings.customExpressions.expressions];
-                                    newExprs[index].expression = e.target.value;
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      advancedSettings: {
-                                        ...prev.advancedSettings,
-                                        customExpressions: {
-                                          ...prev.advancedSettings.customExpressions,
-                                          expressions: newExprs,
-                                        },
-                                      },
-                                    }));
-                                  }}
-                                  rows={3}
-                                  className="font-mono text-sm"
-                                />
-                                <Input
-                                  placeholder="Description"
-                                  value={expr.description}
-                                  onChange={(e) => {
-                                    const newExprs = [...formData.advancedSettings.customExpressions.expressions];
-                                    newExprs[index].description = e.target.value;
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      advancedSettings: {
-                                        ...prev.advancedSettings,
-                                        customExpressions: {
-                                          ...prev.advancedSettings.customExpressions,
-                                          expressions: newExprs,
-                                        },
-                                      },
-                                    }));
-                                  }}
-                                />
-                              </CardContent>
-                            </Card>
-                          ))}
+                                  />
+                                </CardContent>
+                              </Card>
+                            ),
+                          )}
                           <Button
                             type="button"
                             variant="outline"
                             size="sm"
                             onClick={() => {
-                              const newExpr = { name: "", expression: "", description: "" };
+                              const newExpr = {
+                                name: "",
+                                expression: "",
+                                description: "",
+                              };
                               setFormData((prev) => ({
                                 ...prev,
                                 advancedSettings: {
                                   ...prev.advancedSettings,
                                   customExpressions: {
                                     ...prev.advancedSettings.customExpressions,
-                                    expressions: [...prev.advancedSettings.customExpressions.expressions, newExpr],
+                                    expressions: [
+                                      ...prev.advancedSettings.customExpressions
+                                        .expressions,
+                                      newExpr,
+                                    ],
                                   },
                                 },
                               }));
@@ -1906,7 +2138,9 @@ const CreatePolicyDialog: React.FC<{
                       <Alert>
                         <AlertTriangle className="h-4 w-4" />
                         <AlertDescription>
-                          Custom expressions are evaluated in a sandboxed environment. Available variables include user, resource, environment, and time objects.
+                          Custom expressions are evaluated in a sandboxed
+                          environment. Available variables include user,
+                          resource, environment, and time objects.
                         </AlertDescription>
                       </Alert>
                     </CardContent>
@@ -1921,10 +2155,14 @@ const CreatePolicyDialog: React.FC<{
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <Shield className="h-5 w-5 text-red-600" />
-                        <CardTitle className="text-base">Compliance & Audit</CardTitle>
+                        <CardTitle className="text-base">
+                          Compliance & Audit
+                        </CardTitle>
                       </div>
                       <Switch
-                        checked={formData.advancedSettings.complianceSettings.enabled}
+                        checked={
+                          formData.advancedSettings.complianceSettings.enabled
+                        }
                         onCheckedChange={(checked) =>
                           setFormData((prev) => ({
                             ...prev,
@@ -1940,7 +2178,8 @@ const CreatePolicyDialog: React.FC<{
                       />
                     </div>
                     <CardDescription>
-                      Configure compliance, auditing, and data protection settings
+                      Configure compliance, auditing, and data protection
+                      settings
                     </CardDescription>
                   </CardHeader>
                   {formData.advancedSettings.complianceSettings.enabled && (
@@ -1949,8 +2188,13 @@ const CreatePolicyDialog: React.FC<{
                         <div>
                           <Label>Audit Level</Label>
                           <Select
-                            value={formData.advancedSettings.complianceSettings.auditLevel}
-                            onValueChange={(value: "basic" | "detailed" | "full") =>
+                            value={
+                              formData.advancedSettings.complianceSettings
+                                .auditLevel
+                            }
+                            onValueChange={(
+                              value: "basic" | "detailed" | "full",
+                            ) =>
                               setFormData((prev) => ({
                                 ...prev,
                                 advancedSettings: {
@@ -1967,9 +2211,15 @@ const CreatePolicyDialog: React.FC<{
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="basic">Basic (Access decisions only)</SelectItem>
-                              <SelectItem value="detailed">Detailed (Include attributes)</SelectItem>
-                              <SelectItem value="full">Full (Complete evaluation trace)</SelectItem>
+                              <SelectItem value="basic">
+                                Basic (Access decisions only)
+                              </SelectItem>
+                              <SelectItem value="detailed">
+                                Detailed (Include attributes)
+                              </SelectItem>
+                              <SelectItem value="full">
+                                Full (Complete evaluation trace)
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -1979,7 +2229,10 @@ const CreatePolicyDialog: React.FC<{
                             type="number"
                             min="1"
                             max="3650"
-                            value={formData.advancedSettings.complianceSettings.dataRetention}
+                            value={
+                              formData.advancedSettings.complianceSettings
+                                .dataRetention
+                            }
                             onChange={(e) =>
                               setFormData((prev) => ({
                                 ...prev,
@@ -1987,7 +2240,8 @@ const CreatePolicyDialog: React.FC<{
                                   ...prev.advancedSettings,
                                   complianceSettings: {
                                     ...prev.advancedSettings.complianceSettings,
-                                    dataRetention: parseInt(e.target.value) || 30,
+                                    dataRetention:
+                                      parseInt(e.target.value) || 30,
                                   },
                                 },
                               }))
@@ -1999,8 +2253,13 @@ const CreatePolicyDialog: React.FC<{
                       <div>
                         <Label>PII Handling</Label>
                         <Select
-                          value={formData.advancedSettings.complianceSettings.piiHandling}
-                          onValueChange={(value: "standard" | "strict" | "minimal") =>
+                          value={
+                            formData.advancedSettings.complianceSettings
+                              .piiHandling
+                          }
+                          onValueChange={(
+                            value: "standard" | "strict" | "minimal",
+                          ) =>
                             setFormData((prev) => ({
                               ...prev,
                               advancedSettings: {
@@ -2017,9 +2276,15 @@ const CreatePolicyDialog: React.FC<{
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="minimal">Minimal (Anonymize all PII)</SelectItem>
-                            <SelectItem value="standard">Standard (Hash sensitive fields)</SelectItem>
-                            <SelectItem value="strict">Strict (Full logging with encryption)</SelectItem>
+                            <SelectItem value="minimal">
+                              Minimal (Anonymize all PII)
+                            </SelectItem>
+                            <SelectItem value="standard">
+                              Standard (Hash sensitive fields)
+                            </SelectItem>
+                            <SelectItem value="strict">
+                              Strict (Full logging with encryption)
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -2027,7 +2292,10 @@ const CreatePolicyDialog: React.FC<{
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="requireJustification"
-                          checked={formData.advancedSettings.complianceSettings.requireJustification}
+                          checked={
+                            formData.advancedSettings.complianceSettings
+                              .requireJustification
+                          }
                           onCheckedChange={(checked) =>
                             setFormData((prev) => ({
                               ...prev,
@@ -2041,7 +2309,9 @@ const CreatePolicyDialog: React.FC<{
                             }))
                           }
                         />
-                        <Label htmlFor="requireJustification">Require Access Justification</Label>
+                        <Label htmlFor="requireJustification">
+                          Require Access Justification
+                        </Label>
                       </div>
                     </CardContent>
                   )}
@@ -2054,7 +2324,9 @@ const CreatePolicyDialog: React.FC<{
                   <CardHeader className="pb-3">
                     <div className="flex items-center space-x-2">
                       <Layers className="h-5 w-5 text-indigo-600" />
-                      <CardTitle className="text-base">Integration Settings</CardTitle>
+                      <CardTitle className="text-base">
+                        Integration Settings
+                      </CardTitle>
                     </div>
                     <CardDescription>
                       Configure webhooks, notifications, and external validation
@@ -2065,103 +2337,132 @@ const CreatePolicyDialog: React.FC<{
                     <div>
                       <Label className="text-sm font-medium">Webhooks</Label>
                       <div className="space-y-3 mt-2">
-                        {formData.advancedSettings.integrationSettings.webhooks.map((webhook, index) => (
-                          <Card key={index} className="border">
-                            <CardContent className="p-4 space-y-3">
-                              <div className="flex items-center justify-between">
+                        {formData.advancedSettings.integrationSettings.webhooks.map(
+                          (webhook, index) => (
+                            <Card key={index} className="border">
+                              <CardContent className="p-4 space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <Input
+                                    placeholder="Webhook URL"
+                                    value={webhook.url}
+                                    onChange={(e) => {
+                                      const newWebhooks = [
+                                        ...formData.advancedSettings
+                                          .integrationSettings.webhooks,
+                                      ];
+                                      newWebhooks[index].url = e.target.value;
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        advancedSettings: {
+                                          ...prev.advancedSettings,
+                                          integrationSettings: {
+                                            ...prev.advancedSettings
+                                              .integrationSettings,
+                                            webhooks: newWebhooks,
+                                          },
+                                        },
+                                      }));
+                                    }}
+                                    className="flex-1 mr-2"
+                                  />
+                                  <Switch
+                                    checked={webhook.enabled}
+                                    onCheckedChange={(checked) => {
+                                      const newWebhooks = [
+                                        ...formData.advancedSettings
+                                          .integrationSettings.webhooks,
+                                      ];
+                                      newWebhooks[index].enabled = checked;
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        advancedSettings: {
+                                          ...prev.advancedSettings,
+                                          integrationSettings: {
+                                            ...prev.advancedSettings
+                                              .integrationSettings,
+                                            webhooks: newWebhooks,
+                                          },
+                                        },
+                                      }));
+                                    }}
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => {
+                                      const newWebhooks =
+                                        formData.advancedSettings.integrationSettings.webhooks.filter(
+                                          (_, i) => i !== index,
+                                        );
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        advancedSettings: {
+                                          ...prev.advancedSettings,
+                                          integrationSettings: {
+                                            ...prev.advancedSettings
+                                              .integrationSettings,
+                                            webhooks: newWebhooks,
+                                          },
+                                        },
+                                      }));
+                                    }}
+                                    className="text-red-600 ml-2"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
                                 <Input
-                                  placeholder="Webhook URL"
-                                  value={webhook.url}
+                                  placeholder="Events (e.g., policy_evaluated, access_granted, access_denied)"
+                                  value={webhook.events.join(", ")}
                                   onChange={(e) => {
-                                    const newWebhooks = [...formData.advancedSettings.integrationSettings.webhooks];
-                                    newWebhooks[index].url = e.target.value;
+                                    const events = e.target.value
+                                      .split(",")
+                                      .map((e) => e.trim())
+                                      .filter(Boolean);
+                                    const newWebhooks = [
+                                      ...formData.advancedSettings
+                                        .integrationSettings.webhooks,
+                                    ];
+                                    newWebhooks[index].events = events;
                                     setFormData((prev) => ({
                                       ...prev,
                                       advancedSettings: {
                                         ...prev.advancedSettings,
                                         integrationSettings: {
-                                          ...prev.advancedSettings.integrationSettings,
-                                          webhooks: newWebhooks,
-                                        },
-                                      },
-                                    }));
-                                  }}
-                                  className="flex-1 mr-2"
-                                />
-                                <Switch
-                                  checked={webhook.enabled}
-                                  onCheckedChange={(checked) => {
-                                    const newWebhooks = [...formData.advancedSettings.integrationSettings.webhooks];
-                                    newWebhooks[index].enabled = checked;
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      advancedSettings: {
-                                        ...prev.advancedSettings,
-                                        integrationSettings: {
-                                          ...prev.advancedSettings.integrationSettings,
+                                          ...prev.advancedSettings
+                                            .integrationSettings,
                                           webhooks: newWebhooks,
                                         },
                                       },
                                     }));
                                   }}
                                 />
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => {
-                                    const newWebhooks = formData.advancedSettings.integrationSettings.webhooks.filter((_, i) => i !== index);
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      advancedSettings: {
-                                        ...prev.advancedSettings,
-                                        integrationSettings: {
-                                          ...prev.advancedSettings.integrationSettings,
-                                          webhooks: newWebhooks,
-                                        },
-                                      },
-                                    }));
-                                  }}
-                                  className="text-red-600 ml-2"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                              <Input
-                                placeholder="Events (e.g., policy_evaluated, access_granted, access_denied)"
-                                value={webhook.events.join(', ')}
-                                onChange={(e) => {
-                                  const events = e.target.value.split(',').map(e => e.trim()).filter(Boolean);
-                                  const newWebhooks = [...formData.advancedSettings.integrationSettings.webhooks];
-                                  newWebhooks[index].events = events;
-                                  setFormData((prev) => ({
-                                    ...prev,
-                                    advancedSettings: {
-                                      ...prev.advancedSettings,
-                                      integrationSettings: {
-                                        ...prev.advancedSettings.integrationSettings,
-                                        webhooks: newWebhooks,
-                                      },
-                                    },
-                                  }));
-                                }}
-                              />
-                            </CardContent>
-                          </Card>
-                        ))}
+                              </CardContent>
+                            </Card>
+                          ),
+                        )}
                         <Button
                           type="button"
                           variant="outline"
                           size="sm"
                           onClick={() => {
-                            const newWebhook = { url: "", events: [], enabled: true };
+                            const newWebhook = {
+                              url: "",
+                              events: [],
+                              enabled: true,
+                            };
                             setFormData((prev) => ({
                               ...prev,
                               advancedSettings: {
                                 ...prev.advancedSettings,
                                 integrationSettings: {
                                   ...prev.advancedSettings.integrationSettings,
-                                  webhooks: [...prev.advancedSettings.integrationSettings.webhooks, newWebhook],
+                                  webhooks: [
+                                    ...prev.advancedSettings.integrationSettings
+                                      .webhooks,
+                                    newWebhook,
+                                  ],
                                 },
                               },
                             }));
@@ -2176,9 +2477,14 @@ const CreatePolicyDialog: React.FC<{
                     {/* External Validation */}
                     <div>
                       <div className="flex items-center justify-between mb-3">
-                        <Label className="text-sm font-medium">External Validation</Label>
+                        <Label className="text-sm font-medium">
+                          External Validation
+                        </Label>
                         <Switch
-                          checked={formData.advancedSettings.integrationSettings.externalValidation.enabled}
+                          checked={
+                            formData.advancedSettings.integrationSettings
+                              .externalValidation.enabled
+                          }
                           onCheckedChange={(checked) =>
                             setFormData((prev) => ({
                               ...prev,
@@ -2187,7 +2493,8 @@ const CreatePolicyDialog: React.FC<{
                                 integrationSettings: {
                                   ...prev.advancedSettings.integrationSettings,
                                   externalValidation: {
-                                    ...prev.advancedSettings.integrationSettings.externalValidation,
+                                    ...prev.advancedSettings.integrationSettings
+                                      .externalValidation,
                                     enabled: checked,
                                   },
                                 },
@@ -2196,22 +2503,29 @@ const CreatePolicyDialog: React.FC<{
                           }
                         />
                       </div>
-                      {formData.advancedSettings.integrationSettings.externalValidation.enabled && (
+                      {formData.advancedSettings.integrationSettings
+                        .externalValidation.enabled && (
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <Label>Validation Endpoint</Label>
                             <Input
                               placeholder="https://api.example.com/validate"
-                              value={formData.advancedSettings.integrationSettings.externalValidation.endpoint}
+                              value={
+                                formData.advancedSettings.integrationSettings
+                                  .externalValidation.endpoint
+                              }
                               onChange={(e) =>
                                 setFormData((prev) => ({
                                   ...prev,
                                   advancedSettings: {
                                     ...prev.advancedSettings,
                                     integrationSettings: {
-                                      ...prev.advancedSettings.integrationSettings,
+                                      ...prev.advancedSettings
+                                        .integrationSettings,
                                       externalValidation: {
-                                        ...prev.advancedSettings.integrationSettings.externalValidation,
+                                        ...prev.advancedSettings
+                                          .integrationSettings
+                                          .externalValidation,
                                         endpoint: e.target.value,
                                       },
                                     },
@@ -2226,17 +2540,24 @@ const CreatePolicyDialog: React.FC<{
                               type="number"
                               min="1000"
                               max="30000"
-                              value={formData.advancedSettings.integrationSettings.externalValidation.timeout}
+                              value={
+                                formData.advancedSettings.integrationSettings
+                                  .externalValidation.timeout
+                              }
                               onChange={(e) =>
                                 setFormData((prev) => ({
                                   ...prev,
                                   advancedSettings: {
                                     ...prev.advancedSettings,
                                     integrationSettings: {
-                                      ...prev.advancedSettings.integrationSettings,
+                                      ...prev.advancedSettings
+                                        .integrationSettings,
                                       externalValidation: {
-                                        ...prev.advancedSettings.integrationSettings.externalValidation,
-                                        timeout: parseInt(e.target.value) || 5000,
+                                        ...prev.advancedSettings
+                                          .integrationSettings
+                                          .externalValidation,
+                                        timeout:
+                                          parseInt(e.target.value) || 5000,
                                       },
                                     },
                                   },
@@ -2251,9 +2572,14 @@ const CreatePolicyDialog: React.FC<{
                     {/* Notifications */}
                     <div>
                       <div className="flex items-center justify-between mb-3">
-                        <Label className="text-sm font-medium">Notifications</Label>
+                        <Label className="text-sm font-medium">
+                          Notifications
+                        </Label>
                         <Switch
-                          checked={formData.advancedSettings.integrationSettings.notifications.enabled}
+                          checked={
+                            formData.advancedSettings.integrationSettings
+                              .notifications.enabled
+                          }
                           onCheckedChange={(checked) =>
                             setFormData((prev) => ({
                               ...prev,
@@ -2262,7 +2588,8 @@ const CreatePolicyDialog: React.FC<{
                                 integrationSettings: {
                                   ...prev.advancedSettings.integrationSettings,
                                   notifications: {
-                                    ...prev.advancedSettings.integrationSettings.notifications,
+                                    ...prev.advancedSettings.integrationSettings
+                                      .notifications,
                                     enabled: checked,
                                   },
                                 },
@@ -2271,23 +2598,31 @@ const CreatePolicyDialog: React.FC<{
                           }
                         />
                       </div>
-                      {formData.advancedSettings.integrationSettings.notifications.enabled && (
+                      {formData.advancedSettings.integrationSettings
+                        .notifications.enabled && (
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <Label>Notification Channels</Label>
                             <Input
                               placeholder="email, slack, teams (comma-separated)"
-                              value={formData.advancedSettings.integrationSettings.notifications.channels.join(', ')}
+                              value={formData.advancedSettings.integrationSettings.notifications.channels.join(
+                                ", ",
+                              )}
                               onChange={(e) => {
-                                const channels = e.target.value.split(',').map(c => c.trim()).filter(Boolean);
+                                const channels = e.target.value
+                                  .split(",")
+                                  .map((c) => c.trim())
+                                  .filter(Boolean);
                                 setFormData((prev) => ({
                                   ...prev,
                                   advancedSettings: {
                                     ...prev.advancedSettings,
                                     integrationSettings: {
-                                      ...prev.advancedSettings.integrationSettings,
+                                      ...prev.advancedSettings
+                                        .integrationSettings,
                                       notifications: {
-                                        ...prev.advancedSettings.integrationSettings.notifications,
+                                        ...prev.advancedSettings
+                                          .integrationSettings.notifications,
                                         channels,
                                       },
                                     },
@@ -2300,17 +2635,24 @@ const CreatePolicyDialog: React.FC<{
                             <Label>Events to Notify</Label>
                             <Input
                               placeholder="policy_violation, suspicious_access (comma-separated)"
-                              value={formData.advancedSettings.integrationSettings.notifications.events.join(', ')}
+                              value={formData.advancedSettings.integrationSettings.notifications.events.join(
+                                ", ",
+                              )}
                               onChange={(e) => {
-                                const events = e.target.value.split(',').map(e => e.trim()).filter(Boolean);
+                                const events = e.target.value
+                                  .split(",")
+                                  .map((e) => e.trim())
+                                  .filter(Boolean);
                                 setFormData((prev) => ({
                                   ...prev,
                                   advancedSettings: {
                                     ...prev.advancedSettings,
                                     integrationSettings: {
-                                      ...prev.advancedSettings.integrationSettings,
+                                      ...prev.advancedSettings
+                                        .integrationSettings,
                                       notifications: {
-                                        ...prev.advancedSettings.integrationSettings.notifications,
+                                        ...prev.advancedSettings
+                                          .integrationSettings.notifications,
                                         events,
                                       },
                                     },
@@ -2491,7 +2833,9 @@ const EditPolicyDialog: React.FC<{
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="general">General</TabsTrigger>
-            <TabsTrigger value="rules">Rules ({formData.rules.length})</TabsTrigger>
+            <TabsTrigger value="rules">
+              Rules ({formData.rules.length})
+            </TabsTrigger>
             <TabsTrigger value="testing">Testing</TabsTrigger>
             <TabsTrigger value="history">History</TabsTrigger>
             <TabsTrigger value="validation">Validation</TabsTrigger>
@@ -2510,7 +2854,9 @@ const EditPolicyDialog: React.FC<{
                   }
                   className={errors.name ? "border-red-500" : ""}
                 />
-                {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+                {errors.name && (
+                  <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+                )}
               </div>
               <div>
                 <Label>Status</Label>
@@ -2562,7 +2908,11 @@ const EditPolicyDialog: React.FC<{
                 className={errors.description ? "border-red-500" : ""}
                 rows={3}
               />
-              {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
+              {errors.description && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.description}
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -2612,7 +2962,9 @@ const EditPolicyDialog: React.FC<{
                 <p className="text-xs text-gray-500 mt-1">
                   Higher numbers = higher priority (1-1000)
                 </p>
-                {errors.priority && <p className="text-sm text-red-500 mt-1">{errors.priority}</p>}
+                {errors.priority && (
+                  <p className="text-sm text-red-500 mt-1">{errors.priority}</p>
+                )}
               </div>
             </div>
 
@@ -2620,10 +2972,13 @@ const EditPolicyDialog: React.FC<{
               <Label>Tags</Label>
               <Input
                 placeholder="Enter tags separated by commas"
-                value={(formData as any).tags?.join(', ') || ''}
+                value={(formData as any).tags?.join(", ") || ""}
                 onChange={(e) => {
-                  const tags = e.target.value.split(',').map(tag => tag.trim()).filter(Boolean);
-                  setFormData((prev) => ({ ...prev, tags } as any));
+                  const tags = e.target.value
+                    .split(",")
+                    .map((tag) => tag.trim())
+                    .filter(Boolean);
+                  setFormData((prev) => ({ ...prev, tags }) as any);
                 }}
               />
               {(formData as any).tags?.length > 0 && (
@@ -2646,7 +3001,11 @@ const EditPolicyDialog: React.FC<{
                 </div>
                 <div>
                   <p className="text-gray-600">Last Modified</p>
-                  <p>{formData.updatedAt ? new Date(formData.updatedAt).toLocaleString() : 'Never'}</p>
+                  <p>
+                    {formData.updatedAt
+                      ? new Date(formData.updatedAt).toLocaleString()
+                      : "Never"}
+                  </p>
                 </div>
                 <div>
                   <p className="text-gray-600">Policy ID</p>
@@ -2654,7 +3013,10 @@ const EditPolicyDialog: React.FC<{
                 </div>
                 <div>
                   <p className="text-gray-600">Rules Count</p>
-                  <p>{formData.rules.length} rule{formData.rules.length !== 1 ? 's' : ''}</p>
+                  <p>
+                    {formData.rules.length} rule
+                    {formData.rules.length !== 1 ? "s" : ""}
+                  </p>
                 </div>
               </div>
             </div>
@@ -2665,7 +3027,8 @@ const EditPolicyDialog: React.FC<{
               <div>
                 <Label className="text-lg font-medium">Policy Rules</Label>
                 <p className="text-sm text-gray-500">
-                  Define access conditions for subjects, resources, and environment
+                  Define access conditions for subjects, resources, and
+                  environment
                 </p>
               </div>
               <Button type="button" onClick={addRule} variant="outline">
@@ -2674,13 +3037,17 @@ const EditPolicyDialog: React.FC<{
               </Button>
             </div>
 
-            {errors.rules && <p className="text-sm text-red-500">{errors.rules}</p>}
+            {errors.rules && (
+              <p className="text-sm text-red-500">{errors.rules}</p>
+            )}
 
             {formData.rules.length === 0 ? (
               <Card className="border-dashed">
                 <CardContent className="flex flex-col items-center justify-center py-12">
                   <FileText className="h-12 w-12 text-gray-400 mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No rules defined</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    No rules defined
+                  </h3>
                   <p className="text-gray-500 mb-4 text-center">
                     Add rules to define access conditions for this policy
                   </p>
@@ -3309,11 +3676,11 @@ const RuleEditor: React.FC<{
   const updateCondition = (
     section: keyof PolicyRule,
     conditionIndex: number,
-    condition: AttributeCondition
+    condition: AttributeCondition,
   ) => {
     const currentConditions = rule[section] as AttributeCondition[];
     const updatedConditions = currentConditions.map((c, i) =>
-      i === conditionIndex ? condition : c
+      i === conditionIndex ? condition : c,
     );
 
     onChange({
@@ -3322,9 +3689,14 @@ const RuleEditor: React.FC<{
     });
   };
 
-  const removeCondition = (section: keyof PolicyRule, conditionIndex: number) => {
+  const removeCondition = (
+    section: keyof PolicyRule,
+    conditionIndex: number,
+  ) => {
     const currentConditions = rule[section] as AttributeCondition[];
-    const updatedConditions = currentConditions.filter((_, i) => i !== conditionIndex);
+    const updatedConditions = currentConditions.filter(
+      (_, i) => i !== conditionIndex,
+    );
 
     onChange({
       ...rule,
@@ -3399,7 +3771,9 @@ const RuleEditor: React.FC<{
             <div className="flex items-center justify-between">
               <div>
                 <Label className="font-medium">Subject Conditions</Label>
-                <p className="text-xs text-gray-500">Who is requesting access</p>
+                <p className="text-xs text-gray-500">
+                  Who is requesting access
+                </p>
               </div>
               <Button
                 type="button"
@@ -3413,7 +3787,9 @@ const RuleEditor: React.FC<{
             </div>
             <ConditionsList
               conditions={rule.subject}
-              onUpdate={(index, condition) => updateCondition("subject", index, condition)}
+              onUpdate={(index, condition) =>
+                updateCondition("subject", index, condition)
+              }
               onRemove={(index) => removeCondition("subject", index)}
               placeholder="e.g., role = 'executive', department in ['finance', 'accounting']"
             />
@@ -3437,7 +3813,9 @@ const RuleEditor: React.FC<{
             </div>
             <ConditionsList
               conditions={rule.resource}
-              onUpdate={(index, condition) => updateCondition("resource", index, condition)}
+              onUpdate={(index, condition) =>
+                updateCondition("resource", index, condition)
+              }
               onRemove={(index) => removeCondition("resource", index)}
               placeholder="e.g., type = 'financial_data', classification != 'top_secret'"
             />
@@ -3446,19 +3824,20 @@ const RuleEditor: React.FC<{
           <TabsContent value="action" className="space-y-3 mt-4">
             <div>
               <Label className="font-medium">Allowed Actions</Label>
-              <p className="text-xs text-gray-500">What operations can be performed</p>
+              <p className="text-xs text-gray-500">
+                What operations can be performed
+              </p>
             </div>
-            <ActionSelector
-              actions={rule.action}
-              onChange={updateActions}
-            />
+            <ActionSelector actions={rule.action} onChange={updateActions} />
           </TabsContent>
 
           <TabsContent value="environment" className="space-y-3 mt-4">
             <div className="flex items-center justify-between">
               <div>
                 <Label className="font-medium">Environment Conditions</Label>
-                <p className="text-xs text-gray-500">Contextual conditions like time, location</p>
+                <p className="text-xs text-gray-500">
+                  Contextual conditions like time, location
+                </p>
               </div>
               <Button
                 type="button"
@@ -3472,7 +3851,9 @@ const RuleEditor: React.FC<{
             </div>
             <ConditionsList
               conditions={rule.environment || []}
-              onUpdate={(index, condition) => updateCondition("environment", index, condition)}
+              onUpdate={(index, condition) =>
+                updateCondition("environment", index, condition)
+              }
               onRemove={(index) => removeCondition("environment", index)}
               placeholder="e.g., time > '09:00', location = 'office', network = 'internal'"
             />
@@ -3551,11 +3932,15 @@ const ConditionsList: React.FC<{
             <Label className="text-xs">Value</Label>
             <Input
               placeholder="e.g., 'executive', ['finance', 'accounting']"
-              value={typeof condition.value === 'string' ? condition.value : JSON.stringify(condition.value)}
+              value={
+                typeof condition.value === "string"
+                  ? condition.value
+                  : JSON.stringify(condition.value)
+              }
               onChange={(e) => {
                 let value: any = e.target.value;
                 // Try to parse as JSON for arrays/objects
-                if (value.startsWith('[') || value.startsWith('{')) {
+                if (value.startsWith("[") || value.startsWith("{")) {
                   try {
                     value = JSON.parse(value);
                   } catch {
@@ -3604,7 +3989,7 @@ const ActionSelector: React.FC<{
 
   const toggleAction = (action: string) => {
     if (actions.includes(action)) {
-      onChange(actions.filter(a => a !== action));
+      onChange(actions.filter((a) => a !== action));
     } else {
       onChange([...actions, action]);
     }
@@ -3626,7 +4011,7 @@ const ActionSelector: React.FC<{
               onClick={() => toggleAction(action.value)}
               className={cn(
                 "flex items-center justify-start text-xs h-8",
-                isSelected && "bg-blue-600 hover:bg-blue-700"
+                isSelected && "bg-blue-600 hover:bg-blue-700",
               )}
             >
               <Icon className="mr-2 h-3 w-3" />
@@ -3641,8 +4026,13 @@ const ActionSelector: React.FC<{
         <Input
           placeholder="Enter custom actions separated by commas"
           onChange={(e) => {
-            const customActions = e.target.value.split(',').map(a => a.trim()).filter(Boolean);
-            const baseActions = actions.filter(a => availableActions.find(aa => aa.value === a));
+            const customActions = e.target.value
+              .split(",")
+              .map((a) => a.trim())
+              .filter(Boolean);
+            const baseActions = actions.filter((a) =>
+              availableActions.find((aa) => aa.value === a),
+            );
             onChange([...baseActions, ...customActions]);
           }}
           className="text-sm"
@@ -3705,13 +4095,20 @@ const PolicyTestingView: React.FC<{
 
     for (const scenario of testScenarios) {
       // Simulate test execution
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       const result = {
         scenarioId: scenario.id,
-        result: Math.random() > 0.3 ? scenario.expectedResult : (scenario.expectedResult === "allow" ? "deny" : "allow"),
+        result:
+          Math.random() > 0.3
+            ? scenario.expectedResult
+            : scenario.expectedResult === "allow"
+              ? "deny"
+              : "allow",
         executionTime: `${(Math.random() * 10 + 1).toFixed(1)}ms`,
-        matchedRules: [`Rule ${Math.floor(Math.random() * policy.rules.length) + 1}`],
+        matchedRules: [
+          `Rule ${Math.floor(Math.random() * policy.rules.length) + 1}`,
+        ],
         passed: Math.random() > 0.2,
       };
 
@@ -3782,7 +4179,11 @@ const PolicyTestingView: React.FC<{
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-medium">{scenario.name}</h4>
                     <Badge
-                      variant={scenario.expectedResult === "allow" ? "default" : "destructive"}
+                      variant={
+                        scenario.expectedResult === "allow"
+                          ? "default"
+                          : "destructive"
+                      }
                       className="text-xs"
                     >
                       Expect: {scenario.expectedResult}
@@ -3791,28 +4192,44 @@ const PolicyTestingView: React.FC<{
 
                   <div className="space-y-2 text-sm">
                     <div>
-                      <span className="font-medium text-blue-700">Subject:</span>
-                      <span className="ml-2">{JSON.stringify(scenario.subject)}</span>
+                      <span className="font-medium text-blue-700">
+                        Subject:
+                      </span>
+                      <span className="ml-2">
+                        {JSON.stringify(scenario.subject)}
+                      </span>
                     </div>
                     <div>
-                      <span className="font-medium text-green-700">Resource:</span>
-                      <span className="ml-2">{JSON.stringify(scenario.resource)}</span>
+                      <span className="font-medium text-green-700">
+                        Resource:
+                      </span>
+                      <span className="ml-2">
+                        {JSON.stringify(scenario.resource)}
+                      </span>
                     </div>
                     <div>
-                      <span className="font-medium text-purple-700">Action:</span>
+                      <span className="font-medium text-purple-700">
+                        Action:
+                      </span>
                       <span className="ml-2">{scenario.action}</span>
                     </div>
                     <div>
-                      <span className="font-medium text-orange-700">Environment:</span>
-                      <span className="ml-2">{JSON.stringify(scenario.environment)}</span>
+                      <span className="font-medium text-orange-700">
+                        Environment:
+                      </span>
+                      <span className="ml-2">
+                        {JSON.stringify(scenario.environment)}
+                      </span>
                     </div>
                   </div>
 
                   {/* Show test result if available */}
-                  {testResults.find(r => r.scenarioId === scenario.id) && (
+                  {testResults.find((r) => r.scenarioId === scenario.id) && (
                     <div className="mt-3 pt-3 border-t">
                       {(() => {
-                        const result = testResults.find(r => r.scenarioId === scenario.id);
+                        const result = testResults.find(
+                          (r) => r.scenarioId === scenario.id,
+                        );
                         return (
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-2">
@@ -3846,7 +4263,8 @@ const PolicyTestingView: React.FC<{
               Test Results
               {testResults.length > 0 && (
                 <Badge variant="secondary" className="ml-2">
-                  {testResults.filter(r => r.passed).length}/{testResults.length} Passed
+                  {testResults.filter((r) => r.passed).length}/
+                  {testResults.length} Passed
                 </Badge>
               )}
             </CardTitle>
@@ -3861,11 +4279,18 @@ const PolicyTestingView: React.FC<{
             ) : (
               <div className="space-y-3">
                 {testResults.map((result) => {
-                  const scenario = testScenarios.find(s => s.id === result.scenarioId);
+                  const scenario = testScenarios.find(
+                    (s) => s.id === result.scenarioId,
+                  );
                   return (
-                    <div key={result.scenarioId} className="p-3 border rounded-lg">
+                    <div
+                      key={result.scenarioId}
+                      className="p-3 border rounded-lg"
+                    >
                       <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium text-sm">{scenario?.name}</span>
+                        <span className="font-medium text-sm">
+                          {scenario?.name}
+                        </span>
                         <div className="flex items-center space-x-2">
                           {result.passed ? (
                             <CheckCircle className="h-4 w-4 text-green-600" />
@@ -3881,7 +4306,11 @@ const PolicyTestingView: React.FC<{
                         <div>
                           <span className="text-gray-600">Result:</span>
                           <Badge
-                            variant={result.result === "allow" ? "default" : "destructive"}
+                            variant={
+                              result.result === "allow"
+                                ? "default"
+                                : "destructive"
+                            }
                             className="ml-2 text-xs"
                           >
                             {result.result}
@@ -3889,7 +4318,9 @@ const PolicyTestingView: React.FC<{
                         </div>
                         <div>
                           <span className="text-gray-600">Matched Rules:</span>
-                          <span className="ml-2">{result.matchedRules.join(", ")}</span>
+                          <span className="ml-2">
+                            {result.matchedRules.join(", ")}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -3925,7 +4356,11 @@ const PolicyHistoryView: React.FC<{
       details: "Priority increased and description updated",
       changes: [
         { field: "priority", from: "50", to: "100" },
-        { field: "description", from: "Basic access policy", to: policy.description },
+        {
+          field: "description",
+          from: "Basic access policy",
+          to: policy.description,
+        },
       ],
     },
     {
@@ -3934,9 +4369,7 @@ const PolicyHistoryView: React.FC<{
       user: "admin@company.com",
       timestamp: new Date(Date.now() - 43200000).toISOString(),
       details: "Policy status changed to active",
-      changes: [
-        { field: "status", from: "draft", to: "active" },
-      ],
+      changes: [{ field: "status", from: "draft", to: "active" }],
     },
   ];
 
@@ -3994,9 +4427,14 @@ const PolicyHistoryView: React.FC<{
                     {entry.changes.length > 0 && (
                       <div className="mt-2 space-y-1">
                         {entry.changes.map((change, changeIndex) => (
-                          <div key={changeIndex} className="text-xs bg-gray-50 p-2 rounded">
+                          <div
+                            key={changeIndex}
+                            className="text-xs bg-gray-50 p-2 rounded"
+                          >
                             <span className="font-medium">{change.field}:</span>
-                            <span className="text-red-600 line-through ml-1">{change.from}</span>
+                            <span className="text-red-600 line-through ml-1">
+                              {change.from}
+                            </span>
                             <span className="mx-1">→</span>
                             <span className="text-green-600">{change.to}</span>
                           </div>
@@ -4038,23 +4476,33 @@ const PolicyValidationView: React.FC<{
 
     // Check for common issues
     if (policy.rules.length === 0) {
-      results.warnings.push("No rules defined - policy will not have any effect");
+      results.warnings.push(
+        "No rules defined - policy will not have any effect",
+      );
     }
 
     if (policy.priority < 50) {
-      results.suggestions.push("Consider increasing priority for better policy evaluation order");
+      results.suggestions.push(
+        "Consider increasing priority for better policy evaluation order",
+      );
     }
 
     if (policy.effect === "deny" && policy.priority < 100) {
-      results.suggestions.push("Deny policies typically should have higher priority than allow policies");
+      results.suggestions.push(
+        "Deny policies typically should have higher priority than allow policies",
+      );
     }
 
     policy.rules.forEach((rule: PolicyRule, index: number) => {
       if (rule.subject.length === 0) {
-        results.warnings.push(`Rule ${index + 1}: No subject conditions defined`);
+        results.warnings.push(
+          `Rule ${index + 1}: No subject conditions defined`,
+        );
       }
       if (rule.resource.length === 0) {
-        results.warnings.push(`Rule ${index + 1}: No resource conditions defined`);
+        results.warnings.push(
+          `Rule ${index + 1}: No resource conditions defined`,
+        );
       }
       if (rule.action.length === 0) {
         results.warnings.push(`Rule ${index + 1}: No actions specified`);
@@ -4062,7 +4510,10 @@ const PolicyValidationView: React.FC<{
     });
 
     // Calculate score
-    results.score = Math.max(0, 100 - (results.warnings.length * 20) - (results.suggestions.length * 5));
+    results.score = Math.max(
+      0,
+      100 - results.warnings.length * 20 - results.suggestions.length * 5,
+    );
 
     setValidationResults(results);
   };
@@ -4100,12 +4551,19 @@ const PolicyValidationView: React.FC<{
                     <XCircle className="h-5 w-5 text-red-600" />
                   )}
                   <span className="font-medium">
-                    {validationResults.isValid ? "Valid Policy" : "Invalid Policy"}
+                    {validationResults.isValid
+                      ? "Valid Policy"
+                      : "Invalid Policy"}
                   </span>
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-500">Quality Score</p>
-                  <p className={cn("text-2xl font-bold", getScoreColor(validationResults.score))}>
+                  <p
+                    className={cn(
+                      "text-2xl font-bold",
+                      getScoreColor(validationResults.score),
+                    )}
+                  >
                     {validationResults.score}/100
                   </p>
                 </div>
@@ -4125,12 +4583,14 @@ const PolicyValidationView: React.FC<{
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {validationResults.warnings.map((warning: string, index: number) => (
-                    <div key={index} className="flex items-start space-x-2">
-                      <AlertTriangle className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
-                      <p className="text-sm text-orange-700">{warning}</p>
-                    </div>
-                  ))}
+                  {validationResults.warnings.map(
+                    (warning: string, index: number) => (
+                      <div key={index} className="flex items-start space-x-2">
+                        <AlertTriangle className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
+                        <p className="text-sm text-orange-700">{warning}</p>
+                      </div>
+                    ),
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -4146,37 +4606,43 @@ const PolicyValidationView: React.FC<{
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {validationResults.suggestions.map((suggestion: string, index: number) => (
-                    <div key={index} className="flex items-start space-x-2">
-                      <TrendingUp className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
-                      <p className="text-sm text-blue-700">{suggestion}</p>
-                    </div>
-                  ))}
+                  {validationResults.suggestions.map(
+                    (suggestion: string, index: number) => (
+                      <div key={index} className="flex items-start space-x-2">
+                        <TrendingUp className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                        <p className="text-sm text-blue-700">{suggestion}</p>
+                      </div>
+                    ),
+                  )}
                 </div>
               </CardContent>
             </Card>
           )}
 
-          {validationResults.isValid && validationResults.warnings.length === 0 && (
-            <Card className="border-green-200">
-              <CardContent className="pt-6">
-                <div className="flex items-center space-x-2 text-green-800">
-                  <CheckCircle className="h-5 w-5" />
-                  <span className="font-medium">Policy looks good!</span>
-                </div>
-                <p className="text-sm text-green-700 mt-1">
-                  No issues found. This policy is ready to be created.
-                </p>
-              </CardContent>
-            </Card>
-          )}
+          {validationResults.isValid &&
+            validationResults.warnings.length === 0 && (
+              <Card className="border-green-200">
+                <CardContent className="pt-6">
+                  <div className="flex items-center space-x-2 text-green-800">
+                    <CheckCircle className="h-5 w-5" />
+                    <span className="font-medium">Policy looks good!</span>
+                  </div>
+                  <p className="text-sm text-green-700 mt-1">
+                    No issues found. This policy is ready to be created.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
         </div>
       ) : (
         <div className="text-center py-12 border-2 border-dashed border-gray-200 rounded-lg">
           <CheckCircle className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Ready to Validate</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            Ready to Validate
+          </h3>
           <p className="text-gray-500 mb-4">
-            Click "Run Validation" to check your policy for issues and get quality score
+            Click "Run Validation" to check your policy for issues and get
+            quality score
           </p>
         </div>
       )}
