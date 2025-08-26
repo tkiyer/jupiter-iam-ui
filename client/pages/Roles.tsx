@@ -1732,16 +1732,16 @@ const EditTemplateDialog: React.FC<{
               <div>
                 <Label>Organization Unit</Label>
                 <Select
-                  value={formData.organizationUnit || ""}
+                  value={formData.organizationUnit || "any"}
                   onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, organizationUnit: value }))
+                    setFormData((prev) => ({ ...prev, organizationUnit: value === "any" ? undefined : value }))
                   }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select unit" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Any Unit</SelectItem>
+                    <SelectItem value="any">Any Unit</SelectItem>
                     <SelectItem value="engineering">Engineering</SelectItem>
                     <SelectItem value="sales">Sales</SelectItem>
                     <SelectItem value="marketing">Marketing</SelectItem>
