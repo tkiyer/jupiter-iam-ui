@@ -223,7 +223,7 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
         "budget.view",
         "performance.review",
       ],
-      icon: Users,
+      icon: UsersIcon,
       color: "purple",
     },
     {
