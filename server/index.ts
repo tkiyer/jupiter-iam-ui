@@ -143,6 +143,10 @@ export function createServer() {
   // IAM Permission Management routes (detailed)
   app.get("/api/permissions", handleGetPermissions);
   app.get("/api/permissions/categories", handleGetPermissionCategories);
+  app.post("/api/permissions/categories", handleCreatePermissionCategory);
+  app.get("/api/permissions/categories/:id", handleGetPermissionCategory);
+  app.put("/api/permissions/categories/:id", handleUpdatePermissionCategory);
+  app.delete("/api/permissions/categories/:id", handleDeletePermissionCategory);
   app.get("/api/permissions/optimizations", handleGetOptimizations);
   app.post("/api/permissions", handleCreatePermission);
   app.get("/api/permissions/:id", handleGetPermission);
