@@ -3376,7 +3376,7 @@ const CreateCategoryDialog: React.FC<{
     description: "",
     color: "#3B82F6",
     icon: "shield",
-    parentCategory: "",
+    parentCategory: "none",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
