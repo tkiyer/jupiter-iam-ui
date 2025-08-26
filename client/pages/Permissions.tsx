@@ -3367,4 +3367,483 @@ const PermissionAnalyticsView: React.FC<{
   );
 };
 
+// Create Category Dialog Component
+const CreateCategoryDialog: React.FC<{
+  onCreateCategory: (category: any) => void;
+}> = ({ onCreateCategory }) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    color: "#3B82F6",
+    icon: "shield",
+    parentCategory: "",
+  });
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Category name is required";
+    }
+    if (!formData.description.trim()) {
+      newErrors.description = "Description is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+    try {
+      const categoryData = {
+        ...formData,
+        parentCategory: formData.parentCategory || undefined,
+      };
+      await onCreateCategory(categoryData);
+      // Reset form on success
+      setFormData({
+        name: "",
+        description: "",
+        color: "#3B82F6",
+        icon: "shield",
+        parentCategory: "",
+      });
+      setErrors({});
+    } catch (error) {
+      console.error("Error creating category:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const predefinedColors = [
+    "#3B82F6", // Blue
+    "#8B5CF6", // Purple
+    "#10B981", // Green
+    "#F59E0B", // Yellow
+    "#EF4444", // Red
+    "#06B6D4", // Cyan
+    "#F97316", // Orange
+    "#84CC16", // Lime
+    "#EC4899", // Pink
+    "#6366F1", // Indigo
+  ];
+
+  const iconOptions = [
+    { value: "shield", label: "Shield" },
+    { value: "users", label: "Users" },
+    { value: "dollar-sign", label: "Dollar Sign" },
+    { value: "settings", label: "Settings" },
+    { value: "code", label: "Code" },
+    { value: "database", label: "Database" },
+    { value: "lock", label: "Lock" },
+    { value: "key", label: "Key" },
+    { value: "globe", label: "Globe" },
+    { value: "layers", label: "Layers" },
+  ];
+
+  return (
+    <DialogContent className="max-w-2xl">
+      <DialogHeader>
+        <DialogTitle>Create New Category</DialogTitle>
+        <DialogDescription>
+          Create a new permission category to organize and group related permissions
+        </DialogDescription>
+      </DialogHeader>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="categoryName">Category Name</Label>
+            <Input
+              id="categoryName"
+              required
+              value={formData.name}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, name: e.target.value }))
+              }
+              className={errors.name ? "border-red-500" : ""}
+              placeholder="e.g., User Management"
+            />
+            {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+          </div>
+          <div>
+            <Label>Icon</Label>
+            <Select
+              value={formData.icon}
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, icon: value }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {iconOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="categoryDescription">Description</Label>
+          <Textarea
+            id="categoryDescription"
+            required
+            value={formData.description}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                description: e.target.value,
+              }))
+            }
+            className={errors.description ? "border-red-500" : ""}
+            placeholder="Describe what types of permissions belong to this category"
+          />
+          {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
+        </div>
+
+        <div>
+          <Label>Color</Label>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {predefinedColors.map((color) => (
+              <button
+                key={color}
+                type="button"
+                className={`w-8 h-8 rounded-lg border-2 ${
+                  formData.color === color ? "border-gray-900" : "border-gray-200"
+                }`}
+                style={{ backgroundColor: color }}
+                onClick={() => setFormData((prev) => ({ ...prev, color }))}
+                title={color}
+              />
+            ))}
+          </div>
+          <div className="mt-2">
+            <Input
+              type="color"
+              value={formData.color}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, color: e.target.value }))
+              }
+              className="w-20 h-10"
+            />
+          </div>
+        </div>
+
+        <div>
+          <Label>Parent Category (Optional)</Label>
+          <Select
+            value={formData.parentCategory}
+            onValueChange={(value) =>
+              setFormData((prev) => ({ ...prev, parentCategory: value }))
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select parent category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">None (Top-level category)</SelectItem>
+              {/* Note: In a real implementation, you'd list existing categories here */}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <Label className="text-sm font-medium">Preview</Label>
+          <div className="mt-2 flex items-center">
+            <div
+              className="p-2 rounded-lg mr-3"
+              style={{ backgroundColor: formData.color + "20" }}
+            >
+              <Shield
+                className="h-5 w-5"
+                style={{ color: formData.color }}
+              />
+            </div>
+            <div>
+              <p className="font-medium">{formData.name || "Category Name"}</p>
+              <p className="text-sm text-gray-500">
+                {formData.description || "Category description"}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-end space-x-2">
+          <Button type="button" variant="outline" disabled={isSubmitting}>
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                Creating...
+              </>
+            ) : (
+              <>
+                <Plus className="mr-2 h-4 w-4" />
+                Create Category
+              </>
+            )}
+          </Button>
+        </div>
+      </form>
+    </DialogContent>
+  );
+};
+
+// Edit Category Dialog Component
+const EditCategoryDialog: React.FC<{
+  category: PermissionCategory;
+  onSave: (category: any) => void;
+}> = ({ category, onSave }) => {
+  const [formData, setFormData] = useState({
+    id: category.id,
+    name: category.name,
+    description: category.description,
+    color: category.color,
+    icon: category.icon,
+    parentCategory: category.parentCategory || "",
+  });
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Category name is required";
+    }
+    if (!formData.description.trim()) {
+      newErrors.description = "Description is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+    try {
+      const categoryData = {
+        ...formData,
+        parentCategory: formData.parentCategory || undefined,
+      };
+      await onSave(categoryData);
+    } catch (error) {
+      console.error("Error updating category:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const predefinedColors = [
+    "#3B82F6", // Blue
+    "#8B5CF6", // Purple
+    "#10B981", // Green
+    "#F59E0B", // Yellow
+    "#EF4444", // Red
+    "#06B6D4", // Cyan
+    "#F97316", // Orange
+    "#84CC16", // Lime
+    "#EC4899", // Pink
+    "#6366F1", // Indigo
+  ];
+
+  const iconOptions = [
+    { value: "shield", label: "Shield" },
+    { value: "users", label: "Users" },
+    { value: "dollar-sign", label: "Dollar Sign" },
+    { value: "settings", label: "Settings" },
+    { value: "code", label: "Code" },
+    { value: "database", label: "Database" },
+    { value: "lock", label: "Lock" },
+    { value: "key", label: "Key" },
+    { value: "globe", label: "Globe" },
+    { value: "layers", label: "Layers" },
+  ];
+
+  return (
+    <DialogContent className="max-w-2xl">
+      <DialogHeader>
+        <DialogTitle>Edit Category: {category.name}</DialogTitle>
+        <DialogDescription>
+          Update category details and visual appearance
+        </DialogDescription>
+      </DialogHeader>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="editCategoryName">Category Name</Label>
+            <Input
+              id="editCategoryName"
+              required
+              value={formData.name}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, name: e.target.value }))
+              }
+              className={errors.name ? "border-red-500" : ""}
+              disabled={category.isSystemCategory}
+            />
+            {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+            {category.isSystemCategory && (
+              <p className="text-xs text-gray-500 mt-1">System categories cannot be renamed</p>
+            )}
+          </div>
+          <div>
+            <Label>Icon</Label>
+            <Select
+              value={formData.icon}
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, icon: value }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {iconOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="editCategoryDescription">Description</Label>
+          <Textarea
+            id="editCategoryDescription"
+            required
+            value={formData.description}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                description: e.target.value,
+              }))
+            }
+            className={errors.description ? "border-red-500" : ""}
+          />
+          {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
+        </div>
+
+        <div>
+          <Label>Color</Label>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {predefinedColors.map((color) => (
+              <button
+                key={color}
+                type="button"
+                className={`w-8 h-8 rounded-lg border-2 ${
+                  formData.color === color ? "border-gray-900" : "border-gray-200"
+                }`}
+                style={{ backgroundColor: color }}
+                onClick={() => setFormData((prev) => ({ ...prev, color }))}
+                title={color}
+              />
+            ))}
+          </div>
+          <div className="mt-2">
+            <Input
+              type="color"
+              value={formData.color}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, color: e.target.value }))
+              }
+              className="w-20 h-10"
+            />
+          </div>
+        </div>
+
+        <div>
+          <Label>Parent Category (Optional)</Label>
+          <Select
+            value={formData.parentCategory}
+            onValueChange={(value) =>
+              setFormData((prev) => ({ ...prev, parentCategory: value }))
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select parent category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">None (Top-level category)</SelectItem>
+              {/* Note: In a real implementation, you'd list existing categories here */}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <Label className="text-sm font-medium">Preview</Label>
+          <div className="mt-2 flex items-center">
+            <div
+              className="p-2 rounded-lg mr-3"
+              style={{ backgroundColor: formData.color + "20" }}
+            >
+              <Shield
+                className="h-5 w-5"
+                style={{ color: formData.color }}
+              />
+            </div>
+            <div>
+              <p className="font-medium">{formData.name}</p>
+              <p className="text-sm text-gray-500">{formData.description}</p>
+            </div>
+          </div>
+        </div>
+
+        {category.permissions && category.permissions.length > 0 && (
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <Label className="text-sm font-medium text-blue-900">Category Usage</Label>
+            <p className="text-sm text-blue-700 mt-1">
+              This category contains {category.permissions.length} permission(s). Changes will affect all associated permissions.
+            </p>
+          </div>
+        )}
+
+        <div className="flex justify-end space-x-2">
+          <Button type="button" variant="outline" disabled={isSubmitting}>
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              "Save Changes"
+            )}
+          </Button>
+        </div>
+      </form>
+    </DialogContent>
+  );
+};
+
 export default Permissions;
