@@ -1954,7 +1954,7 @@ const CreateTemplateDialog: React.FC<{
         description: "",
         category: "",
         permissions: [],
-        organizationUnit: "",
+        organizationUnit: "any",
         level: 1,
         isBuiltIn: false,
         sourceRoleId: "",
