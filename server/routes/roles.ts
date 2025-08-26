@@ -144,29 +144,168 @@ const mockRoleConflicts: RoleConflict[] = [
   }
 ];
 
-// Mock permissions
-const mockPermissions: Permission[] = [
-  { id: "user.create", name: "Create Users", resource: "user", action: "create", description: "Create new user accounts", category: "User Management" },
-  { id: "user.read", name: "Read Users", resource: "user", action: "read", description: "View user information", category: "User Management" },
-  { id: "user.update", name: "Update Users", resource: "user", action: "update", description: "Modify user accounts", category: "User Management" },
-  { id: "user.delete", name: "Delete Users", resource: "user", action: "delete", description: "Remove user accounts", category: "User Management" },
-  { id: "role.create", name: "Create Roles", resource: "role", action: "create", description: "Create new roles", category: "Role Management" },
-  { id: "role.read", name: "Read Roles", resource: "role", action: "read", description: "View role information", category: "Role Management" },
-  { id: "role.update", name: "Update Roles", resource: "role", action: "update", description: "Modify roles", category: "Role Management" },
-  { id: "role.delete", name: "Delete Roles", resource: "role", action: "delete", description: "Remove roles", category: "Role Management" },
-  { id: "system.admin", name: "System Admin", resource: "system", action: "admin", description: "Full system administration", category: "System" },
-  { id: "profile.read", name: "Read Profile", resource: "profile", action: "read", description: "View own profile", category: "Profile" },
-  { id: "profile.update", name: "Update Profile", resource: "profile", action: "update", description: "Update own profile", category: "Profile" },
-  { id: "team.manage", name: "Manage Team", resource: "team", action: "manage", description: "Manage team members", category: "Team" },
-  { id: "audit.read", name: "Read Audit Logs", resource: "audit", action: "read", description: "View audit logs", category: "Audit" },
-  { id: "logs.read", name: "Read Logs", resource: "logs", action: "read", description: "View system logs", category: "Audit" },
-  { id: "reports.read", name: "Read Reports", resource: "reports", action: "read", description: "View reports", category: "Reporting" },
-  { id: "reports.create", name: "Create Reports", resource: "reports", action: "create", description: "Create reports", category: "Reporting" },
-  { id: "project.manage", name: "Manage Projects", resource: "project", action: "manage", description: "Manage project settings", category: "Project" },
-  { id: "team.coordinate", name: "Coordinate Team", resource: "team", action: "coordinate", description: "Coordinate team activities", category: "Team" },
-  { id: "finance.read", name: "Read Financial Data", resource: "finance", action: "read", description: "View financial information", category: "Finance" },
-  { id: "analytics.read", name: "Read Analytics", resource: "analytics", action: "read", description: "View analytics data", category: "Analytics" }
-];
+// Generate comprehensive mock permissions
+const generateMockPermissions = (): Permission[] => {
+  const permissions: Permission[] = [];
+
+  const categories = [
+    "User Management", "Role Management", "System", "Security", "Finance",
+    "Analytics", "Reporting", "Project Management", "Team Management",
+    "Content Management", "API Management", "Audit & Compliance",
+    "Customer Management", "Inventory Management", "HR Management",
+    "Marketing", "Sales", "Support", "DevOps", "Quality Assurance"
+  ];
+
+  const resources = [
+    "user", "role", "system", "security", "finance", "analytics", "reports",
+    "project", "team", "content", "api", "audit", "customer", "inventory",
+    "employee", "campaign", "lead", "ticket", "deployment", "test", "profile",
+    "organization", "billing", "notification", "workflow", "dashboard",
+    "integration", "backup", "monitoring", "logs", "settings", "database",
+    "file", "document", "contract", "invoice", "purchase", "vendor",
+    "product", "order", "payment", "shipment", "return", "refund"
+  ];
+
+  const actions = [
+    "create", "read", "update", "delete", "manage", "execute", "approve",
+    "reject", "export", "import", "configure", "monitor", "audit", "backup",
+    "restore", "publish", "archive", "share", "copy", "move", "assign",
+    "unassign", "activate", "deactivate", "suspend", "resume", "lock", "unlock"
+  ];
+
+  const scopes = ["global", "resource", "field", "api"];
+  const risks = ["low", "medium", "high", "critical"];
+
+  // Generate base permissions
+  let permissionId = 1;
+
+  resources.forEach(resource => {
+    const relevantCategory = categories.find(cat =>
+      cat.toLowerCase().includes(resource) ||
+      resource.includes(cat.toLowerCase().split(' ')[0])
+    ) || categories[Math.floor(Math.random() * categories.length)];
+
+    actions.forEach(action => {
+      // Not all action-resource combinations make sense, so filter some out
+      const validCombination = !(
+        (action === "approve" && !["project", "expense", "invoice", "contract"].includes(resource)) ||
+        (action === "backup" && !["database", "file", "system"].includes(resource)) ||
+        (action === "publish" && !["content", "report", "document"].includes(resource))
+      );
+
+      if (validCombination) {
+        const scope = scopes[Math.floor(Math.random() * scopes.length)];
+        const risk = risks[Math.floor(Math.random() * risks.length)];
+
+        permissions.push({
+          id: `${resource}.${action}`,
+          name: `${action.charAt(0).toUpperCase() + action.slice(1)} ${resource.charAt(0).toUpperCase() + resource.slice(1)}`,
+          resource,
+          action,
+          description: `${action.charAt(0).toUpperCase() + action.slice(1)} operations on ${resource} resource`,
+          category: relevantCategory,
+          scope,
+          risk,
+          usageCount: Math.floor(Math.random() * 1000),
+          lastUsed: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+        });
+        permissionId++;
+      }
+    });
+  });
+
+  // Add some special administrative permissions
+  const adminPermissions = [
+    {
+      id: "system.admin.full",
+      name: "Full System Administration",
+      resource: "system",
+      action: "admin",
+      description: "Complete administrative access to all system functions",
+      category: "System",
+      scope: "global" as const,
+      risk: "critical" as const,
+      isSystemPermission: true,
+      usageCount: 50,
+      lastUsed: "2024-01-10"
+    },
+    {
+      id: "security.override",
+      name: "Security Override",
+      resource: "security",
+      action: "override",
+      description: "Override security restrictions in emergency situations",
+      category: "Security",
+      scope: "global" as const,
+      risk: "critical" as const,
+      isSystemPermission: true,
+      usageCount: 5,
+      lastUsed: "2024-01-08"
+    },
+    {
+      id: "data.export.bulk",
+      name: "Bulk Data Export",
+      resource: "data",
+      action: "export",
+      description: "Export large datasets including sensitive information",
+      category: "Data Management",
+      scope: "global" as const,
+      risk: "high" as const,
+      usageCount: 120,
+      lastUsed: "2024-01-09"
+    }
+  ];
+
+  permissions.push(...adminPermissions);
+
+  // Add field-level permissions for sensitive data
+  const sensitiveFields = ["ssn", "credit_card", "salary", "medical_info", "personal_data"];
+  sensitiveFields.forEach(field => {
+    ["read", "update", "export"].forEach(action => {
+      permissions.push({
+        id: `field.${field}.${action}`,
+        name: `${action.charAt(0).toUpperCase() + action.slice(1)} ${field.replace('_', ' ').toUpperCase()}`,
+        resource: "sensitive_data",
+        action,
+        description: `${action.charAt(0).toUpperCase() + action.slice(1)} access to ${field.replace('_', ' ')} field`,
+        category: "Data Privacy",
+        scope: "field" as const,
+        risk: action === "read" ? "medium" as const : "high" as const,
+        usageCount: Math.floor(Math.random() * 100),
+        lastUsed: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      });
+    });
+  });
+
+  // Add API-specific permissions
+  const apiEndpoints = [
+    "/api/users", "/api/roles", "/api/analytics", "/api/reports", "/api/billing",
+    "/api/payments", "/api/orders", "/api/inventory", "/api/customers", "/api/projects",
+    "/api/teams", "/api/content", "/api/settings", "/api/integrations", "/api/webhooks"
+  ];
+
+  apiEndpoints.forEach(endpoint => {
+    ["GET", "POST", "PUT", "DELETE", "PATCH"].forEach(method => {
+      permissions.push({
+        id: `api.${endpoint.replace(/[^a-zA-Z0-9]/g, '_')}.${method.toLowerCase()}`,
+        name: `${method} ${endpoint}`,
+        resource: "api_endpoint",
+        action: method.toLowerCase(),
+        description: `${method} access to ${endpoint} endpoint`,
+        category: "API Management",
+        scope: "api" as const,
+        risk: method === "DELETE" ? "high" as const : method === "POST" || method === "PUT" ? "medium" as const : "low" as const,
+        usageCount: Math.floor(Math.random() * 500),
+        lastUsed: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      });
+    });
+  });
+
+  return permissions.sort((a, b) => a.name.localeCompare(b.name));
+};
+
+// Mock permissions - Generate comprehensive dataset
+const mockPermissions: Permission[] = generateMockPermissions();
 
 // GET /api/roles - Get all roles with filtering
 export const handleGetRoles: RequestHandler = (req, res) => {
