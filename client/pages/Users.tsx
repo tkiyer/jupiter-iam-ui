@@ -1464,36 +1464,60 @@ const EnhancedRolesSelector: React.FC<{
             {selectedRoles.length} selected
           </Badge>
           {selectedRoles.length > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
+            <div
               onClick={handleClearAll}
-              className="text-red-600 hover:text-red-700"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 text-red-600 hover:text-red-700 cursor-pointer"
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleClearAll();
+                }
+              }}
             >
               <X className="mr-1 h-3 w-3" />
               Clear All
-            </Button>
+            </div>
           )}
         </div>
         <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
+          <div
             onClick={() => setShowSelected(!showSelected)}
-            className={showSelected ? "bg-blue-50 text-blue-700" : ""}
+            className={cn(
+              "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 cursor-pointer",
+              showSelected ? "bg-blue-50 text-blue-700" : ""
+            )}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setShowSelected(!showSelected);
+              }
+            }}
           >
             <CheckCircle className="mr-2 h-4 w-4" />
             {showSelected ? "Show All" : "Show Selected Only"}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
+          </div>
+          <div
             onClick={() => setBulkSelectMode(!bulkSelectMode)}
-            className={bulkSelectMode ? "bg-blue-50 text-blue-700" : ""}
+            className={cn(
+              "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 cursor-pointer",
+              bulkSelectMode ? "bg-blue-50 text-blue-700" : ""
+            )}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setBulkSelectMode(!bulkSelectMode);
+              }
+            }}
           >
             <Check className="mr-2 h-4 w-4" />
             Bulk Select
-          </Button>
+          </div>
         </div>
       </div>
 
