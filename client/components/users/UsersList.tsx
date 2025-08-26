@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -16,14 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Filter,
-  Edit,
-  Trash2,
-  UserCheck,
-  UserX,
-  Clock,
-} from "lucide-react";
+import { Filter, Edit, Trash2, UserCheck, UserX, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { User } from "@shared/iam";
 import { FilterBar } from "@/components/ui/FilterBar";
@@ -103,7 +91,7 @@ export const UsersList: React.FC<UsersListProps> = ({ users, onEditUser }) => {
   };
 
   // Get unique roles for filter
-  const allRoles = Array.from(new Set(users.flatMap(u => u.roles)));
+  const allRoles = Array.from(new Set(users.flatMap((u) => u.roles)));
 
   const filterConfigs = [
     {
@@ -112,22 +100,22 @@ export const UsersList: React.FC<UsersListProps> = ({ users, onEditUser }) => {
         { label: "All Status", value: "all" },
         { label: "Active", value: "active" },
         { label: "Inactive", value: "inactive" },
-        { label: "Suspended", value: "suspended" }
+        { label: "Suspended", value: "suspended" },
       ],
       value: statusFilter,
       onChange: setStatusFilter,
-      width: "w-32"
+      width: "w-32",
     },
     {
       placeholder: "Role",
       options: [
         { label: "All Roles", value: "all" },
-        ...allRoles.map(role => ({ label: role, value: role }))
+        ...allRoles.map((role) => ({ label: role, value: role })),
       ],
       value: roleFilter,
       onChange: setRoleFilter,
-      width: "w-32"
-    }
+      width: "w-32",
+    },
   ];
 
   return (

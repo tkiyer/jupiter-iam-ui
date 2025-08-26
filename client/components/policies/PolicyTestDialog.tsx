@@ -38,21 +38,30 @@ export const PolicyTestDialog: React.FC<PolicyTestDialogProps> = ({
             Test how policies evaluate against specific scenarios
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="space-y-6">
           <div className="h-64 flex items-center justify-center border-2 border-dashed border-gray-300 rounded">
             <div className="text-center text-gray-500">
               <TestTube className="h-12 w-12 mx-auto mb-2" />
               <p>Policy testing interface would be displayed here</p>
-              <p className="text-sm">Input forms for subject, resource, action, environment</p>
+              <p className="text-sm">
+                Input forms for subject, resource, action, environment
+              </p>
             </div>
           </div>
 
           <div className="flex justify-end space-x-2">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               Close
             </Button>
-            <Button onClick={onRunTest} className="bg-blue-600 hover:bg-blue-700">
+            <Button
+              onClick={onRunTest}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
               Run Test
             </Button>
           </div>

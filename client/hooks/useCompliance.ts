@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 export interface ComplianceReport {
   id: string;
   name: string;
-  type: 'SOX' | 'PCI-DSS' | 'GDPR' | 'HIPAA' | 'SOC2';
-  status: 'compliant' | 'non_compliant' | 'warning';
+  type: "SOX" | "PCI-DSS" | "GDPR" | "HIPAA" | "SOC2";
+  status: "compliant" | "non_compliant" | "warning";
   score: number;
   lastRun: string;
   findings: number;
@@ -20,7 +20,9 @@ export interface UseComplianceReturn {
 }
 
 export const useCompliance = (): UseComplianceReturn => {
-  const [complianceReports, setComplianceReports] = useState<ComplianceReport[]>([]);
+  const [complianceReports, setComplianceReports] = useState<
+    ComplianceReport[]
+  >([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,39 +30,39 @@ export const useCompliance = (): UseComplianceReturn => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       // Mock compliance reports
       const mockCompliance: ComplianceReport[] = [
         {
-          id: 'comp1',
-          name: 'SOX Compliance Check',
-          type: 'SOX',
-          status: 'compliant',
+          id: "comp1",
+          name: "SOX Compliance Check",
+          type: "SOX",
+          status: "compliant",
           score: 95,
           lastRun: new Date(Date.now() - 86400000).toISOString(),
           findings: 2,
-          criticalFindings: 0
+          criticalFindings: 0,
         },
         {
-          id: 'comp2',
-          name: 'GDPR Privacy Assessment',
-          type: 'GDPR',
-          status: 'warning',
+          id: "comp2",
+          name: "GDPR Privacy Assessment",
+          type: "GDPR",
+          status: "warning",
           score: 78,
           lastRun: new Date(Date.now() - 172800000).toISOString(),
           findings: 8,
-          criticalFindings: 2
+          criticalFindings: 2,
         },
         {
-          id: 'comp3',
-          name: 'PCI-DSS Security Validation',
-          type: 'PCI-DSS',
-          status: 'non_compliant',
+          id: "comp3",
+          name: "PCI-DSS Security Validation",
+          type: "PCI-DSS",
+          status: "non_compliant",
           score: 65,
           lastRun: new Date(Date.now() - 259200000).toISOString(),
           findings: 15,
-          criticalFindings: 5
-        }
+          criticalFindings: 5,
+        },
       ];
 
       setComplianceReports(mockCompliance);
@@ -77,15 +79,17 @@ export const useCompliance = (): UseComplianceReturn => {
       // Mock API call to run compliance check
       console.log(`Running compliance check for report: ${reportId}`);
       // Update the last run time
-      setComplianceReports(prev => 
-        prev.map(report => 
-          report.id === reportId 
+      setComplianceReports((prev) =>
+        prev.map((report) =>
+          report.id === reportId
             ? { ...report, lastRun: new Date().toISOString() }
-            : report
-        )
+            : report,
+        ),
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to run compliance check");
+      setError(
+        err instanceof Error ? err.message : "Failed to run compliance check",
+      );
       throw err;
     }
   };

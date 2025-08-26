@@ -15,8 +15,8 @@ interface PermissionOptimizationProps {
   optimizations: PermissionOptimizationType[];
 }
 
-export const PermissionOptimization: React.FC<PermissionOptimizationProps> = ({ 
-  optimizations 
+export const PermissionOptimization: React.FC<PermissionOptimizationProps> = ({
+  optimizations,
 }) => {
   const getOptimizationColor = (type: string) => {
     switch (type) {
@@ -52,12 +52,12 @@ export const PermissionOptimization: React.FC<PermissionOptimizationProps> = ({
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-2">
-                      <Badge className={getOptimizationColor(optimization.type)}>
+                      <Badge
+                        className={getOptimizationColor(optimization.type)}
+                      >
                         {optimization.type.replace("_", " ")}
                       </Badge>
-                      <Badge variant="outline">
-                        {optimization.severity}
-                      </Badge>
+                      <Badge variant="outline">{optimization.severity}</Badge>
                     </div>
                     <p className="text-sm text-gray-700 mb-2">
                       {optimization.description}

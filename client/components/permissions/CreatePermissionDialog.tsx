@@ -255,7 +255,10 @@ export const CreatePermissionDialog: React.FC<CreatePermissionDialogProps> = ({
                   id="complianceRequired"
                   checked={formData.complianceRequired}
                   onCheckedChange={(checked) =>
-                    setFormData((prev) => ({ ...prev, complianceRequired: !!checked }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      complianceRequired: !!checked,
+                    }))
                   }
                 />
                 <Label htmlFor="complianceRequired">Compliance required</Label>
@@ -265,22 +268,34 @@ export const CreatePermissionDialog: React.FC<CreatePermissionDialogProps> = ({
 
           <TabsContent value="conditions" className="space-y-4">
             <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded">
-              <p className="text-gray-500">Permission conditions interface would be here</p>
-              <p className="text-sm text-gray-400">Time-based, location-based, and custom conditions</p>
+              <p className="text-gray-500">
+                Permission conditions interface would be here
+              </p>
+              <p className="text-sm text-gray-400">
+                Time-based, location-based, and custom conditions
+              </p>
             </div>
           </TabsContent>
 
           <TabsContent value="fields" className="space-y-4">
             <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded">
-              <p className="text-gray-500">Field-level access controls would be here</p>
-              <p className="text-sm text-gray-400">Define which fields can be accessed, masked, or restricted</p>
+              <p className="text-gray-500">
+                Field-level access controls would be here
+              </p>
+              <p className="text-sm text-gray-400">
+                Define which fields can be accessed, masked, or restricted
+              </p>
             </div>
           </TabsContent>
 
           <TabsContent value="api" className="space-y-4">
             <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded">
-              <p className="text-gray-500">API endpoint protection configuration</p>
-              <p className="text-sm text-gray-400">Select which API endpoints this permission controls</p>
+              <p className="text-gray-500">
+                API endpoint protection configuration
+              </p>
+              <p className="text-sm text-gray-400">
+                Select which API endpoints this permission controls
+              </p>
             </div>
           </TabsContent>
         </Tabs>

@@ -13,7 +13,9 @@ interface APIProtectionViewProps {
   resources: Resource[];
 }
 
-export const APIProtectionView: React.FC<APIProtectionViewProps> = ({ resources }) => {
+export const APIProtectionView: React.FC<APIProtectionViewProps> = ({
+  resources,
+}) => {
   return (
     <Card>
       <CardHeader>
@@ -30,7 +32,9 @@ export const APIProtectionView: React.FC<APIProtectionViewProps> = ({ resources 
           <div className="text-center text-gray-500">
             <Code className="h-12 w-12 mx-auto mb-2" />
             <p>API protection interface would be displayed here</p>
-            <p className="text-sm">Endpoint permissions, rate limits, authentication</p>
+            <p className="text-sm">
+              Endpoint permissions, rate limits, authentication
+            </p>
           </div>
         </div>
       </CardContent>

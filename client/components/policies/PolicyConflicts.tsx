@@ -13,7 +13,9 @@ interface PolicyConflictsProps {
   policies: ABACPolicy[];
 }
 
-export const PolicyConflicts: React.FC<PolicyConflictsProps> = ({ policies }) => {
+export const PolicyConflicts: React.FC<PolicyConflictsProps> = ({
+  policies,
+}) => {
   return (
     <Card>
       <CardHeader>
@@ -30,7 +32,9 @@ export const PolicyConflicts: React.FC<PolicyConflictsProps> = ({ policies }) =>
           <div className="text-center text-gray-500">
             <AlertTriangle className="h-12 w-12 mx-auto mb-2" />
             <p>Policy conflicts analysis would be displayed here</p>
-            <p className="text-sm">Conflict detection, resolution suggestions, impact analysis</p>
+            <p className="text-sm">
+              Conflict detection, resolution suggestions, impact analysis
+            </p>
           </div>
         </div>
       </CardContent>

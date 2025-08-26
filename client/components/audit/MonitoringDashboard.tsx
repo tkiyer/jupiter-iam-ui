@@ -7,7 +7,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { TrendingUp, Activity, CheckCircle, Eye, AlertTriangle, Settings } from "lucide-react";
+import {
+  TrendingUp,
+  Activity,
+  CheckCircle,
+  Eye,
+  AlertTriangle,
+  Settings,
+} from "lucide-react";
 
 export const MonitoringDashboard: React.FC = () => {
   return (
@@ -42,14 +49,18 @@ export const MonitoringDashboard: React.FC = () => {
                   <Settings className="h-4 w-4 text-yellow-600" />
                   <span className="text-sm">Configuration Change</span>
                 </div>
-                <span className="text-xs text-muted-foreground">12 sec ago</span>
+                <span className="text-xs text-muted-foreground">
+                  12 sec ago
+                </span>
               </div>
               <div className="flex items-center justify-between p-3 bg-red-50 rounded">
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="h-4 w-4 text-red-600" />
                   <span className="text-sm">Failed Authentication</span>
                 </div>
-                <span className="text-xs text-muted-foreground">18 sec ago</span>
+                <span className="text-xs text-muted-foreground">
+                  18 sec ago
+                </span>
               </div>
             </div>
           </CardContent>
@@ -111,7 +122,9 @@ export const MonitoringDashboard: React.FC = () => {
             <div className="text-center text-muted-foreground">
               <TrendingUp className="h-12 w-12 mx-auto mb-2" />
               <p>Performance charts would be displayed here</p>
-              <p className="text-sm">Integration with monitoring tools like Grafana</p>
+              <p className="text-sm">
+                Integration with monitoring tools like Grafana
+              </p>
             </div>
           </div>
         </CardContent>

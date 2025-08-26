@@ -10,10 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -82,9 +79,9 @@ export const EditRoleDialog: React.FC<EditRoleDialogProps> = ({
                   <Label>Status</Label>
                   <Select
                     value={formData.status}
-                    onValueChange={(value: "active" | "pending" | "inactive" | "deprecated") =>
-                      setFormData((prev) => ({ ...prev, status: value }))
-                    }
+                    onValueChange={(
+                      value: "active" | "pending" | "inactive" | "deprecated",
+                    ) => setFormData((prev) => ({ ...prev, status: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -119,7 +116,11 @@ export const EditRoleDialog: React.FC<EditRoleDialogProps> = ({
                   Assigned Permissions ({formData.permissions.length})
                 </Label>
                 <PermissionSelector
-                  permissions={Array.isArray(availablePermissions) ? availablePermissions : []}
+                  permissions={
+                    Array.isArray(availablePermissions)
+                      ? availablePermissions
+                      : []
+                  }
                   selectedPermissions={formData.permissions}
                   onSelectionChange={(selectedIds) => {
                     setFormData((prev) => ({
@@ -165,7 +166,9 @@ export const EditRoleDialog: React.FC<EditRoleDialogProps> = ({
                     type="datetime-local"
                     value={
                       formData.validFrom
-                        ? new Date(formData.validFrom).toISOString().slice(0, 16)
+                        ? new Date(formData.validFrom)
+                            .toISOString()
+                            .slice(0, 16)
                         : ""
                     }
                     onChange={(e) =>
@@ -183,7 +186,9 @@ export const EditRoleDialog: React.FC<EditRoleDialogProps> = ({
                     type="datetime-local"
                     value={
                       formData.validUntil
-                        ? new Date(formData.validUntil).toISOString().slice(0, 16)
+                        ? new Date(formData.validUntil)
+                            .toISOString()
+                            .slice(0, 16)
                         : ""
                     }
                     onChange={(e) =>
@@ -208,7 +213,9 @@ export const EditRoleDialog: React.FC<EditRoleDialogProps> = ({
                 <Card>
                   <CardContent className="p-4">
                     <p className="text-sm font-medium">Permissions</p>
-                    <p className="text-2xl font-bold">{role.permissions.length}</p>
+                    <p className="text-2xl font-bold">
+                      {role.permissions.length}
+                    </p>
                   </CardContent>
                 </Card>
               </div>
@@ -216,7 +223,11 @@ export const EditRoleDialog: React.FC<EditRoleDialogProps> = ({
           </Tabs>
 
           <div className="flex justify-end space-x-2">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               Cancel
             </Button>
             <Button type="submit" className="bg-blue-600 hover:bg-blue-700">

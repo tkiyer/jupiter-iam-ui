@@ -21,34 +21,47 @@ export const usePolicies = (): UsePoliciesReturn => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const response = await fetch("/api/policies");
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || "Failed to fetch policies");
       }
-      
+
       setPolicies(data.policies || data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
       console.error("Error fetching policies:", err);
-      
+
       // Mock data for demo
       const mockPolicies: ABACPolicy[] = [
         {
           id: "pol-1",
           name: "Executive Financial Access",
-          description: "Allow executives to access financial data during business hours",
+          description:
+            "Allow executives to access financial data during business hours",
           rules: [
             {
               subject: [
                 { attribute: "role", operator: "equals", value: "executive" },
-                { attribute: "department", operator: "in", value: ["finance", "executive"] },
+                {
+                  attribute: "department",
+                  operator: "in",
+                  value: ["finance", "executive"],
+                },
               ],
               resource: [
-                { attribute: "type", operator: "equals", value: "financial_data" },
-                { attribute: "classification", operator: "not_equals", value: "top_secret" },
+                {
+                  attribute: "type",
+                  operator: "equals",
+                  value: "financial_data",
+                },
+                {
+                  attribute: "classification",
+                  operator: "not_equals",
+                  value: "top_secret",
+                },
               ],
               action: ["read", "analyze"],
               environment: [
@@ -66,19 +79,28 @@ export const usePolicies = (): UsePoliciesReturn => {
         {
           id: "pol-2",
           name: "Emergency System Access",
-          description: "Allow system administrators emergency access to all systems",
+          description:
+            "Allow system administrators emergency access to all systems",
           rules: [
             {
               subject: [
                 { attribute: "role", operator: "equals", value: "sysadmin" },
-                { attribute: "emergency_clearance", operator: "equals", value: true },
+                {
+                  attribute: "emergency_clearance",
+                  operator: "equals",
+                  value: true,
+                },
               ],
               resource: [
                 { attribute: "type", operator: "equals", value: "system" },
               ],
               action: ["read", "write", "execute", "admin"],
               environment: [
-                { attribute: "emergency_mode", operator: "equals", value: true },
+                {
+                  attribute: "emergency_mode",
+                  operator: "equals",
+                  value: true,
+                },
               ],
             },
           ],
@@ -90,14 +112,23 @@ export const usePolicies = (): UsePoliciesReturn => {
         {
           id: "pol-3",
           name: "Contractor Data Restriction",
-          description: "Prevent contractors from accessing sensitive customer data",
+          description:
+            "Prevent contractors from accessing sensitive customer data",
           rules: [
             {
               subject: [
-                { attribute: "employment_type", operator: "equals", value: "contractor" },
+                {
+                  attribute: "employment_type",
+                  operator: "equals",
+                  value: "contractor",
+                },
               ],
               resource: [
-                { attribute: "data_classification", operator: "in", value: ["sensitive", "confidential"] },
+                {
+                  attribute: "data_classification",
+                  operator: "in",
+                  value: ["sensitive", "confidential"],
+                },
                 { attribute: "contains_pii", operator: "equals", value: true },
               ],
               action: ["read", "write", "download"],

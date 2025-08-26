@@ -20,14 +20,14 @@ export const useUsers = (): UseUsersReturn => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const response = await fetch("/api/users");
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || "Failed to fetch users");
       }
-      
+
       setUsers(data.users || data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");

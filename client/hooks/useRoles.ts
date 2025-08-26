@@ -22,14 +22,14 @@ export const useRoles = (): UseRolesReturn => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const response = await fetch("/api/roles");
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || "Failed to fetch roles");
       }
-      
+
       setRoles(data.roles || data);
 
       // Fetch analytics for each role

@@ -30,7 +30,9 @@ export const ResourcesView: React.FC<ResourcesViewProps> = ({ resources }) => {
           <div className="text-center text-gray-500">
             <Database className="h-12 w-12 mx-auto mb-2" />
             <p>Resource management interface would be displayed here</p>
-            <p className="text-sm">Add resources, configure endpoints, manage access</p>
+            <p className="text-sm">
+              Add resources, configure endpoints, manage access
+            </p>
           </div>
         </div>
       </CardContent>

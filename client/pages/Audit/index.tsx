@@ -22,13 +22,18 @@ const Audit: React.FC = () => {
   const [activeTab, setActiveTab] = useState("logs");
   const [autoRefresh, setAutoRefresh] = useState(false);
 
-  const { auditLogs, metrics, isLoading: logsLoading, refreshAuditLogs } = useAuditLogs(autoRefresh);
+  const {
+    auditLogs,
+    metrics,
+    isLoading: logsLoading,
+    refreshAuditLogs,
+  } = useAuditLogs(autoRefresh);
   const { securityAlerts, isLoading: alertsLoading } = useSecurityAlerts();
   const { complianceReports, isLoading: complianceLoading } = useCompliance();
 
   const isLoading = logsLoading || alertsLoading || complianceLoading;
 
-  const exportLogs = (format: 'csv' | 'json' | 'pdf') => {
+  const exportLogs = (format: "csv" | "json" | "pdf") => {
     // Implementation for exporting logs
     console.log(`Exporting logs in ${format} format`);
   };
@@ -51,7 +56,9 @@ const Audit: React.FC = () => {
         <div className="flex items-center gap-3">
           <Activity className="h-8 w-8 text-blue-600" />
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Audit & Monitoring</h1>
+            <h1 className="text-3xl font-bold tracking-tight">
+              Audit & Monitoring
+            </h1>
             <p className="text-muted-foreground">
               Comprehensive security monitoring and compliance tracking
             </p>
@@ -62,9 +69,11 @@ const Audit: React.FC = () => {
             variant="outline"
             size="sm"
             onClick={() => setAutoRefresh(!autoRefresh)}
-            className={autoRefresh ? 'bg-green-50 text-green-700' : ''}
+            className={autoRefresh ? "bg-green-50 text-green-700" : ""}
           >
-            <RefreshCw className={`h-4 w-4 mr-2 ${autoRefresh ? 'animate-spin' : ''}`} />
+            <RefreshCw
+              className={`h-4 w-4 mr-2 ${autoRefresh ? "animate-spin" : ""}`}
+            />
             Auto Refresh
           </Button>
           <DropdownMenu>
@@ -75,13 +84,13 @@ const Audit: React.FC = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => exportLogs('csv')}>
+              <DropdownMenuItem onClick={() => exportLogs("csv")}>
                 Export as CSV
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => exportLogs('json')}>
+              <DropdownMenuItem onClick={() => exportLogs("json")}>
                 Export as JSON
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => exportLogs('pdf')}>
+              <DropdownMenuItem onClick={() => exportLogs("pdf")}>
                 Export as PDF
               </DropdownMenuItem>
             </DropdownMenuContent>

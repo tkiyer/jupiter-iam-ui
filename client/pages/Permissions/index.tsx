@@ -25,12 +25,20 @@ const Permissions: React.FC = () => {
   const [selectedPermission, setSelectedPermission] = useState(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
-  const { permissions, analytics, isLoading, createPermission, updatePermission } = usePermissions();
+  const {
+    permissions,
+    analytics,
+    isLoading,
+    createPermission,
+    updatePermission,
+  } = usePermissions();
   const { categories } = usePermissionCategories();
   const { resources } = useResources();
   const { optimizations } = usePermissionOptimizations();
 
-  const criticalOptimizations = optimizations.filter(o => o.severity === "critical");
+  const criticalOptimizations = optimizations.filter(
+    (o) => o.severity === "critical",
+  );
 
   const handleCreatePermission = async (permissionData) => {
     await createPermission(permissionData);
@@ -104,7 +112,8 @@ const Permissions: React.FC = () => {
         <Alert className="border-red-200 bg-red-50">
           <AlertTriangle className="h-4 w-4 text-red-600" />
           <AlertDescription className="text-red-800">
-            {criticalOptimizations.length} critical optimization opportunities detected.
+            {criticalOptimizations.length} critical optimization opportunities
+            detected.
             <Button
               variant="link"
               className="p-0 ml-1 text-red-800"
@@ -128,8 +137,8 @@ const Permissions: React.FC = () => {
         </TabsList>
 
         <TabsContent value="permissions" className="space-y-6">
-          <PermissionsList 
-            permissions={permissions} 
+          <PermissionsList
+            permissions={permissions}
             onEditPermission={handleEditPermission}
           />
         </TabsContent>
@@ -147,9 +156,9 @@ const Permissions: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="analytics" className="space-y-6">
-          <PermissionAnalytics 
-            permissions={permissions} 
-            analytics={analytics} 
+          <PermissionAnalytics
+            permissions={permissions}
+            analytics={analytics}
           />
         </TabsContent>
 

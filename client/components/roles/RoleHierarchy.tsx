@@ -30,7 +30,9 @@ export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({ roles }) => {
           <div className="text-center text-gray-500">
             <GitBranch className="h-12 w-12 mx-auto mb-2" />
             <p>Role hierarchy visualization would be displayed here</p>
-            <p className="text-sm">Shows parent-child relationships and inheritance</p>
+            <p className="text-sm">
+              Shows parent-child relationships and inheritance
+            </p>
           </div>
         </div>
       </CardContent>

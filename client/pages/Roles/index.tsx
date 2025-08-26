@@ -25,7 +25,7 @@ const Roles: React.FC = () => {
   const { conflicts } = useRoleConflicts();
 
   const criticalConflicts = conflicts.filter(
-    (c) => !c.resolved && c.severity === "critical"
+    (c) => !c.resolved && c.severity === "critical",
   );
 
   const handleCreateRole = async (roleData) => {

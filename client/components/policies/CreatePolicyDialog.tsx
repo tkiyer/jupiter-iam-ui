@@ -258,7 +258,9 @@ export const CreatePolicyDialog: React.FC<CreatePolicyDialogProps> = ({
           <TabsContent value="rules" className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <Label className="text-lg font-medium mb-4 block">Policy Rules</Label>
+                <Label className="text-lg font-medium mb-4 block">
+                  Policy Rules
+                </Label>
                 <p className="text-sm text-gray-500">
                   Define who can access what under which conditions
                 </p>
@@ -323,15 +325,23 @@ export const CreatePolicyDialog: React.FC<CreatePolicyDialogProps> = ({
 
           <TabsContent value="conditions" className="space-y-4">
             <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded">
-              <p className="text-gray-500">Advanced conditions interface would be here</p>
-              <p className="text-sm text-gray-400">Time restrictions, location, dynamic attributes, etc.</p>
+              <p className="text-gray-500">
+                Advanced conditions interface would be here
+              </p>
+              <p className="text-sm text-gray-400">
+                Time restrictions, location, dynamic attributes, etc.
+              </p>
             </div>
           </TabsContent>
 
           <TabsContent value="validation" className="space-y-4">
             <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded">
-              <p className="text-gray-500">Policy validation and testing interface</p>
-              <p className="text-sm text-gray-400">Syntax validation, conflict detection, test scenarios</p>
+              <p className="text-gray-500">
+                Policy validation and testing interface
+              </p>
+              <p className="text-sm text-gray-400">
+                Syntax validation, conflict detection, test scenarios
+              </p>
             </div>
           </TabsContent>
         </Tabs>

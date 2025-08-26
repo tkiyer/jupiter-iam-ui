@@ -1,16 +1,6 @@
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Shield,
-  CheckCircle,
-  AlertTriangle,
-  Layers,
-} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Shield, CheckCircle, AlertTriangle, Layers } from "lucide-react";
 import { Role } from "@shared/iam";
 
 interface RoleAnalyticsProps {
@@ -39,8 +29,12 @@ export const RoleAnalytics: React.FC<RoleAnalyticsProps> = ({ roles }) => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Active Roles</p>
-                <p className="text-3xl font-bold text-gray-900">{activeRoles}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Active Roles
+                </p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {activeRoles}
+                </p>
               </div>
               <CheckCircle className="h-8 w-8 text-green-600" />
             </div>

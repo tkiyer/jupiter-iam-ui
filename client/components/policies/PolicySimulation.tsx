@@ -37,7 +37,9 @@ export const PolicySimulation: React.FC<PolicySimulationProps> = ({
           <div className="text-center text-gray-500">
             <TestTube className="h-12 w-12 mx-auto mb-2" />
             <p>Policy simulation interface would be displayed here</p>
-            <p className="text-sm">Test scenarios, attribute evaluation, decision trees</p>
+            <p className="text-sm">
+              Test scenarios, attribute evaluation, decision trees
+            </p>
           </div>
         </div>
       </CardContent>

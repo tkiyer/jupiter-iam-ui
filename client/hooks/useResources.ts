@@ -20,14 +20,14 @@ export const useResources = (): UseResourcesReturn => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const response = await fetch("/api/resources");
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || "Failed to fetch resources");
       }
-      
+
       setResources(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -53,7 +53,9 @@ export const useResources = (): UseResourcesReturn => {
       const newResource = await response.json();
       setResources((prev) => [...prev, newResource]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create resource");
+      setError(
+        err instanceof Error ? err.message : "Failed to create resource",
+      );
       throw err;
     }
   };
@@ -76,7 +78,9 @@ export const useResources = (): UseResourcesReturn => {
         prev.map((r) => (r.id === updatedResource.id ? updatedResource : r)),
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update resource");
+      setError(
+        err instanceof Error ? err.message : "Failed to update resource",
+      );
       throw err;
     }
   };
@@ -94,7 +98,9 @@ export const useResources = (): UseResourcesReturn => {
 
       setResources((prev) => prev.filter((r) => r.id !== resourceId));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete resource");
+      setError(
+        err instanceof Error ? err.message : "Failed to delete resource",
+      );
       throw err;
     }
   };

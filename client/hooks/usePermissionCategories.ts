@@ -20,14 +20,14 @@ export const usePermissionCategories = (): UsePermissionCategoriesReturn => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const response = await fetch("/api/permissions/categories");
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || "Failed to fetch categories");
       }
-      
+
       setCategories(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -53,18 +53,23 @@ export const usePermissionCategories = (): UsePermissionCategoriesReturn => {
       const newCategory = await response.json();
       setCategories((prev) => [...prev, newCategory]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create category");
+      setError(
+        err instanceof Error ? err.message : "Failed to create category",
+      );
       throw err;
     }
   };
 
   const updateCategory = async (category: PermissionCategory) => {
     try {
-      const response = await fetch(`/api/permissions/categories/${category.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(category),
-      });
+      const response = await fetch(
+        `/api/permissions/categories/${category.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(category),
+        },
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -76,16 +81,21 @@ export const usePermissionCategories = (): UsePermissionCategoriesReturn => {
         prev.map((c) => (c.id === updatedCategory.id ? updatedCategory : c)),
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update category");
+      setError(
+        err instanceof Error ? err.message : "Failed to update category",
+      );
       throw err;
     }
   };
 
   const deleteCategory = async (categoryId: string) => {
     try {
-      const response = await fetch(`/api/permissions/categories/${categoryId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/api/permissions/categories/${categoryId}`,
+        {
+          method: "DELETE",
+        },
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -94,7 +104,9 @@ export const usePermissionCategories = (): UsePermissionCategoriesReturn => {
 
       setCategories((prev) => prev.filter((c) => c.id !== categoryId));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete category");
+      setError(
+        err instanceof Error ? err.message : "Failed to delete category",
+      );
       throw err;
     }
   };

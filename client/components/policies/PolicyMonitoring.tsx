@@ -13,7 +13,9 @@ interface PolicyMonitoringProps {
   policies: ABACPolicy[];
 }
 
-export const PolicyMonitoring: React.FC<PolicyMonitoringProps> = ({ policies }) => {
+export const PolicyMonitoring: React.FC<PolicyMonitoringProps> = ({
+  policies,
+}) => {
   return (
     <Card>
       <CardHeader>
@@ -30,7 +32,9 @@ export const PolicyMonitoring: React.FC<PolicyMonitoringProps> = ({ policies }) 
           <div className="text-center text-gray-500">
             <Activity className="h-12 w-12 mx-auto mb-2" />
             <p>Policy monitoring dashboard would be displayed here</p>
-            <p className="text-sm">Usage metrics, performance data, access patterns</p>
+            <p className="text-sm">
+              Usage metrics, performance data, access patterns
+            </p>
           </div>
         </div>
       </CardContent>

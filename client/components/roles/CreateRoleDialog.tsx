@@ -155,7 +155,9 @@ export const CreateRoleDialog: React.FC<CreateRoleDialogProps> = ({
               </Label>
               <PermissionSelector
                 permissions={
-                  Array.isArray(availablePermissions) ? availablePermissions : []
+                  Array.isArray(availablePermissions)
+                    ? availablePermissions
+                    : []
                 }
                 selectedPermissions={formData.permissions}
                 onSelectionChange={(selectedIds) => {

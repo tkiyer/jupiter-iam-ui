@@ -1,21 +1,19 @@
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3 } from "lucide-react";
-import { Permission, PermissionAnalytics as PermissionAnalyticsType } from "@shared/iam";
+import {
+  Permission,
+  PermissionAnalytics as PermissionAnalyticsType,
+} from "@shared/iam";
 
 interface PermissionAnalyticsProps {
   permissions: Permission[];
   analytics: Record<string, PermissionAnalyticsType>;
 }
 
-export const PermissionAnalytics: React.FC<PermissionAnalyticsProps> = ({ 
-  permissions, 
-  analytics 
+export const PermissionAnalytics: React.FC<PermissionAnalyticsProps> = ({
+  permissions,
+  analytics,
 }) => {
   return (
     <Card>
@@ -30,7 +28,9 @@ export const PermissionAnalytics: React.FC<PermissionAnalyticsProps> = ({
           <div className="text-center text-gray-500">
             <BarChart3 className="h-12 w-12 mx-auto mb-2" />
             <p>Permission analytics dashboard would be displayed here</p>
-            <p className="text-sm">Usage statistics, trends, performance metrics</p>
+            <p className="text-sm">
+              Usage statistics, trends, performance metrics
+            </p>
           </div>
         </div>
       </CardContent>

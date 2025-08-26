@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -14,7 +11,9 @@ interface ComplianceReportsProps {
   complianceReports: ComplianceReport[];
 }
 
-export const ComplianceReports: React.FC<ComplianceReportsProps> = ({ complianceReports }) => {
+export const ComplianceReports: React.FC<ComplianceReportsProps> = ({
+  complianceReports,
+}) => {
   return (
     <div className="grid gap-4">
       {complianceReports.map((report) => (
@@ -26,18 +25,18 @@ export const ComplianceReports: React.FC<ComplianceReportsProps> = ({ compliance
                 <div className="flex items-center gap-2 mt-1">
                   <Badge variant="outline">{report.type}</Badge>
                   <Badge className={getComplianceColor(report.status)}>
-                    {report.status.replace('_', ' ').toUpperCase()}
+                    {report.status.replace("_", " ").toUpperCase()}
                   </Badge>
                 </div>
               </div>
               <div className="text-right">
                 <div className="text-2xl font-bold">{report.score}%</div>
                 <div className="text-sm text-muted-foreground">
-                  Last run: {format(new Date(report.lastRun), 'MMM dd, yyyy')}
+                  Last run: {format(new Date(report.lastRun), "MMM dd, yyyy")}
                 </div>
               </div>
             </div>
-            
+
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Compliance Score</span>
@@ -48,12 +47,20 @@ export const ComplianceReports: React.FC<ComplianceReportsProps> = ({ compliance
 
             <div className="grid grid-cols-2 gap-4 mt-4">
               <div className="text-center p-3 bg-gray-50 rounded">
-                <div className="text-2xl font-bold text-blue-600">{report.findings}</div>
-                <div className="text-sm text-muted-foreground">Total Findings</div>
+                <div className="text-2xl font-bold text-blue-600">
+                  {report.findings}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Total Findings
+                </div>
               </div>
               <div className="text-center p-3 bg-gray-50 rounded">
-                <div className="text-2xl font-bold text-red-600">{report.criticalFindings}</div>
-                <div className="text-sm text-muted-foreground">Critical Issues</div>
+                <div className="text-2xl font-bold text-red-600">
+                  {report.criticalFindings}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Critical Issues
+                </div>
               </div>
             </div>
 

@@ -14,7 +14,9 @@ export interface UsePermissionsReturn {
 
 export const usePermissions = (): UsePermissionsReturn => {
   const [permissions, setPermissions] = useState<Permission[]>([]);
-  const [analytics, setAnalytics] = useState<Record<string, PermissionAnalytics>>({});
+  const [analytics, setAnalytics] = useState<
+    Record<string, PermissionAnalytics>
+  >({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,24 +24,31 @@ export const usePermissions = (): UsePermissionsReturn => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const response = await fetch("/api/permissions");
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || "Failed to fetch permissions");
       }
-      
+
       setPermissions(data.permissions || data || []);
 
       // Fetch analytics for each permission
       if (data.permissions) {
-        const analyticsPromises = data.permissions.map((permission: Permission) =>
-          fetch(`/api/permissions/${permission.id}/analytics`).then((r) => r.json()),
+        const analyticsPromises = data.permissions.map(
+          (permission: Permission) =>
+            fetch(`/api/permissions/${permission.id}/analytics`).then((r) =>
+              r.json(),
+            ),
         );
         const analyticsResults = await Promise.all(analyticsPromises);
         const analyticsMap = data.permissions.reduce(
-          (acc: Record<string, PermissionAnalytics>, permission: Permission, index: number) => {
+          (
+            acc: Record<string, PermissionAnalytics>,
+            permission: Permission,
+            index: number,
+          ) => {
             acc[permission.id] = analyticsResults[index];
             return acc;
           },
@@ -72,7 +81,9 @@ export const usePermissions = (): UsePermissionsReturn => {
       const newPermission = await response.json();
       setPermissions((prev) => [...prev, newPermission]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create permission");
+      setError(
+        err instanceof Error ? err.message : "Failed to create permission",
+      );
       throw err;
     }
   };
@@ -92,10 +103,14 @@ export const usePermissions = (): UsePermissionsReturn => {
 
       const updatedPermission = await response.json();
       setPermissions((prev) =>
-        prev.map((p) => (p.id === updatedPermission.id ? updatedPermission : p)),
+        prev.map((p) =>
+          p.id === updatedPermission.id ? updatedPermission : p,
+        ),
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update permission");
+      setError(
+        err instanceof Error ? err.message : "Failed to update permission",
+      );
       throw err;
     }
   };
@@ -113,7 +128,9 @@ export const usePermissions = (): UsePermissionsReturn => {
 
       setPermissions((prev) => prev.filter((p) => p.id !== permissionId));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete permission");
+      setError(
+        err instanceof Error ? err.message : "Failed to delete permission",
+      );
       throw err;
     }
   };

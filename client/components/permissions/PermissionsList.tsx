@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -48,7 +43,9 @@ export const PermissionsList: React.FC<PermissionsListProps> = ({
   permissions,
   onEditPermission,
 }) => {
-  const [filteredPermissions, setFilteredPermissions] = useState<Permission[]>([]);
+  const [filteredPermissions, setFilteredPermissions] = useState<Permission[]>(
+    [],
+  );
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [scopeFilter, setScopeFilter] = useState<string>("all");
@@ -123,18 +120,18 @@ export const PermissionsList: React.FC<PermissionsListProps> = ({
   };
 
   // Get unique categories for filter
-  const categories = Array.from(new Set(permissions.map(p => p.category)));
+  const categories = Array.from(new Set(permissions.map((p) => p.category)));
 
   const filterConfigs = [
     {
       placeholder: "All Categories",
       options: [
         { label: "All Categories", value: "all" },
-        ...categories.map(cat => ({ label: cat, value: cat }))
+        ...categories.map((cat) => ({ label: cat, value: cat })),
       ],
       value: categoryFilter,
       onChange: setCategoryFilter,
-      width: "w-40"
+      width: "w-40",
     },
     {
       placeholder: "Scope",
@@ -143,11 +140,11 @@ export const PermissionsList: React.FC<PermissionsListProps> = ({
         { label: "Global", value: "global" },
         { label: "Resource", value: "resource" },
         { label: "Field", value: "field" },
-        { label: "API", value: "api" }
+        { label: "API", value: "api" },
       ],
       value: scopeFilter,
       onChange: setScopeFilter,
-      width: "w-32"
+      width: "w-32",
     },
     {
       placeholder: "Risk",
@@ -156,12 +153,12 @@ export const PermissionsList: React.FC<PermissionsListProps> = ({
         { label: "Low", value: "low" },
         { label: "Medium", value: "medium" },
         { label: "High", value: "high" },
-        { label: "Critical", value: "critical" }
+        { label: "Critical", value: "critical" },
       ],
       value: riskFilter,
       onChange: setRiskFilter,
-      width: "w-32"
-    }
+      width: "w-32",
+    },
   ];
 
   return (

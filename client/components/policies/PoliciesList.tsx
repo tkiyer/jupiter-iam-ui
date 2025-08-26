@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -181,10 +176,7 @@ export const PoliciesList: React.FC<PoliciesListProps> = ({
                   <SelectItem value="deny">Deny</SelectItem>
                 </SelectContent>
               </Select>
-              <Select
-                value={priorityFilter}
-                onValueChange={setPriorityFilter}
-              >
+              <Select value={priorityFilter} onValueChange={setPriorityFilter}>
                 <SelectTrigger className="w-32">
                   <SelectValue placeholder="Priority" />
                 </SelectTrigger>

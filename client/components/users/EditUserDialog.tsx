@@ -10,12 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -113,9 +108,9 @@ export const EditUserDialog: React.FC<EditUserDialogProps> = ({
                   <Label>Status</Label>
                   <Select
                     value={formData.status}
-                    onValueChange={(value: "active" | "inactive" | "suspended") =>
-                      setFormData((prev) => ({ ...prev, status: value }))
-                    }
+                    onValueChange={(
+                      value: "active" | "inactive" | "suspended",
+                    ) => setFormData((prev) => ({ ...prev, status: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -135,7 +130,10 @@ export const EditUserDialog: React.FC<EditUserDialogProps> = ({
                     onChange={(e) =>
                       setFormData((prev) => ({
                         ...prev,
-                        attributes: { ...prev.attributes, phone: e.target.value },
+                        attributes: {
+                          ...prev.attributes,
+                          phone: e.target.value,
+                        },
                       }))
                     }
                   />
@@ -167,7 +165,9 @@ export const EditUserDialog: React.FC<EditUserDialogProps> = ({
                   <CardContent className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="font-medium">Multi-Factor Authentication</p>
+                        <p className="font-medium">
+                          Multi-Factor Authentication
+                        </p>
                         <p className="text-sm text-gray-500">
                           Require MFA for login
                         </p>
@@ -233,7 +233,11 @@ export const EditUserDialog: React.FC<EditUserDialogProps> = ({
           </Tabs>
 
           <div className="flex justify-end space-x-2">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               Cancel
             </Button>
             <Button type="submit" className="bg-blue-600 hover:bg-blue-700">

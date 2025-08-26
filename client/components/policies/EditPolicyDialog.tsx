@@ -42,12 +42,18 @@ export const EditPolicyDialog: React.FC<EditPolicyDialogProps> = ({
           <div className="h-64 flex items-center justify-center border-2 border-dashed border-gray-300 rounded">
             <div className="text-center text-gray-500">
               <p>Edit policy interface would be displayed here</p>
-              <p className="text-sm">Similar to create dialog but pre-populated with existing data</p>
+              <p className="text-sm">
+                Similar to create dialog but pre-populated with existing data
+              </p>
             </div>
           </div>
 
           <div className="flex justify-end space-x-2">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               Cancel
             </Button>
             <Button type="submit" className="bg-blue-600 hover:bg-blue-700">

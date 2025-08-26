@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Search, Plus, Layers, Edit, Trash2, Shield } from "lucide-react";
 import { PermissionCategory } from "@shared/iam";
@@ -15,12 +10,15 @@ interface CategoriesViewProps {
   categories: PermissionCategory[];
 }
 
-export const CategoriesView: React.FC<CategoriesViewProps> = ({ categories }) => {
+export const CategoriesView: React.FC<CategoriesViewProps> = ({
+  categories,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredCategories = categories.filter((category) =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    category.description.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCategories = categories.filter(
+    (category) =>
+      category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      category.description.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -63,9 +61,13 @@ export const CategoriesView: React.FC<CategoriesViewProps> = ({ categories }) =>
           {filteredCategories.length === 0 ? (
             <div className="text-center py-12">
               <Layers className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No categories found</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No categories found
+              </h3>
               <p className="text-gray-500 mb-4">
-                {searchTerm ? "Try adjusting your search terms." : "Create your first permission category to get started"}
+                {searchTerm
+                  ? "Try adjusting your search terms."
+                  : "Create your first permission category to get started"}
               </p>
               <Button>
                 <Plus className="mr-2 h-4 w-4" />
@@ -95,7 +97,11 @@ export const CategoriesView: React.FC<CategoriesViewProps> = ({ categories }) =>
                       </div>
                       {!category.isSystemCategory && (
                         <div className="flex items-center space-x-1">
-                          <Button variant="ghost" size="sm" title="Edit Category">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            title="Edit Category"
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button
@@ -109,7 +115,9 @@ export const CategoriesView: React.FC<CategoriesViewProps> = ({ categories }) =>
                         </div>
                       )}
                     </CardTitle>
-                    <p className="text-sm text-gray-500">{category.description}</p>
+                    <p className="text-sm text-gray-500">
+                      {category.description}
+                    </p>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div className="flex items-center justify-between">
@@ -132,7 +140,8 @@ export const CategoriesView: React.FC<CategoriesViewProps> = ({ categories }) =>
                     </div>
                     {category.createdAt && (
                       <p className="text-xs text-gray-500">
-                        Created: {new Date(category.createdAt).toLocaleDateString()}
+                        Created:{" "}
+                        {new Date(category.createdAt).toLocaleDateString()}
                       </p>
                     )}
                   </CardContent>

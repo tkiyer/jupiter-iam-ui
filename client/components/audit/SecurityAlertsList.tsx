@@ -14,7 +14,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { AlertTriangle, MoreHorizontal, User, Clock, Shield } from "lucide-react";
+import {
+  AlertTriangle,
+  MoreHorizontal,
+  User,
+  Clock,
+  Shield,
+} from "lucide-react";
 import { format } from "date-fns";
 import { SecurityAlert } from "@/hooks/useSecurityAlerts";
 import { getSeverityColor } from "@/lib/statusUtils";
@@ -23,11 +29,22 @@ interface SecurityAlertsListProps {
   securityAlerts: SecurityAlert[];
 }
 
-export const SecurityAlertsList: React.FC<SecurityAlertsListProps> = ({ securityAlerts }) => {
+export const SecurityAlertsList: React.FC<SecurityAlertsListProps> = ({
+  securityAlerts,
+}) => {
   return (
     <div className="grid gap-4">
       {securityAlerts.map((alert) => (
-        <Card key={alert.id} className="border-l-4" style={{ borderLeftColor: getSeverityColor(alert.severity).replace('bg-', '#') }}>
+        <Card
+          key={alert.id}
+          className="border-l-4"
+          style={{
+            borderLeftColor: getSeverityColor(alert.severity).replace(
+              "bg-",
+              "#",
+            ),
+          }}
+        >
           <CardContent className="p-4">
             <div className="flex items-start justify-between">
               <div className="space-y-2">
@@ -35,8 +52,18 @@ export const SecurityAlertsList: React.FC<SecurityAlertsListProps> = ({ security
                   <Badge className={getSeverityColor(alert.severity)}>
                     {alert.severity.toUpperCase()}
                   </Badge>
-                  <Badge variant="outline">{alert.type.replace('_', ' ').toUpperCase()}</Badge>
-                  <Badge variant={alert.status === 'open' ? 'destructive' : alert.status === 'resolved' ? 'default' : 'secondary'}>
+                  <Badge variant="outline">
+                    {alert.type.replace("_", " ").toUpperCase()}
+                  </Badge>
+                  <Badge
+                    variant={
+                      alert.status === "open"
+                        ? "destructive"
+                        : alert.status === "resolved"
+                          ? "default"
+                          : "secondary"
+                    }
+                  >
                     {alert.status.toUpperCase()}
                   </Badge>
                 </div>
@@ -45,11 +72,11 @@ export const SecurityAlertsList: React.FC<SecurityAlertsListProps> = ({ security
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1">
                     <User className="h-3 w-3" />
-                    {alert.userName || 'System'}
+                    {alert.userName || "System"}
                   </span>
                   <span className="flex items-center gap-1">
                     <Clock className="h-3 w-3" />
-                    {format(new Date(alert.timestamp), 'MMM dd, yyyy HH:mm')}
+                    {format(new Date(alert.timestamp), "MMM dd, yyyy HH:mm")}
                   </span>
                   {alert.assignedTo && (
                     <span className="flex items-center gap-1">

@@ -104,7 +104,9 @@ export const CreateUserDialog: React.FC<CreateUserDialogProps> = ({
                   className={errors.firstName ? "border-red-500" : ""}
                 />
                 {errors.firstName && (
-                  <p className="text-sm text-red-500 mt-1">{errors.firstName}</p>
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.firstName}
+                  </p>
                 )}
               </div>
               <div>

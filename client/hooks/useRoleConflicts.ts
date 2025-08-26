@@ -19,14 +19,14 @@ export const useRoleConflicts = (): UseRoleConflictsReturn => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const response = await fetch("/api/roles/conflicts");
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || "Failed to fetch conflicts");
       }
-      
+
       setConflicts(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -38,9 +38,12 @@ export const useRoleConflicts = (): UseRoleConflictsReturn => {
 
   const resolveConflict = async (conflictId: string) => {
     try {
-      const response = await fetch(`/api/roles/conflicts/${conflictId}/resolve`, {
-        method: "POST",
-      });
+      const response = await fetch(
+        `/api/roles/conflicts/${conflictId}/resolve`,
+        {
+          method: "POST",
+        },
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -55,7 +58,9 @@ export const useRoleConflicts = (): UseRoleConflictsReturn => {
         ),
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to resolve conflict");
+      setError(
+        err instanceof Error ? err.message : "Failed to resolve conflict",
+      );
       throw err;
     }
   };
@@ -73,7 +78,9 @@ export const useRoleConflicts = (): UseRoleConflictsReturn => {
 
       setConflicts((prev) => prev.filter((c) => c.id !== conflictId));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to dismiss conflict");
+      setError(
+        err instanceof Error ? err.message : "Failed to dismiss conflict",
+      );
       throw err;
     }
   };

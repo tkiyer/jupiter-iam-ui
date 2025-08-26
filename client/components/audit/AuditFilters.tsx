@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -22,31 +17,58 @@ interface AuditFiltersProps {
   onFilteredLogsChange: (logs: AuditLog[]) => void;
 }
 
-export const AuditFilters: React.FC<AuditFiltersProps> = ({ 
-  auditLogs, 
-  onFilteredLogsChange 
+export const AuditFilters: React.FC<AuditFiltersProps> = ({
+  auditLogs,
+  onFilteredLogsChange,
 }) => {
   const [filters, setFilters] = useState({
-    userId: '',
-    action: '',
-    resource: '',
-    result: 'all',
-    category: 'all',
-    risk: 'all'
+    userId: "",
+    action: "",
+    resource: "",
+    result: "all",
+    category: "all",
+    risk: "all",
   });
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const filtered = auditLogs.filter(log => {
-      if (filters.userId && !log.userId.toLowerCase().includes(filters.userId.toLowerCase())) return false;
-      if (filters.action && !log.action.toLowerCase().includes(filters.action.toLowerCase())) return false;
-      if (filters.resource && !log.resource.toLowerCase().includes(filters.resource.toLowerCase())) return false;
-      if (filters.result && filters.result !== 'all' && log.result !== filters.result) return false;
-      if (filters.category && filters.category !== 'all' && log.category !== filters.category) return false;
-      if (filters.risk && filters.risk !== 'all' && log.risk !== filters.risk) return false;
-      if (searchTerm && !log.userName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-          !log.action.toLowerCase().includes(searchTerm.toLowerCase()) &&
-          !log.resource.toLowerCase().includes(searchTerm.toLowerCase())) return false;
+    const filtered = auditLogs.filter((log) => {
+      if (
+        filters.userId &&
+        !log.userId.toLowerCase().includes(filters.userId.toLowerCase())
+      )
+        return false;
+      if (
+        filters.action &&
+        !log.action.toLowerCase().includes(filters.action.toLowerCase())
+      )
+        return false;
+      if (
+        filters.resource &&
+        !log.resource.toLowerCase().includes(filters.resource.toLowerCase())
+      )
+        return false;
+      if (
+        filters.result &&
+        filters.result !== "all" &&
+        log.result !== filters.result
+      )
+        return false;
+      if (
+        filters.category &&
+        filters.category !== "all" &&
+        log.category !== filters.category
+      )
+        return false;
+      if (filters.risk && filters.risk !== "all" && log.risk !== filters.risk)
+        return false;
+      if (
+        searchTerm &&
+        !log.userName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        !log.action.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        !log.resource.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+        return false;
       return true;
     });
 
@@ -72,20 +94,27 @@ export const AuditFilters: React.FC<AuditFiltersProps> = ({
             />
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
           <div>
             <Label>User ID</Label>
             <Input
               placeholder="Filter by user"
               value={filters.userId}
-              onChange={(e) => setFilters(prev => ({ ...prev, userId: e.target.value }))}
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, userId: e.target.value }))
+              }
             />
           </div>
-          
+
           <div>
             <Label>Result</Label>
-            <Select value={filters.result} onValueChange={(value) => setFilters(prev => ({ ...prev, result: value }))}>
+            <Select
+              value={filters.result}
+              onValueChange={(value) =>
+                setFilters((prev) => ({ ...prev, result: value }))
+              }
+            >
               <SelectTrigger>
                 <SelectValue placeholder="All results" />
               </SelectTrigger>
@@ -100,7 +129,12 @@ export const AuditFilters: React.FC<AuditFiltersProps> = ({
 
           <div>
             <Label>Category</Label>
-            <Select value={filters.category} onValueChange={(value) => setFilters(prev => ({ ...prev, category: value }))}>
+            <Select
+              value={filters.category}
+              onValueChange={(value) =>
+                setFilters((prev) => ({ ...prev, category: value }))
+              }
+            >
               <SelectTrigger>
                 <SelectValue placeholder="All categories" />
               </SelectTrigger>
@@ -117,7 +151,12 @@ export const AuditFilters: React.FC<AuditFiltersProps> = ({
 
           <div>
             <Label>Risk Level</Label>
-            <Select value={filters.risk} onValueChange={(value) => setFilters(prev => ({ ...prev, risk: value }))}>
+            <Select
+              value={filters.risk}
+              onValueChange={(value) =>
+                setFilters((prev) => ({ ...prev, risk: value }))
+              }
+            >
               <SelectTrigger>
                 <SelectValue placeholder="All levels" />
               </SelectTrigger>
@@ -136,7 +175,9 @@ export const AuditFilters: React.FC<AuditFiltersProps> = ({
             <Input
               placeholder="Filter by action"
               value={filters.action}
-              onChange={(e) => setFilters(prev => ({ ...prev, action: e.target.value }))}
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, action: e.target.value }))
+              }
             />
           </div>
 
@@ -145,7 +186,9 @@ export const AuditFilters: React.FC<AuditFiltersProps> = ({
             <Input
               placeholder="Filter by resource"
               value={filters.resource}
-              onChange={(e) => setFilters(prev => ({ ...prev, resource: e.target.value }))}
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, resource: e.target.value }))
+              }
             />
           </div>
         </div>
