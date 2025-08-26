@@ -1432,4 +1432,326 @@ const RoleAnalyticsChart: React.FC<{
   );
 };
 
+// Create Template Dialog Component
+const CreateTemplateDialog: React.FC<{
+  onCreateTemplate: (template: any) => void;
+  availablePermissions: Permission[];
+  existingRoles: Role[];
+}> = ({ onCreateTemplate, availablePermissions, existingRoles }) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    category: "",
+    permissions: [] as string[],
+    organizationUnit: "",
+    level: 1,
+    isBuiltIn: false,
+    sourceRoleId: "", // To create template from existing role
+  });
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const categories = [
+    "Management", "Administrative", "Technical", "Sales", "Marketing",
+    "HR", "Finance", "Operations", "Security", "Customer Service"
+  ];
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Template name is required";
+    }
+    if (!formData.description.trim()) {
+      newErrors.description = "Description is required";
+    }
+    if (!formData.category) {
+      newErrors.category = "Category is required";
+    }
+    if (formData.permissions.length === 0 && !formData.sourceRoleId) {
+      newErrors.permissions = "At least one permission is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+    try {
+      // If creating from existing role, get permissions from that role
+      let permissions = formData.permissions;
+      if (formData.sourceRoleId) {
+        const sourceRole = existingRoles.find(r => r.id === formData.sourceRoleId);
+        if (sourceRole) {
+          permissions = sourceRole.permissions;
+        }
+      }
+
+      await onCreateTemplate({
+        ...formData,
+        permissions,
+        usageCount: 0,
+      });
+
+      // Reset form on success
+      setFormData({
+        name: "",
+        description: "",
+        category: "",
+        permissions: [],
+        organizationUnit: "",
+        level: 1,
+        isBuiltIn: false,
+        sourceRoleId: "",
+      });
+      setErrors({});
+    } catch (error) {
+      console.error("Error creating template:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCreateFromRole = (roleId: string) => {
+    const role = existingRoles.find(r => r.id === roleId);
+    if (role) {
+      setFormData(prev => ({
+        ...prev,
+        name: `${role.name} Template`,
+        description: `Template based on ${role.name} role`,
+        organizationUnit: role.organizationUnit || "",
+        level: role.level,
+        sourceRoleId: roleId,
+        permissions: role.permissions,
+      }));
+    }
+  };
+
+  return (
+    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogHeader>
+        <DialogTitle>Create Role Template</DialogTitle>
+        <DialogDescription>
+          Create a reusable role template that can be used to quickly create new roles
+        </DialogDescription>
+      </DialogHeader>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <Tabs defaultValue="basic" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="basic">Basic Info</TabsTrigger>
+            <TabsTrigger value="permissions">Permissions</TabsTrigger>
+            <TabsTrigger value="source">From Existing Role</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="basic" className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="templateName">Template Name</Label>
+                <Input
+                  id="templateName"
+                  required
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, name: e.target.value }))
+                  }
+                  className={errors.name ? "border-red-500" : ""}
+                />
+                {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+              </div>
+              <div>
+                <Label>Category</Label>
+                <Select
+                  value={formData.category}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, category: value }))
+                  }
+                >
+                  <SelectTrigger className={errors.category ? "border-red-500" : ""}>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.category && <p className="text-sm text-red-500 mt-1">{errors.category}</p>}
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="templateDescription">Description</Label>
+              <Textarea
+                id="templateDescription"
+                required
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, description: e.target.value }))
+                }
+                className={errors.description ? "border-red-500" : ""}
+                rows={3}
+              />
+              {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Organization Unit (Optional)</Label>
+                <Select
+                  value={formData.organizationUnit}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, organizationUnit: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select unit" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Any Unit</SelectItem>
+                    <SelectItem value="engineering">Engineering</SelectItem>
+                    <SelectItem value="sales">Sales</SelectItem>
+                    <SelectItem value="marketing">Marketing</SelectItem>
+                    <SelectItem value="hr">Human Resources</SelectItem>
+                    <SelectItem value="finance">Finance</SelectItem>
+                    <SelectItem value="operations">Operations</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Suggested Level</Label>
+                <Select
+                  value={formData.level.toString()}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, level: parseInt(value) }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">Level 1 - Basic User</SelectItem>
+                    <SelectItem value="2">Level 2 - Advanced User</SelectItem>
+                    <SelectItem value="3">Level 3 - Supervisor</SelectItem>
+                    <SelectItem value="4">Level 4 - Manager</SelectItem>
+                    <SelectItem value="5">Level 5 - Administrator</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="isBuiltIn"
+                checked={formData.isBuiltIn}
+                onCheckedChange={(checked) =>
+                  setFormData((prev) => ({ ...prev, isBuiltIn: !!checked }))
+                }
+              />
+              <Label htmlFor="isBuiltIn">Mark as built-in template</Label>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="permissions" className="space-y-4">
+            <div>
+              <Label className="text-lg font-semibold mb-4 block">
+                Select Permissions ({formData.permissions.length})
+              </Label>
+              {!formData.sourceRoleId && (
+                <PermissionSelector
+                  permissions={Array.isArray(availablePermissions) ? availablePermissions : []}
+                  selectedPermissions={formData.permissions}
+                  onSelectionChange={(selectedIds) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      permissions: selectedIds,
+                    }));
+                  }}
+                />
+              )}
+              {formData.sourceRoleId && (
+                <Alert>
+                  <CheckCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    Permissions will be inherited from the selected source role. Switch to the "From Existing Role" tab to modify the source.
+                  </AlertDescription>
+                </Alert>
+              )}
+              {errors.permissions && <p className="text-sm text-red-500 mt-1">{errors.permissions}</p>}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="source" className="space-y-4">
+            <div>
+              <Label>Create Template from Existing Role</Label>
+              <p className="text-sm text-gray-500 mb-4">
+                Select an existing role to use as the basis for this template. The template will inherit all permissions from the selected role.
+              </p>
+              <Select
+                value={formData.sourceRoleId}
+                onValueChange={handleCreateFromRole}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a role" />
+                </SelectTrigger>
+                <SelectContent>
+                  {existingRoles.filter(role => role.status === 'active').map((role) => (
+                    <SelectItem key={role.id} value={role.id}>
+                      <div className="flex items-center justify-between w-full">
+                        <span>{role.name}</span>
+                        <Badge variant="secondary" className="ml-2">
+                          {role.permissions.length} permissions
+                        </Badge>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {formData.sourceRoleId && (
+                <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                  <h4 className="font-medium mb-2">Source Role Details:</h4>
+                  {(() => {
+                    const sourceRole = existingRoles.find(r => r.id === formData.sourceRoleId);
+                    return sourceRole ? (
+                      <div className="text-sm space-y-1">
+                        <p><strong>Name:</strong> {sourceRole.name}</p>
+                        <p><strong>Description:</strong> {sourceRole.description}</p>
+                        <p><strong>Level:</strong> {sourceRole.level}</p>
+                        <p><strong>Permissions:</strong> {sourceRole.permissions.length}</p>
+                        {sourceRole.organizationUnit && (
+                          <p><strong>Organization Unit:</strong> {sourceRole.organizationUnit}</p>
+                        )}
+                      </div>
+                    ) : null;
+                  })()}
+                </div>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        <div className="flex justify-end space-x-2">
+          <Button type="button" variant="outline">
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Creating..." : "Create Template"}
+          </Button>
+        </div>
+      </form>
+    </DialogContent>
+  );
+};
+
 export default Roles;
