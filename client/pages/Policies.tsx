@@ -1037,7 +1037,7 @@ const CreatePolicyDialog: React.FC<{
                 Advanced condition builders and dynamic attributes coming soon
               </p>
               <div className="space-y-2 text-sm text-gray-600">
-                <p>�� Time-based conditions</p>
+                <p>• Time-based conditions</p>
                 <p>• Location-based restrictions</p>
                 <p>• Dynamic attribute evaluation</p>
                 <p>• Custom condition expressions</p>
@@ -1748,6 +1748,558 @@ const PolicyTestDialog: React.FC<{
         />
       </div>
     </DialogContent>
+  );
+};
+
+// Rule Editor Component
+const RuleEditor: React.FC<{
+  rule: PolicyRule;
+  index: number;
+  onChange: (rule: PolicyRule) => void;
+  onRemove: () => void;
+}> = ({ rule, index, onChange, onRemove }) => {
+  const [activeSection, setActiveSection] = useState("subject");
+
+  const addCondition = (section: keyof PolicyRule) => {
+    const newCondition: AttributeCondition = {
+      attribute: "",
+      operator: "equals",
+      value: "",
+    };
+
+    onChange({
+      ...rule,
+      [section]: Array.isArray(rule[section])
+        ? [...(rule[section] as AttributeCondition[]), newCondition]
+        : rule[section],
+    });
+  };
+
+  const updateCondition = (
+    section: keyof PolicyRule,
+    conditionIndex: number,
+    condition: AttributeCondition
+  ) => {
+    const currentConditions = rule[section] as AttributeCondition[];
+    const updatedConditions = currentConditions.map((c, i) =>
+      i === conditionIndex ? condition : c
+    );
+
+    onChange({
+      ...rule,
+      [section]: updatedConditions,
+    });
+  };
+
+  const removeCondition = (section: keyof PolicyRule, conditionIndex: number) => {
+    const currentConditions = rule[section] as AttributeCondition[];
+    const updatedConditions = currentConditions.filter((_, i) => i !== conditionIndex);
+
+    onChange({
+      ...rule,
+      [section]: updatedConditions,
+    });
+  };
+
+  const updateActions = (actions: string[]) => {
+    onChange({
+      ...rule,
+      action: actions,
+    });
+  };
+
+  return (
+    <Card className="border">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg">Rule {index + 1}</CardTitle>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={onRemove}
+            className="text-red-600 hover:text-red-700"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+        <CardDescription>
+          Define conditions for subjects, resources, actions, and environment
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Tabs value={activeSection} onValueChange={setActiveSection}>
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="subject" className="relative">
+              Subject
+              {rule.subject.length > 0 && (
+                <Badge variant="secondary" className="ml-2 text-xs">
+                  {rule.subject.length}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="resource" className="relative">
+              Resource
+              {rule.resource.length > 0 && (
+                <Badge variant="secondary" className="ml-2 text-xs">
+                  {rule.resource.length}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="action" className="relative">
+              Actions
+              {rule.action.length > 0 && (
+                <Badge variant="secondary" className="ml-2 text-xs">
+                  {rule.action.length}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="environment" className="relative">
+              Environment
+              {rule.environment && rule.environment.length > 0 && (
+                <Badge variant="secondary" className="ml-2 text-xs">
+                  {rule.environment.length}
+                </Badge>
+              )}
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="subject" className="space-y-3 mt-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label className="font-medium">Subject Conditions</Label>
+                <p className="text-xs text-gray-500">Who is requesting access</p>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => addCondition("subject")}
+              >
+                <Plus className="mr-2 h-3 w-3" />
+                Add Condition
+              </Button>
+            </div>
+            <ConditionsList
+              conditions={rule.subject}
+              onUpdate={(index, condition) => updateCondition("subject", index, condition)}
+              onRemove={(index) => removeCondition("subject", index)}
+              placeholder="e.g., role = 'executive', department in ['finance', 'accounting']"
+            />
+          </TabsContent>
+
+          <TabsContent value="resource" className="space-y-3 mt-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label className="font-medium">Resource Conditions</Label>
+                <p className="text-xs text-gray-500">What is being accessed</p>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => addCondition("resource")}
+              >
+                <Plus className="mr-2 h-3 w-3" />
+                Add Condition
+              </Button>
+            </div>
+            <ConditionsList
+              conditions={rule.resource}
+              onUpdate={(index, condition) => updateCondition("resource", index, condition)}
+              onRemove={(index) => removeCondition("resource", index)}
+              placeholder="e.g., type = 'financial_data', classification != 'top_secret'"
+            />
+          </TabsContent>
+
+          <TabsContent value="action" className="space-y-3 mt-4">
+            <div>
+              <Label className="font-medium">Allowed Actions</Label>
+              <p className="text-xs text-gray-500">What operations can be performed</p>
+            </div>
+            <ActionSelector
+              actions={rule.action}
+              onChange={updateActions}
+            />
+          </TabsContent>
+
+          <TabsContent value="environment" className="space-y-3 mt-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label className="font-medium">Environment Conditions</Label>
+                <p className="text-xs text-gray-500">Contextual conditions like time, location</p>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => addCondition("environment")}
+              >
+                <Plus className="mr-2 h-3 w-3" />
+                Add Condition
+              </Button>
+            </div>
+            <ConditionsList
+              conditions={rule.environment || []}
+              onUpdate={(index, condition) => updateCondition("environment", index, condition)}
+              onRemove={(index) => removeCondition("environment", index)}
+              placeholder="e.g., time > '09:00', location = 'office', network = 'internal'"
+            />
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
+  );
+};
+
+// Conditions List Component
+const ConditionsList: React.FC<{
+  conditions: AttributeCondition[];
+  onUpdate: (index: number, condition: AttributeCondition) => void;
+  onRemove: (index: number) => void;
+  placeholder: string;
+}> = ({ conditions, onUpdate, onRemove, placeholder }) => {
+  const operators = [
+    { value: "equals", label: "equals (=)" },
+    { value: "not_equals", label: "not equals (≠)" },
+    { value: "in", label: "in array" },
+    { value: "not_in", label: "not in array" },
+    { value: "greater_than", label: "greater than (>)" },
+    { value: "less_than", label: "less than (<)" },
+    { value: "greater_than_or_equal", label: "greater than or equal (≥)" },
+    { value: "less_than_or_equal", label: "less than or equal (≤)" },
+    { value: "contains", label: "contains" },
+    { value: "regex", label: "regex match" },
+  ];
+
+  if (conditions.length === 0) {
+    return (
+      <div className="text-center py-6 border-2 border-dashed border-gray-200 rounded-lg">
+        <p className="text-sm text-gray-500 mb-1">No conditions defined</p>
+        <p className="text-xs text-gray-400">{placeholder}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {conditions.map((condition, index) => (
+        <div key={index} className="grid grid-cols-12 gap-2 items-end">
+          <div className="col-span-4">
+            <Label className="text-xs">Attribute</Label>
+            <Input
+              placeholder="e.g., role, department"
+              value={condition.attribute}
+              onChange={(e) =>
+                onUpdate(index, { ...condition, attribute: e.target.value })
+              }
+              className="text-sm"
+            />
+          </div>
+          <div className="col-span-3">
+            <Label className="text-xs">Operator</Label>
+            <Select
+              value={condition.operator}
+              onValueChange={(value) =>
+                onUpdate(index, { ...condition, operator: value as any })
+              }
+            >
+              <SelectTrigger className="text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {operators.map((op) => (
+                  <SelectItem key={op.value} value={op.value}>
+                    {op.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="col-span-4">
+            <Label className="text-xs">Value</Label>
+            <Input
+              placeholder="e.g., 'executive', ['finance', 'accounting']"
+              value={typeof condition.value === 'string' ? condition.value : JSON.stringify(condition.value)}
+              onChange={(e) => {
+                let value: any = e.target.value;
+                // Try to parse as JSON for arrays/objects
+                if (value.startsWith('[') || value.startsWith('{')) {
+                  try {
+                    value = JSON.parse(value);
+                  } catch {
+                    // Keep as string if JSON parsing fails
+                  }
+                }
+                onUpdate(index, { ...condition, value });
+              }}
+              className="text-sm"
+            />
+          </div>
+          <div className="col-span-1">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => onRemove(index)}
+              className="text-red-600 hover:text-red-700"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// Action Selector Component
+const ActionSelector: React.FC<{
+  actions: string[];
+  onChange: (actions: string[]) => void;
+}> = ({ actions, onChange }) => {
+  const availableActions = [
+    { value: "read", label: "Read", icon: Eye },
+    { value: "write", label: "Write", icon: Edit },
+    { value: "delete", label: "Delete", icon: Trash2 },
+    { value: "execute", label: "Execute", icon: Play },
+    { value: "admin", label: "Admin", icon: Settings },
+    { value: "create", label: "Create", icon: Plus },
+    { value: "update", label: "Update", icon: RefreshCw },
+    { value: "download", label: "Download", icon: Download },
+    { value: "upload", label: "Upload", icon: Upload },
+    { value: "share", label: "Share", icon: Users },
+  ];
+
+  const toggleAction = (action: string) => {
+    if (actions.includes(action)) {
+      onChange(actions.filter(a => a !== action));
+    } else {
+      onChange([...actions, action]);
+    }
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
+        {availableActions.map((action) => {
+          const Icon = action.icon;
+          const isSelected = actions.includes(action.value);
+
+          return (
+            <Button
+              key={action.value}
+              type="button"
+              variant={isSelected ? "default" : "outline"}
+              size="sm"
+              onClick={() => toggleAction(action.value)}
+              className={cn(
+                "flex items-center justify-start text-xs h-8",
+                isSelected && "bg-blue-600 hover:bg-blue-700"
+              )}
+            >
+              <Icon className="mr-2 h-3 w-3" />
+              {action.label}
+            </Button>
+          );
+        })}
+      </div>
+
+      <div>
+        <Label className="text-xs">Custom Actions</Label>
+        <Input
+          placeholder="Enter custom actions separated by commas"
+          onChange={(e) => {
+            const customActions = e.target.value.split(',').map(a => a.trim()).filter(Boolean);
+            const baseActions = actions.filter(a => availableActions.find(aa => aa.value === a));
+            onChange([...baseActions, ...customActions]);
+          }}
+          className="text-sm"
+        />
+      </div>
+
+      {actions.length > 0 && (
+        <div className="flex flex-wrap gap-1">
+          {actions.map((action) => (
+            <Badge key={action} variant="secondary" className="text-xs">
+              {action}
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => toggleAction(action)}
+                className="ml-1 h-3 w-3 p-0 hover:bg-red-100"
+              >
+                <XCircle className="h-2 w-2" />
+              </Button>
+            </Badge>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Policy Validation View Component
+const PolicyValidationView: React.FC<{
+  policy: any;
+  onValidate: () => boolean;
+}> = ({ policy, onValidate }) => {
+  const [validationResults, setValidationResults] = useState<any>(null);
+
+  const runValidation = () => {
+    const results = {
+      isValid: onValidate(),
+      warnings: [] as string[],
+      suggestions: [] as string[],
+      score: 0,
+    };
+
+    // Check for common issues
+    if (policy.rules.length === 0) {
+      results.warnings.push("No rules defined - policy will not have any effect");
+    }
+
+    if (policy.priority < 50) {
+      results.suggestions.push("Consider increasing priority for better policy evaluation order");
+    }
+
+    if (policy.effect === "deny" && policy.priority < 100) {
+      results.suggestions.push("Deny policies typically should have higher priority than allow policies");
+    }
+
+    policy.rules.forEach((rule: PolicyRule, index: number) => {
+      if (rule.subject.length === 0) {
+        results.warnings.push(`Rule ${index + 1}: No subject conditions defined`);
+      }
+      if (rule.resource.length === 0) {
+        results.warnings.push(`Rule ${index + 1}: No resource conditions defined`);
+      }
+      if (rule.action.length === 0) {
+        results.warnings.push(`Rule ${index + 1}: No actions specified`);
+      }
+    });
+
+    // Calculate score
+    results.score = Math.max(0, 100 - (results.warnings.length * 20) - (results.suggestions.length * 5));
+
+    setValidationResults(results);
+  };
+
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return "text-green-600";
+    if (score >= 60) return "text-yellow-600";
+    return "text-red-600";
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-medium">Policy Validation</h3>
+          <p className="text-sm text-gray-500">
+            Validate policy structure and check for potential issues
+          </p>
+        </div>
+        <Button onClick={runValidation} variant="outline">
+          <CheckCircle className="mr-2 h-4 w-4" />
+          Run Validation
+        </Button>
+      </div>
+
+      {validationResults ? (
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-2">
+                  {validationResults.isValid ? (
+                    <CheckCircle className="h-5 w-5 text-green-600" />
+                  ) : (
+                    <XCircle className="h-5 w-5 text-red-600" />
+                  )}
+                  <span className="font-medium">
+                    {validationResults.isValid ? "Valid Policy" : "Invalid Policy"}
+                  </span>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-500">Quality Score</p>
+                  <p className={cn("text-2xl font-bold", getScoreColor(validationResults.score))}>
+                    {validationResults.score}/100
+                  </p>
+                </div>
+              </div>
+
+              <Progress value={validationResults.score} className="h-2" />
+            </CardContent>
+          </Card>
+
+          {validationResults.warnings.length > 0 && (
+            <Card className="border-orange-200">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm flex items-center text-orange-800">
+                  <AlertTriangle className="mr-2 h-4 w-4" />
+                  Warnings ({validationResults.warnings.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {validationResults.warnings.map((warning: string, index: number) => (
+                    <div key={index} className="flex items-start space-x-2">
+                      <AlertTriangle className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
+                      <p className="text-sm text-orange-700">{warning}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {validationResults.suggestions.length > 0 && (
+            <Card className="border-blue-200">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm flex items-center text-blue-800">
+                  <TrendingUp className="mr-2 h-4 w-4" />
+                  Suggestions ({validationResults.suggestions.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {validationResults.suggestions.map((suggestion: string, index: number) => (
+                    <div key={index} className="flex items-start space-x-2">
+                      <TrendingUp className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                      <p className="text-sm text-blue-700">{suggestion}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {validationResults.isValid && validationResults.warnings.length === 0 && (
+            <Card className="border-green-200">
+              <CardContent className="pt-6">
+                <div className="flex items-center space-x-2 text-green-800">
+                  <CheckCircle className="h-5 w-5" />
+                  <span className="font-medium">Policy looks good!</span>
+                </div>
+                <p className="text-sm text-green-700 mt-1">
+                  No issues found. This policy is ready to be created.
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      ) : (
+        <div className="text-center py-12 border-2 border-dashed border-gray-200 rounded-lg">
+          <CheckCircle className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Ready to Validate</h3>
+          <p className="text-gray-500 mb-4">
+            Click "Run Validation" to check your policy for issues and get quality score
+          </p>
+        </div>
+      )}
+    </div>
   );
 };
 
