@@ -128,6 +128,11 @@ const Roles: React.FC = () => {
     fetchPermissions();
   }, []);
 
+  // Initialize filtered templates when roleTemplates is loaded
+  useEffect(() => {
+    setFilteredTemplates(roleTemplates);
+  }, [roleTemplates]);
+
   useEffect(() => {
     filterRoles();
   }, [roles, searchTerm, statusFilter, levelFilter]);
