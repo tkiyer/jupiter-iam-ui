@@ -60,7 +60,7 @@ import {
   ChevronRight,
   X,
   Check,
-  Users,
+  Users as UsersIcon,
   Building,
   Tag,
   Star,
