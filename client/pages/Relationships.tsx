@@ -71,9 +71,6 @@ export default function Relationships() {
   useEffect(() => {
     if (users && roles && permissions && policies) {
       calculateRelationshipStats();
-      buildUserRoleRelations();
-      buildRolePermissionRelations();
-      buildPolicyRelations();
     }
   }, [users, roles, permissions, policies]);
 
@@ -197,7 +194,7 @@ export default function Relationships() {
 
       // 从策略规则中提取适用范围
       policy.rules.forEach(rule => {
-        // 分析主体条件以确定适用角色
+        // 分析主体条件以确���适用角色
         rule.subject.forEach(condition => {
           if (condition.attribute === 'role' || condition.attribute === 'roles') {
             if (condition.operator === 'equals' && typeof condition.value === 'string') {
