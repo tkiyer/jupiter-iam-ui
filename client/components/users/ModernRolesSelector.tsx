@@ -27,7 +27,7 @@ import {
   X,
   Shield,
   Crown,
-  Users,
+  Users as UsersIcon,
   Building,
   Code,
   TrendingUp,
