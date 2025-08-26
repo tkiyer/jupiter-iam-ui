@@ -1464,36 +1464,60 @@ const EnhancedRolesSelector: React.FC<{
             {selectedRoles.length} selected
           </Badge>
           {selectedRoles.length > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
+            <div
               onClick={handleClearAll}
-              className="text-red-600 hover:text-red-700"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 text-red-600 hover:text-red-700 cursor-pointer"
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleClearAll();
+                }
+              }}
             >
               <X className="mr-1 h-3 w-3" />
               Clear All
-            </Button>
+            </div>
           )}
         </div>
         <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
+          <div
             onClick={() => setShowSelected(!showSelected)}
-            className={showSelected ? "bg-blue-50 text-blue-700" : ""}
+            className={cn(
+              "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 cursor-pointer",
+              showSelected ? "bg-blue-50 text-blue-700" : "",
+            )}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setShowSelected(!showSelected);
+              }
+            }}
           >
             <CheckCircle className="mr-2 h-4 w-4" />
             {showSelected ? "Show All" : "Show Selected Only"}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
+          </div>
+          <div
             onClick={() => setBulkSelectMode(!bulkSelectMode)}
-            className={bulkSelectMode ? "bg-blue-50 text-blue-700" : ""}
+            className={cn(
+              "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 cursor-pointer",
+              bulkSelectMode ? "bg-blue-50 text-blue-700" : "",
+            )}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setBulkSelectMode(!bulkSelectMode);
+              }
+            }}
           >
             <Check className="mr-2 h-4 w-4" />
             Bulk Select
-          </Button>
+          </div>
         </div>
       </div>
 
@@ -1508,22 +1532,32 @@ const EnhancedRolesSelector: React.FC<{
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
-              {commonRolesSuggestions.map((role) => (
-                <Button
-                  key={role.id}
-                  variant={
-                    selectedRoles.includes(role.id) ? "default" : "outline"
-                  }
-                  size="sm"
-                  onClick={() => handleRoleToggle(role.id)}
-                  className="text-xs"
-                >
-                  {selectedRoles.includes(role.id) && (
-                    <Check className="mr-1 h-3 w-3" />
-                  )}
-                  {role.name}
-                </Button>
-              ))}
+              {commonRolesSuggestions.map((role) => {
+                const isSelected = selectedRoles.includes(role.id);
+                return (
+                  <div
+                    key={role.id}
+                    onClick={() => handleRoleToggle(role.id)}
+                    className={cn(
+                      "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 rounded-md px-3 cursor-pointer",
+                      isSelected
+                        ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                        : "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+                    )}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleRoleToggle(role.id);
+                      }
+                    }}
+                  >
+                    {isSelected && <Check className="mr-1 h-3 w-3" />}
+                    {role.name}
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
@@ -1543,17 +1577,26 @@ const EnhancedRolesSelector: React.FC<{
                   const isSelected = selectedCategory === category.id;
 
                   return (
-                    <button
+                    <div
                       key={category.id}
                       onClick={() => {
                         setSelectedCategory(category.id);
                         setCurrentPage(1);
                       }}
                       className={cn(
-                        "w-full flex items-center justify-between p-3 text-left hover:bg-gray-50 transition-colors",
+                        "w-full flex items-center justify-between p-3 text-left hover:bg-gray-50 transition-colors cursor-pointer",
                         isSelected &&
                           "bg-blue-50 text-blue-700 border-r-2 border-blue-600",
                       )}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setSelectedCategory(category.id);
+                          setCurrentPage(1);
+                        }
+                      }}
                     >
                       <div className="flex items-center space-x-2">
                         <Icon className="h-4 w-4" />
@@ -1564,7 +1607,7 @@ const EnhancedRolesSelector: React.FC<{
                       <span className="inline-flex items-center rounded-md bg-secondary px-2 py-1 text-xs font-medium text-secondary-foreground">
                         {category.count}
                       </span>
-                    </button>
+                    </div>
                   );
                 })}
               </div>
@@ -1594,20 +1637,34 @@ const EnhancedRolesSelector: React.FC<{
                 </div>
                 {bulkSelectMode && filteredRoles.length > 0 && (
                   <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
+                    <div
                       onClick={handleSelectAll}
+                      className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 cursor-pointer"
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          handleSelectAll();
+                        }
+                      }}
                     >
                       Select All ({filteredRoles.length})
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
+                    </div>
+                    <div
                       onClick={handleDeselectAll}
+                      className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 cursor-pointer"
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          handleDeselectAll();
+                        }
+                      }}
                     >
                       Deselect All
-                    </Button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -1699,28 +1756,58 @@ const EnhancedRolesSelector: React.FC<{
                         of {filteredRoles.length} roles
                       </div>
                       <div className="flex space-x-1">
-                        <Button
-                          variant="outline"
-                          size="sm"
+                        <div
                           onClick={() =>
                             setCurrentPage((prev) => Math.max(1, prev - 1))
                           }
-                          disabled={currentPage === 1}
+                          className={cn(
+                            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3",
+                            currentPage === 1
+                              ? "pointer-events-none opacity-50"
+                              : "cursor-pointer",
+                          )}
+                          role="button"
+                          tabIndex={currentPage === 1 ? -1 : 0}
+                          onKeyDown={(e) => {
+                            if (
+                              currentPage > 1 &&
+                              (e.key === "Enter" || e.key === " ")
+                            ) {
+                              e.preventDefault();
+                              setCurrentPage((prev) => Math.max(1, prev - 1));
+                            }
+                          }}
                         >
                           Previous
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
+                        </div>
+                        <div
                           onClick={() =>
                             setCurrentPage((prev) =>
                               Math.min(totalPages, prev + 1),
                             )
                           }
-                          disabled={currentPage === totalPages}
+                          className={cn(
+                            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3",
+                            currentPage === totalPages
+                              ? "pointer-events-none opacity-50"
+                              : "cursor-pointer",
+                          )}
+                          role="button"
+                          tabIndex={currentPage === totalPages ? -1 : 0}
+                          onKeyDown={(e) => {
+                            if (
+                              currentPage < totalPages &&
+                              (e.key === "Enter" || e.key === " ")
+                            ) {
+                              e.preventDefault();
+                              setCurrentPage((prev) =>
+                                Math.min(totalPages, prev + 1),
+                              );
+                            }
+                          }}
                         >
                           Next
-                        </Button>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -1752,14 +1839,21 @@ const EnhancedRolesSelector: React.FC<{
                     className="inline-flex items-center gap-1 rounded-md bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"
                   >
                     {role.name}
-                    <button
-                      type="button"
+                    <div
                       onClick={() => handleRoleToggle(roleId)}
-                      className="ml-1 h-4 w-4 rounded-sm hover:bg-red-100 flex items-center justify-center transition-colors"
+                      className="ml-1 h-4 w-4 rounded-sm hover:bg-red-100 flex items-center justify-center transition-colors cursor-pointer"
+                      role="button"
+                      tabIndex={0}
                       aria-label={`Remove ${role.name} role`}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          handleRoleToggle(roleId);
+                        }
+                      }}
                     >
                       <X className="h-3 w-3" />
-                    </button>
+                    </div>
                   </div>
                 );
               })}

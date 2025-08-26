@@ -407,15 +407,15 @@ export const EnhancedRolesSelector: React.FC<EnhancedRolesSelectorProps> = ({
                     className="flex items-center space-x-1"
                   >
                     <span>{role.name}</span>
-                    <button
+                    <div
                       onClick={(e) => {
                         e.stopPropagation();
                         handleRoleToggle(roleId);
                       }}
-                      className="ml-1 hover:bg-gray-300 rounded-full p-0.5"
+                      className="ml-1 hover:bg-gray-300 rounded-full p-0.5 cursor-pointer"
                     >
                       <X className="h-3 w-3" />
-                    </button>
+                    </div>
                   </Badge>
                 ) : null;
               })}
