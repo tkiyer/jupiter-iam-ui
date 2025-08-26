@@ -3646,7 +3646,7 @@ const EditCategoryDialog: React.FC<{
     try {
       const categoryData = {
         ...formData,
-        parentCategory: formData.parentCategory || undefined,
+        parentCategory: (formData.parentCategory && formData.parentCategory !== "none") ? formData.parentCategory : undefined,
       };
       await onSave(categoryData);
     } catch (error) {
