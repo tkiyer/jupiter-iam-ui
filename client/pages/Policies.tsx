@@ -1085,41 +1085,149 @@ const EditPolicyDialog: React.FC<{
   policy: ABACPolicy;
   onSave: (policy: ABACPolicy) => void;
 }> = ({ policy, onSave }) => {
-  const [formData, setFormData] = useState<ABACPolicy>(policy);
+  const [formData, setFormData] = useState<ABACPolicy>({
+    ...policy,
+    tags: (policy as any).tags || [],
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+  const [activeTab, setActiveTab] = useState("general");
+
+  // Track changes
+  useEffect(() => {
+    setHasChanges(JSON.stringify(formData) !== JSON.stringify(policy));
+  }, [formData, policy]);
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Policy name is required";
+    }
+    if (!formData.description.trim()) {
+      newErrors.description = "Description is required";
+    }
+    if (formData.priority < 1 || formData.priority > 1000) {
+      newErrors.priority = "Priority must be between 1 and 1000";
+    }
+    if (formData.rules.length === 0) {
+      newErrors.rules = "At least one rule is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+    try {
+      await onSave({
+        ...formData,
+        updatedAt: new Date().toISOString(),
+      });
+      setErrors({});
+    } catch (error) {
+      console.error("Error updating policy:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const addRule = () => {
+    const newRule: PolicyRule = {
+      subject: [],
+      resource: [],
+      action: [],
+      environment: [],
+    };
+    setFormData((prev) => ({ ...prev, rules: [...prev.rules, newRule] }));
+  };
+
+  const updateRule = (index: number, rule: PolicyRule) => {
+    setFormData((prev) => ({
+      ...prev,
+      rules: prev.rules.map((r, i) => (i === index ? rule : r)),
+    }));
+  };
+
+  const removeRule = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      rules: prev.rules.filter((_, i) => i !== index),
+    }));
+  };
+
+  const duplicatePolicy = () => {
+    const duplicatedPolicy = {
+      ...formData,
+      id: `pol-${Date.now()}`,
+      name: `${formData.name} (Copy)`,
+      status: "draft" as const,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    onSave(duplicatedPolicy);
   };
 
   return (
     <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
       <DialogHeader>
-        <DialogTitle>Edit Policy: {policy.name}</DialogTitle>
-        <DialogDescription>
-          Update policy rules, conditions, and settings
-        </DialogDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <DialogTitle className="flex items-center">
+              Edit Policy: {policy.name}
+              {hasChanges && (
+                <Badge variant="outline" className="ml-2 text-xs">
+                  Unsaved Changes
+                </Badge>
+              )}
+            </DialogTitle>
+            <DialogDescription>
+              Update policy configuration, rules, and validation settings
+            </DialogDescription>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={duplicatePolicy}
+            >
+              <Copy className="mr-2 h-4 w-4" />
+              Duplicate
+            </Button>
+          </div>
+        </div>
       </DialogHeader>
+
       <form onSubmit={handleSubmit} className="space-y-6">
-        <Tabs defaultValue="general" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="general">General</TabsTrigger>
-            <TabsTrigger value="rules">Rules</TabsTrigger>
-            <TabsTrigger value="conditions">Conditions</TabsTrigger>
+            <TabsTrigger value="rules">Rules ({formData.rules.length})</TabsTrigger>
             <TabsTrigger value="testing">Testing</TabsTrigger>
+            <TabsTrigger value="history">History</TabsTrigger>
+            <TabsTrigger value="validation">Validation</TabsTrigger>
           </TabsList>
 
           <TabsContent value="general" className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="editName">Name</Label>
+                <Label htmlFor="editName">Policy Name *</Label>
                 <Input
                   id="editName"
+                  required
                   value={formData.name}
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, name: e.target.value }))
                   }
+                  className={errors.name ? "border-red-500" : ""}
                 />
+                {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
               </div>
               <div>
                 <Label>Status</Label>
@@ -1133,18 +1241,34 @@ const EditPolicyDialog: React.FC<{
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="draft">
+                      <div className="flex items-center">
+                        <Clock className="mr-2 h-4 w-4 text-yellow-600" />
+                        Draft
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="active">
+                      <div className="flex items-center">
+                        <CheckCircle className="mr-2 h-4 w-4 text-green-600" />
+                        Active
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="inactive">
+                      <div className="flex items-center">
+                        <XCircle className="mr-2 h-4 w-4 text-gray-600" />
+                        Inactive
+                      </div>
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
             <div>
-              <Label htmlFor="editDescription">Description</Label>
+              <Label htmlFor="editDescription">Description *</Label>
               <Textarea
                 id="editDescription"
+                required
                 value={formData.description}
                 onChange={(e) =>
                   setFormData((prev) => ({
@@ -1152,12 +1276,15 @@ const EditPolicyDialog: React.FC<{
                     description: e.target.value,
                   }))
                 }
+                className={errors.description ? "border-red-500" : ""}
+                rows={3}
               />
+              {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Effect</Label>
+                <Label>Policy Effect *</Label>
                 <Select
                   value={formData.effect}
                   onValueChange={(value: "allow" | "deny") =>
@@ -1168,13 +1295,23 @@ const EditPolicyDialog: React.FC<{
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="allow">Allow</SelectItem>
-                    <SelectItem value="deny">Deny</SelectItem>
+                    <SelectItem value="allow">
+                      <div className="flex items-center">
+                        <CheckCircle className="mr-2 h-4 w-4 text-green-600" />
+                        Allow Access
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="deny">
+                      <div className="flex items-center">
+                        <XCircle className="mr-2 h-4 w-4 text-red-600" />
+                        Deny Access
+                      </div>
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div>
-                <Label htmlFor="editPriority">Priority</Label>
+                <Label htmlFor="editPriority">Priority *</Label>
                 <Input
                   id="editPriority"
                   type="number"
@@ -1184,43 +1321,154 @@ const EditPolicyDialog: React.FC<{
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      priority: parseInt(e.target.value),
+                      priority: parseInt(e.target.value) || 100,
                     }))
                   }
+                  className={errors.priority ? "border-red-500" : ""}
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Higher numbers = higher priority (1-1000)
+                </p>
+                {errors.priority && <p className="text-sm text-red-500 mt-1">{errors.priority}</p>}
+              </div>
+            </div>
+
+            <div>
+              <Label>Tags</Label>
+              <Input
+                placeholder="Enter tags separated by commas"
+                value={(formData as any).tags?.join(', ') || ''}
+                onChange={(e) => {
+                  const tags = e.target.value.split(',').map(tag => tag.trim()).filter(Boolean);
+                  setFormData((prev) => ({ ...prev, tags } as any));
+                }}
+              />
+              {(formData as any).tags?.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {(formData as any).tags.map((tag: string, index: number) => (
+                    <Badge key={index} variant="secondary" className="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="font-medium mb-2">Policy Information</h4>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="text-gray-600">Created</p>
+                  <p>{new Date(policy.createdAt).toLocaleString()}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600">Last Modified</p>
+                  <p>{formData.updatedAt ? new Date(formData.updatedAt).toLocaleString() : 'Never'}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600">Policy ID</p>
+                  <p className="font-mono text-xs">{policy.id}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600">Rules Count</p>
+                  <p>{formData.rules.length} rule{formData.rules.length !== 1 ? 's' : ''}</p>
+                </div>
               </div>
             </div>
           </TabsContent>
 
           <TabsContent value="rules" className="space-y-4">
-            <PolicyRulesEditor
-              rules={formData.rules}
-              onChange={(rules) => setFormData((prev) => ({ ...prev, rules }))}
-            />
-          </TabsContent>
-
-          <TabsContent value="conditions" className="space-y-4">
-            <div className="text-center text-gray-500 py-8">
-              <Settings className="mx-auto h-12 w-12 mb-4" />
-              <p>Advanced condition builder coming soon</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <Label className="text-lg font-medium">Policy Rules</Label>
+                <p className="text-sm text-gray-500">
+                  Define access conditions for subjects, resources, and environment
+                </p>
+              </div>
+              <Button type="button" onClick={addRule} variant="outline">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Rule
+              </Button>
             </div>
+
+            {errors.rules && <p className="text-sm text-red-500">{errors.rules}</p>}
+
+            {formData.rules.length === 0 ? (
+              <Card className="border-dashed">
+                <CardContent className="flex flex-col items-center justify-center py-12">
+                  <FileText className="h-12 w-12 text-gray-400 mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No rules defined</h3>
+                  <p className="text-gray-500 mb-4 text-center">
+                    Add rules to define access conditions for this policy
+                  </p>
+                  <Button type="button" onClick={addRule}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Your First Rule
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                {formData.rules.map((rule, index) => (
+                  <RuleEditor
+                    key={index}
+                    rule={rule}
+                    index={index}
+                    onChange={(updatedRule) => updateRule(index, updatedRule)}
+                    onRemove={() => removeRule(index)}
+                  />
+                ))}
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="testing" className="space-y-4">
-            <div className="text-center text-gray-500 py-8">
-              <TestTube className="mx-auto h-12 w-12 mb-4" />
-              <p>Policy testing tools integration</p>
-            </div>
+            <PolicyTestingView policy={formData} />
+          </TabsContent>
+
+          <TabsContent value="history" className="space-y-4">
+            <PolicyHistoryView policy={policy} />
+          </TabsContent>
+
+          <TabsContent value="validation" className="space-y-4">
+            <PolicyValidationView
+              policy={formData}
+              onValidate={() => validateForm()}
+            />
           </TabsContent>
         </Tabs>
 
-        <div className="flex justify-end space-x-2">
-          <Button type="button" variant="outline">
-            Cancel
-          </Button>
-          <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-            Save Changes
-          </Button>
+        <div className="flex justify-between pt-4 border-t">
+          <div className="flex items-center space-x-2">
+            {hasChanges && (
+              <div className="flex items-center text-sm text-orange-600">
+                <AlertTriangle className="mr-1 h-4 w-4" />
+                You have unsaved changes
+              </div>
+            )}
+          </div>
+          <div className="flex space-x-2">
+            <Button type="button" variant="outline" disabled={isSubmitting}>
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700"
+              disabled={isSubmitting || !hasChanges}
+            >
+              {isSubmitting ? (
+                <>
+                  <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="mr-2 h-4 w-4" />
+                  Save Changes
+                </>
+              )}
+            </Button>
+          </div>
         </div>
       </form>
     </DialogContent>
