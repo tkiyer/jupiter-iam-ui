@@ -745,6 +745,57 @@ const CreatePolicyDialog: React.FC<{
     status: "draft" as "active" | "inactive" | "draft",
     rules: [] as PolicyRule[],
     tags: [] as string[],
+    // Advanced settings
+    advancedSettings: {
+      timeRestrictions: {
+        enabled: false,
+        businessHours: { start: "09:00", end: "17:00" },
+        allowedDays: [] as string[],
+        timezone: "UTC",
+        dateRange: { start: "", end: "" },
+      },
+      locationRestrictions: {
+        enabled: false,
+        allowedIPs: [] as string[],
+        blockedIPs: [] as string[],
+        allowedCountries: [] as string[],
+        blockedCountries: [] as string[],
+        requireVPN: false,
+      },
+      dynamicAttributes: {
+        enabled: false,
+        contextualEvaluation: false,
+        attributeResolution: "lazy" as "lazy" | "eager",
+        cacheTimeout: 300,
+        customAttributes: [] as { key: string; source: string; defaultValue: string }[],
+      },
+      customExpressions: {
+        enabled: false,
+        expressions: [] as { name: string; expression: string; description: string }[],
+        allowJavaScript: false,
+        maxExecutionTime: 1000,
+      },
+      complianceSettings: {
+        enabled: false,
+        auditLevel: "basic" as "basic" | "detailed" | "full",
+        dataRetention: 30,
+        requireJustification: false,
+        piiHandling: "standard" as "standard" | "strict" | "minimal",
+      },
+      integrationSettings: {
+        webhooks: [] as { url: string; events: string[]; enabled: boolean }[],
+        notifications: {
+          enabled: false,
+          channels: [] as string[],
+          events: [] as string[],
+        },
+        externalValidation: {
+          enabled: false,
+          endpoint: "",
+          timeout: 5000,
+        },
+      },
+    },
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
