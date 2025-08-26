@@ -70,6 +70,12 @@ import {
   Layers,
   Folder,
   FolderOpen,
+  Crown,
+  TrendingUp,
+  Target,
+  Settings,
+  Code,
+  Eye,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
