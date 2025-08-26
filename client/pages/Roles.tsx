@@ -1974,7 +1974,7 @@ const CreateTemplateDialog: React.FC<{
         ...prev,
         name: `${role.name} Template`,
         description: `Template based on ${role.name} role`,
-        organizationUnit: role.organizationUnit || "",
+        organizationUnit: role.organizationUnit || "any",
         level: role.level,
         sourceRoleId: roleId,
         permissions: role.permissions,
