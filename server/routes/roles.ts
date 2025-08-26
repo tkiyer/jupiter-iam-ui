@@ -632,3 +632,248 @@ export const handleGetPermissions: RequestHandler = (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+// Template Management Endpoints
+
+// POST /api/role-templates - Create new role template
+export const handleCreateRoleTemplate: RequestHandler = (req, res) => {
+  try {
+    const templateData = req.body;
+
+    // Validate required fields
+    if (!templateData.name || !templateData.description || !templateData.category) {
+      return res.status(400).json({ error: "Missing required fields: name, description, category" });
+    }
+
+    // Check if template name already exists
+    const existingTemplate = mockRoleTemplates.find(t => t.name.toLowerCase() === templateData.name.toLowerCase());
+    if (existingTemplate) {
+      return res.status(409).json({ error: "Template name already exists" });
+    }
+
+    // Create new template
+    const newTemplate: RoleTemplate = {
+      id: `tmpl-${mockRoleTemplates.length + 1}`,
+      name: templateData.name,
+      description: templateData.description,
+      category: templateData.category,
+      permissions: templateData.permissions || [],
+      organizationUnit: templateData.organizationUnit,
+      level: templateData.level || 1,
+      isBuiltIn: templateData.isBuiltIn || false,
+      usageCount: 0
+    };
+
+    mockRoleTemplates.push(newTemplate);
+    res.status(201).json(newTemplate);
+  } catch (error) {
+    console.error("Error creating role template:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// PUT /api/role-templates/:id - Update role template
+export const handleUpdateRoleTemplate: RequestHandler = (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    const templateIndex = mockRoleTemplates.findIndex(t => t.id === id);
+    if (templateIndex === -1) {
+      return res.status(404).json({ error: "Template not found" });
+    }
+
+    // Validate required fields
+    if (!updateData.name || !updateData.description || !updateData.category) {
+      return res.status(400).json({ error: "Missing required fields: name, description, category" });
+    }
+
+    // Check if template name already exists (excluding current template)
+    const existingTemplate = mockRoleTemplates.find(t =>
+      t.name.toLowerCase() === updateData.name.toLowerCase() && t.id !== id
+    );
+    if (existingTemplate) {
+      return res.status(409).json({ error: "Template name already exists" });
+    }
+
+    // Update template data
+    mockRoleTemplates[templateIndex] = {
+      ...mockRoleTemplates[templateIndex],
+      ...updateData,
+      id, // Ensure ID doesn't change
+    };
+
+    res.json(mockRoleTemplates[templateIndex]);
+  } catch (error) {
+    console.error("Error updating role template:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// DELETE /api/role-templates/:id - Delete role template
+export const handleDeleteRoleTemplate: RequestHandler = (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const templateIndex = mockRoleTemplates.findIndex(t => t.id === id);
+    if (templateIndex === -1) {
+      return res.status(404).json({ error: "Template not found" });
+    }
+
+    // Prevent deletion of built-in templates
+    if (mockRoleTemplates[templateIndex].isBuiltIn) {
+      return res.status(403).json({ error: "Cannot delete built-in templates" });
+    }
+
+    mockRoleTemplates.splice(templateIndex, 1);
+    res.status(204).send();
+  } catch (error) {
+    console.error("Error deleting role template:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// GET /api/role-templates/:id - Get specific role template
+export const handleGetRoleTemplate: RequestHandler = (req, res) => {
+  try {
+    const { id } = req.params;
+    const template = mockRoleTemplates.find(t => t.id === id);
+
+    if (!template) {
+      return res.status(404).json({ error: "Template not found" });
+    }
+
+    res.json(template);
+  } catch (error) {
+    console.error("Error fetching role template:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// POST /api/role-templates/:id/duplicate - Duplicate role template
+export const handleDuplicateRoleTemplate: RequestHandler = (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    const sourceTemplate = mockRoleTemplates.find(t => t.id === id);
+    if (!sourceTemplate) {
+      return res.status(404).json({ error: "Source template not found" });
+    }
+
+    const duplicatedTemplate: RoleTemplate = {
+      ...sourceTemplate,
+      id: `tmpl-${mockRoleTemplates.length + 1}`,
+      name: name || `${sourceTemplate.name} Copy`,
+      isBuiltIn: false,
+      usageCount: 0
+    };
+
+    mockRoleTemplates.push(duplicatedTemplate);
+    res.status(201).json(duplicatedTemplate);
+  } catch (error) {
+    console.error("Error duplicating role template:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// GET /api/role-templates/categories - Get template categories
+export const handleGetTemplateCategories: RequestHandler = (req, res) => {
+  try {
+    const categories = Array.from(new Set(mockRoleTemplates.map(t => t.category))).sort();
+    const categoriesWithCount = categories.map(category => ({
+      name: category,
+      count: mockRoleTemplates.filter(t => t.category === category).length
+    }));
+
+    res.json(categoriesWithCount);
+  } catch (error) {
+    console.error("Error fetching template categories:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// POST /api/role-templates/export - Export templates
+export const handleExportTemplates: RequestHandler = (req, res) => {
+  try {
+    const { templateIds } = req.body;
+
+    let templatesToExport = mockRoleTemplates;
+    if (templateIds && Array.isArray(templateIds)) {
+      templatesToExport = mockRoleTemplates.filter(t => templateIds.includes(t.id));
+    }
+
+    const exportData = {
+      version: "1.0",
+      exportDate: new Date().toISOString(),
+      templates: templatesToExport
+    };
+
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', 'attachment; filename="role-templates.json"');
+    res.json(exportData);
+  } catch (error) {
+    console.error("Error exporting templates:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// POST /api/role-templates/import - Import templates
+export const handleImportTemplates: RequestHandler = (req, res) => {
+  try {
+    const { templates } = req.body;
+
+    if (!Array.isArray(templates)) {
+      return res.status(400).json({ error: "Invalid import data: templates must be an array" });
+    }
+
+    const importResults = {
+      imported: 0,
+      skipped: 0,
+      errors: [] as string[]
+    };
+
+    templates.forEach((templateData, index) => {
+      try {
+        // Validate template data
+        if (!templateData.name || !templateData.description || !templateData.category) {
+          importResults.errors.push(`Template ${index + 1}: Missing required fields`);
+          return;
+        }
+
+        // Check if template already exists
+        const existingTemplate = mockRoleTemplates.find(t =>
+          t.name.toLowerCase() === templateData.name.toLowerCase()
+        );
+
+        if (existingTemplate) {
+          importResults.skipped++;
+          return;
+        }
+
+        // Create new template
+        const newTemplate: RoleTemplate = {
+          id: `tmpl-${mockRoleTemplates.length + 1}`,
+          name: templateData.name,
+          description: templateData.description,
+          category: templateData.category,
+          permissions: templateData.permissions || [],
+          organizationUnit: templateData.organizationUnit,
+          level: templateData.level || 1,
+          isBuiltIn: false,
+          usageCount: 0
+        };
+
+        mockRoleTemplates.push(newTemplate);
+        importResults.imported++;
+      } catch (error) {
+        importResults.errors.push(`Template ${index + 1}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    });
+
+    res.json(importResults);
+  } catch (error) {
+    console.error("Error importing templates:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
