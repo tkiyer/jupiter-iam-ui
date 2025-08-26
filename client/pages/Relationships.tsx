@@ -333,7 +333,7 @@ export default function Relationships() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm">用户-角色关联</span>
+              <span className="text-sm">用���-角色关联</span>
               <div className="flex items-center gap-2">
                 <Badge variant="secondary">{relationshipStats?.userRoleRelations || 0}</Badge>
                 <CheckCircle2 className="h-4 w-4 text-green-500" />
@@ -727,15 +727,50 @@ export default function Relationships() {
           </TabsContent>
 
           <TabsContent value="user-role">
-            {renderUserRoleTab()}
+            <UserRoleManager
+              onAssignmentChange={(assignments) => {
+                // 处理分配变更
+                console.log('User-Role assignments changed:', assignments);
+              }}
+            />
           </TabsContent>
 
           <TabsContent value="role-permission">
-            {renderRolePermissionTab()}
+            <RolePermissionManager
+              onAssignmentChange={(assignments) => {
+                // 处理分配变更
+                console.log('Role-Permission assignments changed:', assignments);
+              }}
+            />
           </TabsContent>
 
           <TabsContent value="policy-relation">
-            {renderPolicyRelationTab()}
+            <PolicyRelationshipViewer
+              selectedPolicyId={selectedNodeId?.startsWith('policy_') ? selectedNodeId.replace('policy_', '') : undefined}
+              onPolicySelect={(policyId) => {
+                setSelectedNodeId(`policy_${policyId}`);
+                setActiveTab('graph'); // 切换到图形视图以查看选中的策略
+              }}
+            />
+          </TabsContent>
+
+          <TabsContent value="graph">
+            {users && roles && permissions && policies && (
+              <RelationshipGraph
+                users={users}
+                roles={roles}
+                permissions={permissions}
+                policies={policies}
+                selectedNodeId={selectedNodeId}
+                onNodeSelect={(nodeId, nodeData) => {
+                  setSelectedNodeId(nodeId);
+                  console.log('Selected node:', nodeId, nodeData);
+                }}
+                onNodeHover={(nodeId) => {
+                  setHoveredNode(nodeId);
+                }}
+              />
+            )}
           </TabsContent>
         </Tabs>
       </div>
