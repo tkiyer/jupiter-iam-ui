@@ -122,6 +122,13 @@ const Permissions: React.FC = () => {
   const [resourceSearchTerm, setResourceSearchTerm] = useState("");
   const [resourceTypeFilter, setResourceTypeFilter] = useState<string>("all");
 
+  // Categories related state
+  const [isCreateCategoryDialogOpen, setIsCreateCategoryDialogOpen] = useState(false);
+  const [isEditCategoryDialogOpen, setIsEditCategoryDialogOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<PermissionCategory | null>(null);
+  const [categorySearchTerm, setCategorySearchTerm] = useState("");
+  const [filteredCategories, setFilteredCategories] = useState<PermissionCategory[]>([]);
+
   // Pagination state
   const {
     currentPage,
@@ -146,6 +153,10 @@ const Permissions: React.FC = () => {
   useEffect(() => {
     filterPermissions();
   }, [permissions, searchTerm, categoryFilter, scopeFilter, riskFilter]);
+
+  useEffect(() => {
+    filterCategories();
+  }, [categories, categorySearchTerm]);
 
   const fetchPermissions = async () => {
     try {
@@ -361,6 +372,74 @@ const Permissions: React.FC = () => {
       }
     } catch (error) {
       console.error("Error deleting resource:", error);
+    }
+  };
+
+  // Category management functions
+  const filterCategories = () => {
+    let filtered = categories;
+
+    if (categorySearchTerm) {
+      filtered = filtered.filter(
+        (category) =>
+          category.name.toLowerCase().includes(categorySearchTerm.toLowerCase()) ||
+          category.description.toLowerCase().includes(categorySearchTerm.toLowerCase())
+      );
+    }
+
+    setFilteredCategories(filtered);
+  };
+
+  const handleCreateCategory = async (categoryData: any) => {
+    try {
+      const response = await fetch("/api/permissions/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(categoryData),
+      });
+
+      if (response.ok) {
+        const newCategory = await response.json();
+        setCategories((prev) => [...prev, newCategory]);
+        setIsCreateCategoryDialogOpen(false);
+      }
+    } catch (error) {
+      console.error("Error creating category:", error);
+    }
+  };
+
+  const handleUpdateCategory = async (categoryData: any) => {
+    try {
+      const response = await fetch(`/api/permissions/categories/${categoryData.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(categoryData),
+      });
+
+      if (response.ok) {
+        const updatedCategory = await response.json();
+        setCategories((prev) =>
+          prev.map((c) => (c.id === updatedCategory.id ? updatedCategory : c))
+        );
+        setIsEditCategoryDialogOpen(false);
+        setSelectedCategory(null);
+      }
+    } catch (error) {
+      console.error("Error updating category:", error);
+    }
+  };
+
+  const handleDeleteCategory = async (categoryId: string) => {
+    try {
+      const response = await fetch(`/api/permissions/categories/${categoryId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setCategories((prev) => prev.filter((c) => c.id !== categoryId));
+      }
+    } catch (error) {
+      console.error("Error deleting category:", error);
     }
   };
 
