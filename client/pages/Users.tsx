@@ -1129,9 +1129,9 @@ const EnhancedRolesSelector: React.FC<{
                         <Icon className="h-4 w-4" />
                         <span className="text-sm font-medium">{category.name}</span>
                       </div>
-                      <Badge variant="secondary" className="text-xs">
+                      <span className="inline-flex items-center rounded-md bg-secondary px-2 py-1 text-xs font-medium text-secondary-foreground">
                         {category.count}
-                      </Badge>
+                      </span>
                     </button>
                   );
                 })}
