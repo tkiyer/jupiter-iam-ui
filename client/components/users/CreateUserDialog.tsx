@@ -80,9 +80,8 @@ export const CreateUserDialog: React.FC<CreateUserDialogProps> = ({
       </DialogHeader>
       <form onSubmit={handleSubmit} className="space-y-6">
         <Tabs defaultValue="basic" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="basic">Basic Info</TabsTrigger>
-            <TabsTrigger value="roles">Roles & Access</TabsTrigger>
             <TabsTrigger value="attributes">Attributes</TabsTrigger>
           </TabsList>
 
