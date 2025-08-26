@@ -539,6 +539,154 @@ export const handleGetPermissionCategories: RequestHandler = (req, res) => {
   }
 };
 
+// POST /api/permissions/categories - Create new permission category
+export const handleCreatePermissionCategory: RequestHandler = (req, res) => {
+  try {
+    const categoryData = req.body;
+
+    // Validate required fields
+    if (!categoryData.name || !categoryData.description) {
+      return res.status(400).json({ error: "Missing required fields: name, description" });
+    }
+
+    // Check if category already exists
+    const existingCategory = mockCategories.find(c =>
+      c.name.toLowerCase() === categoryData.name.toLowerCase()
+    );
+
+    if (existingCategory) {
+      return res.status(409).json({ error: "Category with this name already exists" });
+    }
+
+    // Create new category
+    const newCategory: PermissionCategory = {
+      id: `cat-${mockCategories.length + 1}`,
+      name: categoryData.name,
+      description: categoryData.description,
+      color: categoryData.color || "#3B82F6",
+      icon: categoryData.icon || "shield",
+      permissions: [],
+      isSystemCategory: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    mockCategories.push(newCategory);
+    res.status(201).json(newCategory);
+  } catch (error) {
+    console.error("Error creating permission category:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// PUT /api/permissions/categories/:id - Update permission category
+export const handleUpdatePermissionCategory: RequestHandler = (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    const categoryIndex = mockCategories.findIndex(c => c.id === id);
+    if (categoryIndex === -1) {
+      return res.status(404).json({ error: "Category not found" });
+    }
+
+    // Prevent updating system categories in certain ways
+    if (mockCategories[categoryIndex].isSystemCategory && updateData.isSystemCategory === false) {
+      return res.status(403).json({ error: "Cannot modify system category status" });
+    }
+
+    // Check for name conflicts if name is being updated
+    if (updateData.name && updateData.name !== mockCategories[categoryIndex].name) {
+      const existingCategory = mockCategories.find(c =>
+        c.name.toLowerCase() === updateData.name.toLowerCase() && c.id !== id
+      );
+
+      if (existingCategory) {
+        return res.status(409).json({ error: "Category with this name already exists" });
+      }
+    }
+
+    // Update category data
+    mockCategories[categoryIndex] = {
+      ...mockCategories[categoryIndex],
+      ...updateData,
+      id, // Ensure ID doesn't change
+      updatedAt: new Date().toISOString()
+    };
+
+    res.json(mockCategories[categoryIndex]);
+  } catch (error) {
+    console.error("Error updating permission category:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// DELETE /api/permissions/categories/:id - Delete permission category
+export const handleDeletePermissionCategory: RequestHandler = (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const categoryIndex = mockCategories.findIndex(c => c.id === id);
+    if (categoryIndex === -1) {
+      return res.status(404).json({ error: "Category not found" });
+    }
+
+    // Prevent deletion of system categories
+    if (mockCategories[categoryIndex].isSystemCategory) {
+      return res.status(403).json({ error: "Cannot delete system categories" });
+    }
+
+    // Check if category has permissions
+    const category = mockCategories[categoryIndex];
+    if (category.permissions && category.permissions.length > 0) {
+      return res.status(400).json({
+        error: "Cannot delete category that contains permissions",
+        permissionCount: category.permissions.length
+      });
+    }
+
+    // Also check if any permissions reference this category by name
+    const referencingPermissions = mockPermissions.filter(p => p.category === category.name);
+    if (referencingPermissions.length > 0) {
+      return res.status(400).json({
+        error: "Cannot delete category that is referenced by existing permissions",
+        referencingPermissions: referencingPermissions.map(p => ({ id: p.id, name: p.name }))
+      });
+    }
+
+    mockCategories.splice(categoryIndex, 1);
+    res.status(204).send();
+  } catch (error) {
+    console.error("Error deleting permission category:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// GET /api/permissions/categories/:id - Get specific permission category
+export const handleGetPermissionCategory: RequestHandler = (req, res) => {
+  try {
+    const { id } = req.params;
+    const category = mockCategories.find(c => c.id === id);
+
+    if (!category) {
+      return res.status(404).json({ error: "Category not found" });
+    }
+
+    // Include permission details for this category
+    const categoryPermissions = mockPermissions.filter(p => p.category === category.name);
+    const categoryWithPermissions = {
+      ...category,
+      permissionDetails: categoryPermissions,
+      permissionCount: categoryPermissions.length
+    };
+
+    res.json(categoryWithPermissions);
+  } catch (error) {
+    console.error("Error fetching permission category:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 // GET /api/permissions/optimizations - Get optimization suggestions
 export const handleGetOptimizations: RequestHandler = (req, res) => {
   try {
@@ -667,6 +815,122 @@ export const handleDelegatePermission: RequestHandler = (req, res) => {
     res.json(delegation);
   } catch (error) {
     console.error("Error delegating permission:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Resource Management API Endpoints
+
+// POST /api/resources - Create new resource
+export const handleCreateResource: RequestHandler = (req, res) => {
+  try {
+    const resourceData = req.body;
+
+    // Validate required fields
+    if (!resourceData.name || !resourceData.type || !resourceData.description) {
+      return res.status(400).json({ error: "Missing required fields: name, type, description" });
+    }
+
+    // Check if resource already exists
+    const existingResource = mockResources.find(r =>
+      r.name.toLowerCase() === resourceData.name.toLowerCase()
+    );
+
+    if (existingResource) {
+      return res.status(409).json({ error: "Resource with this name already exists" });
+    }
+
+    // Create new resource
+    const newResource = {
+      id: `res-${mockResources.length + 1}`,
+      name: resourceData.name,
+      type: resourceData.type,
+      description: resourceData.description,
+      attributes: resourceData.attributes || {
+        sensitive: false,
+        piiContained: false,
+        complianceRequired: false
+      },
+      endpoints: resourceData.endpoints || [],
+      fields: resourceData.fields || [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    mockResources.push(newResource);
+    res.status(201).json(newResource);
+  } catch (error) {
+    console.error("Error creating resource:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// PUT /api/resources/:id - Update resource
+export const handleUpdateResource: RequestHandler = (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    const resourceIndex = mockResources.findIndex(r => r.id === id);
+    if (resourceIndex === -1) {
+      return res.status(404).json({ error: "Resource not found" });
+    }
+
+    // Update resource data
+    mockResources[resourceIndex] = {
+      ...mockResources[resourceIndex],
+      ...updateData,
+      id, // Ensure ID doesn't change
+      updatedAt: new Date().toISOString()
+    };
+
+    res.json(mockResources[resourceIndex]);
+  } catch (error) {
+    console.error("Error updating resource:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// DELETE /api/resources/:id - Delete resource
+export const handleDeleteResource: RequestHandler = (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const resourceIndex = mockResources.findIndex(r => r.id === id);
+    if (resourceIndex === -1) {
+      return res.status(404).json({ error: "Resource not found" });
+    }
+
+    // Check if resource is referenced by any permissions
+    const referencingPermissions = mockPermissions.filter(p => p.resource === mockResources[resourceIndex].name);
+    if (referencingPermissions.length > 0) {
+      return res.status(400).json({
+        error: "Cannot delete resource that is referenced by existing permissions",
+        referencingPermissions: referencingPermissions.map(p => ({ id: p.id, name: p.name }))
+      });
+    }
+
+    mockResources.splice(resourceIndex, 1);
+    res.status(204).send();
+  } catch (error) {
+    console.error("Error deleting resource:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// GET /api/resources/:id - Get specific resource
+export const handleGetResource: RequestHandler = (req, res) => {
+  try {
+    const { id } = req.params;
+    const resource = mockResources.find(r => r.id === id);
+
+    if (!resource) {
+      return res.status(404).json({ error: "Resource not found" });
+    }
+
+    res.json(resource);
+  } catch (error) {
+    console.error("Error fetching resource:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };

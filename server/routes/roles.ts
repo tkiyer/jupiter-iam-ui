@@ -144,29 +144,168 @@ const mockRoleConflicts: RoleConflict[] = [
   }
 ];
 
-// Mock permissions
-const mockPermissions: Permission[] = [
-  { id: "user.create", name: "Create Users", resource: "user", action: "create", description: "Create new user accounts", category: "User Management" },
-  { id: "user.read", name: "Read Users", resource: "user", action: "read", description: "View user information", category: "User Management" },
-  { id: "user.update", name: "Update Users", resource: "user", action: "update", description: "Modify user accounts", category: "User Management" },
-  { id: "user.delete", name: "Delete Users", resource: "user", action: "delete", description: "Remove user accounts", category: "User Management" },
-  { id: "role.create", name: "Create Roles", resource: "role", action: "create", description: "Create new roles", category: "Role Management" },
-  { id: "role.read", name: "Read Roles", resource: "role", action: "read", description: "View role information", category: "Role Management" },
-  { id: "role.update", name: "Update Roles", resource: "role", action: "update", description: "Modify roles", category: "Role Management" },
-  { id: "role.delete", name: "Delete Roles", resource: "role", action: "delete", description: "Remove roles", category: "Role Management" },
-  { id: "system.admin", name: "System Admin", resource: "system", action: "admin", description: "Full system administration", category: "System" },
-  { id: "profile.read", name: "Read Profile", resource: "profile", action: "read", description: "View own profile", category: "Profile" },
-  { id: "profile.update", name: "Update Profile", resource: "profile", action: "update", description: "Update own profile", category: "Profile" },
-  { id: "team.manage", name: "Manage Team", resource: "team", action: "manage", description: "Manage team members", category: "Team" },
-  { id: "audit.read", name: "Read Audit Logs", resource: "audit", action: "read", description: "View audit logs", category: "Audit" },
-  { id: "logs.read", name: "Read Logs", resource: "logs", action: "read", description: "View system logs", category: "Audit" },
-  { id: "reports.read", name: "Read Reports", resource: "reports", action: "read", description: "View reports", category: "Reporting" },
-  { id: "reports.create", name: "Create Reports", resource: "reports", action: "create", description: "Create reports", category: "Reporting" },
-  { id: "project.manage", name: "Manage Projects", resource: "project", action: "manage", description: "Manage project settings", category: "Project" },
-  { id: "team.coordinate", name: "Coordinate Team", resource: "team", action: "coordinate", description: "Coordinate team activities", category: "Team" },
-  { id: "finance.read", name: "Read Financial Data", resource: "finance", action: "read", description: "View financial information", category: "Finance" },
-  { id: "analytics.read", name: "Read Analytics", resource: "analytics", action: "read", description: "View analytics data", category: "Analytics" }
-];
+// Generate comprehensive mock permissions
+const generateMockPermissions = (): Permission[] => {
+  const permissions: Permission[] = [];
+
+  const categories = [
+    "User Management", "Role Management", "System", "Security", "Finance",
+    "Analytics", "Reporting", "Project Management", "Team Management",
+    "Content Management", "API Management", "Audit & Compliance",
+    "Customer Management", "Inventory Management", "HR Management",
+    "Marketing", "Sales", "Support", "DevOps", "Quality Assurance"
+  ];
+
+  const resources = [
+    "user", "role", "system", "security", "finance", "analytics", "reports",
+    "project", "team", "content", "api", "audit", "customer", "inventory",
+    "employee", "campaign", "lead", "ticket", "deployment", "test", "profile",
+    "organization", "billing", "notification", "workflow", "dashboard",
+    "integration", "backup", "monitoring", "logs", "settings", "database",
+    "file", "document", "contract", "invoice", "purchase", "vendor",
+    "product", "order", "payment", "shipment", "return", "refund"
+  ];
+
+  const actions = [
+    "create", "read", "update", "delete", "manage", "execute", "approve",
+    "reject", "export", "import", "configure", "monitor", "audit", "backup",
+    "restore", "publish", "archive", "share", "copy", "move", "assign",
+    "unassign", "activate", "deactivate", "suspend", "resume", "lock", "unlock"
+  ];
+
+  const scopes = ["global", "resource", "field", "api"];
+  const risks = ["low", "medium", "high", "critical"];
+
+  // Generate base permissions
+  let permissionId = 1;
+
+  resources.forEach(resource => {
+    const relevantCategory = categories.find(cat =>
+      cat.toLowerCase().includes(resource) ||
+      resource.includes(cat.toLowerCase().split(' ')[0])
+    ) || categories[Math.floor(Math.random() * categories.length)];
+
+    actions.forEach(action => {
+      // Not all action-resource combinations make sense, so filter some out
+      const validCombination = !(
+        (action === "approve" && !["project", "expense", "invoice", "contract"].includes(resource)) ||
+        (action === "backup" && !["database", "file", "system"].includes(resource)) ||
+        (action === "publish" && !["content", "report", "document"].includes(resource))
+      );
+
+      if (validCombination) {
+        const scope = scopes[Math.floor(Math.random() * scopes.length)];
+        const risk = risks[Math.floor(Math.random() * risks.length)];
+
+        permissions.push({
+          id: `${resource}.${action}`,
+          name: `${action.charAt(0).toUpperCase() + action.slice(1)} ${resource.charAt(0).toUpperCase() + resource.slice(1)}`,
+          resource,
+          action,
+          description: `${action.charAt(0).toUpperCase() + action.slice(1)} operations on ${resource} resource`,
+          category: relevantCategory,
+          scope,
+          risk,
+          usageCount: Math.floor(Math.random() * 1000),
+          lastUsed: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+        });
+        permissionId++;
+      }
+    });
+  });
+
+  // Add some special administrative permissions
+  const adminPermissions = [
+    {
+      id: "system.admin.full",
+      name: "Full System Administration",
+      resource: "system",
+      action: "admin",
+      description: "Complete administrative access to all system functions",
+      category: "System",
+      scope: "global" as const,
+      risk: "critical" as const,
+      isSystemPermission: true,
+      usageCount: 50,
+      lastUsed: "2024-01-10"
+    },
+    {
+      id: "security.override",
+      name: "Security Override",
+      resource: "security",
+      action: "override",
+      description: "Override security restrictions in emergency situations",
+      category: "Security",
+      scope: "global" as const,
+      risk: "critical" as const,
+      isSystemPermission: true,
+      usageCount: 5,
+      lastUsed: "2024-01-08"
+    },
+    {
+      id: "data.export.bulk",
+      name: "Bulk Data Export",
+      resource: "data",
+      action: "export",
+      description: "Export large datasets including sensitive information",
+      category: "Data Management",
+      scope: "global" as const,
+      risk: "high" as const,
+      usageCount: 120,
+      lastUsed: "2024-01-09"
+    }
+  ];
+
+  permissions.push(...adminPermissions);
+
+  // Add field-level permissions for sensitive data
+  const sensitiveFields = ["ssn", "credit_card", "salary", "medical_info", "personal_data"];
+  sensitiveFields.forEach(field => {
+    ["read", "update", "export"].forEach(action => {
+      permissions.push({
+        id: `field.${field}.${action}`,
+        name: `${action.charAt(0).toUpperCase() + action.slice(1)} ${field.replace('_', ' ').toUpperCase()}`,
+        resource: "sensitive_data",
+        action,
+        description: `${action.charAt(0).toUpperCase() + action.slice(1)} access to ${field.replace('_', ' ')} field`,
+        category: "Data Privacy",
+        scope: "field" as const,
+        risk: action === "read" ? "medium" as const : "high" as const,
+        usageCount: Math.floor(Math.random() * 100),
+        lastUsed: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      });
+    });
+  });
+
+  // Add API-specific permissions
+  const apiEndpoints = [
+    "/api/users", "/api/roles", "/api/analytics", "/api/reports", "/api/billing",
+    "/api/payments", "/api/orders", "/api/inventory", "/api/customers", "/api/projects",
+    "/api/teams", "/api/content", "/api/settings", "/api/integrations", "/api/webhooks"
+  ];
+
+  apiEndpoints.forEach(endpoint => {
+    ["GET", "POST", "PUT", "DELETE", "PATCH"].forEach(method => {
+      permissions.push({
+        id: `api.${endpoint.replace(/[^a-zA-Z0-9]/g, '_')}.${method.toLowerCase()}`,
+        name: `${method} ${endpoint}`,
+        resource: "api_endpoint",
+        action: method.toLowerCase(),
+        description: `${method} access to ${endpoint} endpoint`,
+        category: "API Management",
+        scope: "api" as const,
+        risk: method === "DELETE" ? "high" as const : method === "POST" || method === "PUT" ? "medium" as const : "low" as const,
+        usageCount: Math.floor(Math.random() * 500),
+        lastUsed: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      });
+    });
+  });
+
+  return permissions.sort((a, b) => a.name.localeCompare(b.name));
+};
+
+// Mock permissions - Generate comprehensive dataset
+const mockPermissions: Permission[] = generateMockPermissions();
 
 // GET /api/roles - Get all roles with filtering
 export const handleGetRoles: RequestHandler = (req, res) => {
@@ -490,6 +629,251 @@ export const handleGetPermissions: RequestHandler = (req, res) => {
     res.json(mockPermissions);
   } catch (error) {
     console.error("Error fetching permissions:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Template Management Endpoints
+
+// POST /api/role-templates - Create new role template
+export const handleCreateRoleTemplate: RequestHandler = (req, res) => {
+  try {
+    const templateData = req.body;
+
+    // Validate required fields
+    if (!templateData.name || !templateData.description || !templateData.category) {
+      return res.status(400).json({ error: "Missing required fields: name, description, category" });
+    }
+
+    // Check if template name already exists
+    const existingTemplate = mockRoleTemplates.find(t => t.name.toLowerCase() === templateData.name.toLowerCase());
+    if (existingTemplate) {
+      return res.status(409).json({ error: "Template name already exists" });
+    }
+
+    // Create new template
+    const newTemplate: RoleTemplate = {
+      id: `tmpl-${mockRoleTemplates.length + 1}`,
+      name: templateData.name,
+      description: templateData.description,
+      category: templateData.category,
+      permissions: templateData.permissions || [],
+      organizationUnit: templateData.organizationUnit,
+      level: templateData.level || 1,
+      isBuiltIn: templateData.isBuiltIn || false,
+      usageCount: 0
+    };
+
+    mockRoleTemplates.push(newTemplate);
+    res.status(201).json(newTemplate);
+  } catch (error) {
+    console.error("Error creating role template:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// PUT /api/role-templates/:id - Update role template
+export const handleUpdateRoleTemplate: RequestHandler = (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    const templateIndex = mockRoleTemplates.findIndex(t => t.id === id);
+    if (templateIndex === -1) {
+      return res.status(404).json({ error: "Template not found" });
+    }
+
+    // Validate required fields
+    if (!updateData.name || !updateData.description || !updateData.category) {
+      return res.status(400).json({ error: "Missing required fields: name, description, category" });
+    }
+
+    // Check if template name already exists (excluding current template)
+    const existingTemplate = mockRoleTemplates.find(t =>
+      t.name.toLowerCase() === updateData.name.toLowerCase() && t.id !== id
+    );
+    if (existingTemplate) {
+      return res.status(409).json({ error: "Template name already exists" });
+    }
+
+    // Update template data
+    mockRoleTemplates[templateIndex] = {
+      ...mockRoleTemplates[templateIndex],
+      ...updateData,
+      id, // Ensure ID doesn't change
+    };
+
+    res.json(mockRoleTemplates[templateIndex]);
+  } catch (error) {
+    console.error("Error updating role template:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// DELETE /api/role-templates/:id - Delete role template
+export const handleDeleteRoleTemplate: RequestHandler = (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const templateIndex = mockRoleTemplates.findIndex(t => t.id === id);
+    if (templateIndex === -1) {
+      return res.status(404).json({ error: "Template not found" });
+    }
+
+    // Prevent deletion of built-in templates
+    if (mockRoleTemplates[templateIndex].isBuiltIn) {
+      return res.status(403).json({ error: "Cannot delete built-in templates" });
+    }
+
+    mockRoleTemplates.splice(templateIndex, 1);
+    res.status(204).send();
+  } catch (error) {
+    console.error("Error deleting role template:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// GET /api/role-templates/:id - Get specific role template
+export const handleGetRoleTemplate: RequestHandler = (req, res) => {
+  try {
+    const { id } = req.params;
+    const template = mockRoleTemplates.find(t => t.id === id);
+
+    if (!template) {
+      return res.status(404).json({ error: "Template not found" });
+    }
+
+    res.json(template);
+  } catch (error) {
+    console.error("Error fetching role template:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// POST /api/role-templates/:id/duplicate - Duplicate role template
+export const handleDuplicateRoleTemplate: RequestHandler = (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    const sourceTemplate = mockRoleTemplates.find(t => t.id === id);
+    if (!sourceTemplate) {
+      return res.status(404).json({ error: "Source template not found" });
+    }
+
+    const duplicatedTemplate: RoleTemplate = {
+      ...sourceTemplate,
+      id: `tmpl-${mockRoleTemplates.length + 1}`,
+      name: name || `${sourceTemplate.name} Copy`,
+      isBuiltIn: false,
+      usageCount: 0
+    };
+
+    mockRoleTemplates.push(duplicatedTemplate);
+    res.status(201).json(duplicatedTemplate);
+  } catch (error) {
+    console.error("Error duplicating role template:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// GET /api/role-templates/categories - Get template categories
+export const handleGetTemplateCategories: RequestHandler = (req, res) => {
+  try {
+    const categories = Array.from(new Set(mockRoleTemplates.map(t => t.category))).sort();
+    const categoriesWithCount = categories.map(category => ({
+      name: category,
+      count: mockRoleTemplates.filter(t => t.category === category).length
+    }));
+
+    res.json(categoriesWithCount);
+  } catch (error) {
+    console.error("Error fetching template categories:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// POST /api/role-templates/export - Export templates
+export const handleExportTemplates: RequestHandler = (req, res) => {
+  try {
+    const { templateIds } = req.body;
+
+    let templatesToExport = mockRoleTemplates;
+    if (templateIds && Array.isArray(templateIds)) {
+      templatesToExport = mockRoleTemplates.filter(t => templateIds.includes(t.id));
+    }
+
+    const exportData = {
+      version: "1.0",
+      exportDate: new Date().toISOString(),
+      templates: templatesToExport
+    };
+
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', 'attachment; filename="role-templates.json"');
+    res.json(exportData);
+  } catch (error) {
+    console.error("Error exporting templates:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// POST /api/role-templates/import - Import templates
+export const handleImportTemplates: RequestHandler = (req, res) => {
+  try {
+    const { templates } = req.body;
+
+    if (!Array.isArray(templates)) {
+      return res.status(400).json({ error: "Invalid import data: templates must be an array" });
+    }
+
+    const importResults = {
+      imported: 0,
+      skipped: 0,
+      errors: [] as string[]
+    };
+
+    templates.forEach((templateData, index) => {
+      try {
+        // Validate template data
+        if (!templateData.name || !templateData.description || !templateData.category) {
+          importResults.errors.push(`Template ${index + 1}: Missing required fields`);
+          return;
+        }
+
+        // Check if template already exists
+        const existingTemplate = mockRoleTemplates.find(t =>
+          t.name.toLowerCase() === templateData.name.toLowerCase()
+        );
+
+        if (existingTemplate) {
+          importResults.skipped++;
+          return;
+        }
+
+        // Create new template
+        const newTemplate: RoleTemplate = {
+          id: `tmpl-${mockRoleTemplates.length + 1}`,
+          name: templateData.name,
+          description: templateData.description,
+          category: templateData.category,
+          permissions: templateData.permissions || [],
+          organizationUnit: templateData.organizationUnit,
+          level: templateData.level || 1,
+          isBuiltIn: false,
+          usageCount: 0
+        };
+
+        mockRoleTemplates.push(newTemplate);
+        importResults.imported++;
+      } catch (error) {
+        importResults.errors.push(`Template ${index + 1}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    });
+
+    res.json(importResults);
+  } catch (error) {
+    console.error("Error importing templates:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
