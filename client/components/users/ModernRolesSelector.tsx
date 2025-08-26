@@ -721,7 +721,10 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Category Dropdown */}
                 <div>
-                  <Label htmlFor="category-select" className="text-sm font-medium">
+                  <Label
+                    htmlFor="category-select"
+                    className="text-sm font-medium"
+                  >
                     Category
                   </Label>
                   <Select
@@ -774,7 +777,8 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
                 <div className="flex items-center space-x-2">
                   {selectedCategory !== "all" && (
                     <Badge variant="outline" className="text-xs">
-                      Category: {categories.find(c => c.id === selectedCategory)?.name}
+                      Category:{" "}
+                      {categories.find((c) => c.id === selectedCategory)?.name}
                       <X
                         className="ml-1 h-3 w-3 cursor-pointer"
                         onClick={() => setSelectedCategory("all")}
@@ -783,7 +787,7 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
                   )}
                   {selectedLevel !== "all" && (
                     <Badge variant="outline" className="text-xs">
-                      Level: {levels.find(l => l.id === selectedLevel)?.name}
+                      Level: {levels.find((l) => l.id === selectedLevel)?.name}
                       <X
                         className="ml-1 h-3 w-3 cursor-pointer"
                         onClick={() => setSelectedLevel("all")}
@@ -802,7 +806,8 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className="text-sm text-gray-500">
-                    {filteredRoles.length} role{filteredRoles.length !== 1 ? 's' : ''} found
+                    {filteredRoles.length} role
+                    {filteredRoles.length !== 1 ? "s" : ""} found
                   </span>
                   <Button
                     variant="outline"
@@ -812,7 +817,11 @@ export const ModernRolesSelector: React.FC<ModernRolesSelectorProps> = ({
                       setSelectedCategory("all");
                       setSelectedLevel("all");
                     }}
-                    disabled={searchTerm === "" && selectedCategory === "all" && selectedLevel === "all"}
+                    disabled={
+                      searchTerm === "" &&
+                      selectedCategory === "all" &&
+                      selectedLevel === "all"
+                    }
                   >
                     <RotateCcw className="h-4 w-4" />
                   </Button>
