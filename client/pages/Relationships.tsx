@@ -8,12 +8,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { 
-  Users, 
-  Shield, 
-  Key, 
-  FileText, 
-  Network, 
+import {
+  Users,
+  Shield,
+  Key,
+  FileText,
+  Network,
   GitBranch,
   Eye,
   Edit,
@@ -22,7 +22,8 @@ import {
   AlertCircle,
   CheckCircle2,
   ArrowRight,
-  Settings
+  Settings,
+  BarChart3
 } from 'lucide-react';
 import { User, Role, Permission, ABACPolicy } from '../../shared/iam';
 import { useUsers } from '../hooks/useUsers';
@@ -30,6 +31,10 @@ import { useRoles } from '../hooks/useRoles';
 import { usePermissions } from '../hooks/usePermissions';
 import { usePolicies } from '../hooks/usePolicies';
 import { DashboardLayout } from '../components/layout/DashboardLayout';
+import UserRoleManager from '../components/relationships/UserRoleManager';
+import RolePermissionManager from '../components/relationships/RolePermissionManager';
+import PolicyRelationshipViewer from '../components/relationships/PolicyRelationshipViewer';
+import RelationshipGraph from '../components/relationships/RelationshipGraph';
 
 // 关联关系接口定义
 interface UserRoleRelation {
@@ -324,7 +329,7 @@ export default function Relationships() {
               关联关系健康度
             </CardTitle>
             <CardDescription>
-              检查实体间的关���关系完整性
+              检查实体间的关联关系完整性
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -356,7 +361,7 @@ export default function Relationships() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5" />
-              孤立实体检测
+              孤立实体��测
             </CardTitle>
             <CardDescription>
               发现未关联的实体，可能需要清理
@@ -416,7 +421,7 @@ export default function Relationships() {
                 <tr>
                   <th className="px-6 py-3 text-left">用户</th>
                   <th className="px-6 py-3 text-left">角色</th>
-                  <th className="px-6 py-3 text-left">分配时间</th>
+                  <th className="px-6 py-3 text-left">分配时��</th>
                   <th className="px-6 py-3 text-left">状态</th>
                   <th className="px-6 py-3 text-left">过期时间</th>
                   <th className="px-6 py-3 text-left">操作</th>
