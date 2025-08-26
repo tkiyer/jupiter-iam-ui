@@ -1080,20 +1080,1192 @@ const CreatePolicyDialog: React.FC<{
             )}
           </TabsContent>
 
-          <TabsContent value="conditions" className="space-y-4">
-            <div className="text-center py-12">
-              <Wrench className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Advanced Conditions</h3>
-              <p className="text-gray-500 mb-4">
-                Advanced condition builders and dynamic attributes coming soon
+          <TabsContent value="conditions" className="space-y-6">
+            <div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Advanced Policy Settings</h3>
+              <p className="text-sm text-gray-500 mb-6">
+                Configure advanced conditions, restrictions, and integrations for your ABAC policy
               </p>
-              <div className="space-y-2 text-sm text-gray-600">
-                <p>• Time-based conditions</p>
-                <p>• Location-based restrictions</p>
-                <p>• Dynamic attribute evaluation</p>
-                <p>• Custom condition expressions</p>
-              </div>
             </div>
+
+            <Tabs defaultValue="time" className="w-full">
+              <TabsList className="grid w-full grid-cols-6">
+                <TabsTrigger value="time" className="text-xs">Time</TabsTrigger>
+                <TabsTrigger value="location" className="text-xs">Location</TabsTrigger>
+                <TabsTrigger value="dynamic" className="text-xs">Dynamic</TabsTrigger>
+                <TabsTrigger value="expressions" className="text-xs">Expressions</TabsTrigger>
+                <TabsTrigger value="compliance" className="text-xs">Compliance</TabsTrigger>
+                <TabsTrigger value="integration" className="text-xs">Integration</TabsTrigger>
+              </TabsList>
+
+              {/* Time-based Restrictions */}
+              <TabsContent value="time" className="space-y-4 mt-4">
+                <Card>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <Clock className="h-5 w-5 text-blue-600" />
+                        <CardTitle className="text-base">Time-based Restrictions</CardTitle>
+                      </div>
+                      <Switch
+                        checked={formData.advancedSettings.timeRestrictions.enabled}
+                        onCheckedChange={(checked) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            advancedSettings: {
+                              ...prev.advancedSettings,
+                              timeRestrictions: {
+                                ...prev.advancedSettings.timeRestrictions,
+                                enabled: checked,
+                              },
+                            },
+                          }))
+                        }
+                      />
+                    </div>
+                    <CardDescription>
+                      Control when this policy can be applied based on time constraints
+                    </CardDescription>
+                  </CardHeader>
+                  {formData.advancedSettings.timeRestrictions.enabled && (
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label>Business Hours Start</Label>
+                          <Input
+                            type="time"
+                            value={formData.advancedSettings.timeRestrictions.businessHours.start}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                advancedSettings: {
+                                  ...prev.advancedSettings,
+                                  timeRestrictions: {
+                                    ...prev.advancedSettings.timeRestrictions,
+                                    businessHours: {
+                                      ...prev.advancedSettings.timeRestrictions.businessHours,
+                                      start: e.target.value,
+                                    },
+                                  },
+                                },
+                              }))
+                            }
+                          />
+                        </div>
+                        <div>
+                          <Label>Business Hours End</Label>
+                          <Input
+                            type="time"
+                            value={formData.advancedSettings.timeRestrictions.businessHours.end}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                advancedSettings: {
+                                  ...prev.advancedSettings,
+                                  timeRestrictions: {
+                                    ...prev.advancedSettings.timeRestrictions,
+                                    businessHours: {
+                                      ...prev.advancedSettings.timeRestrictions.businessHours,
+                                      end: e.target.value,
+                                    },
+                                  },
+                                },
+                              }))
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label>Allowed Days</Label>
+                        <div className="grid grid-cols-4 gap-2 mt-2">
+                          {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => (
+                            <div key={day} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={day}
+                                checked={formData.advancedSettings.timeRestrictions.allowedDays.includes(day)}
+                                onCheckedChange={(checked) => {
+                                  const currentDays = formData.advancedSettings.timeRestrictions.allowedDays;
+                                  const newDays = checked
+                                    ? [...currentDays, day]
+                                    : currentDays.filter(d => d !== day);
+
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    advancedSettings: {
+                                      ...prev.advancedSettings,
+                                      timeRestrictions: {
+                                        ...prev.advancedSettings.timeRestrictions,
+                                        allowedDays: newDays,
+                                      },
+                                    },
+                                  }));
+                                }}
+                              />
+                              <Label htmlFor={day} className="text-xs">{day.slice(0, 3)}</Label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label>Timezone</Label>
+                          <Select
+                            value={formData.advancedSettings.timeRestrictions.timezone}
+                            onValueChange={(value) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                advancedSettings: {
+                                  ...prev.advancedSettings,
+                                  timeRestrictions: {
+                                    ...prev.advancedSettings.timeRestrictions,
+                                    timezone: value,
+                                  },
+                                },
+                              }))
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="UTC">UTC</SelectItem>
+                              <SelectItem value="America/New_York">Eastern Time</SelectItem>
+                              <SelectItem value="America/Chicago">Central Time</SelectItem>
+                              <SelectItem value="America/Denver">Mountain Time</SelectItem>
+                              <SelectItem value="America/Los_Angeles">Pacific Time</SelectItem>
+                              <SelectItem value="Europe/London">London</SelectItem>
+                              <SelectItem value="Europe/Paris">Paris</SelectItem>
+                              <SelectItem value="Asia/Tokyo">Tokyo</SelectItem>
+                              <SelectItem value="Asia/Shanghai">Shanghai</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label>Effective From</Label>
+                          <Input
+                            type="date"
+                            value={formData.advancedSettings.timeRestrictions.dateRange.start}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                advancedSettings: {
+                                  ...prev.advancedSettings,
+                                  timeRestrictions: {
+                                    ...prev.advancedSettings.timeRestrictions,
+                                    dateRange: {
+                                      ...prev.advancedSettings.timeRestrictions.dateRange,
+                                      start: e.target.value,
+                                    },
+                                  },
+                                },
+                              }))
+                            }
+                          />
+                        </div>
+                        <div>
+                          <Label>Expires On</Label>
+                          <Input
+                            type="date"
+                            value={formData.advancedSettings.timeRestrictions.dateRange.end}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                advancedSettings: {
+                                  ...prev.advancedSettings,
+                                  timeRestrictions: {
+                                    ...prev.advancedSettings.timeRestrictions,
+                                    dateRange: {
+                                      ...prev.advancedSettings.timeRestrictions.dateRange,
+                                      end: e.target.value,
+                                    },
+                                  },
+                                },
+                              }))
+                            }
+                          />
+                        </div>
+                      </div>
+                    </CardContent>
+                  )}
+                </Card>
+              </TabsContent>
+
+              {/* Location-based Restrictions */}
+              <TabsContent value="location" className="space-y-4 mt-4">
+                <Card>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <Globe className="h-5 w-5 text-green-600" />
+                        <CardTitle className="text-base">Location-based Restrictions</CardTitle>
+                      </div>
+                      <Switch
+                        checked={formData.advancedSettings.locationRestrictions.enabled}
+                        onCheckedChange={(checked) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            advancedSettings: {
+                              ...prev.advancedSettings,
+                              locationRestrictions: {
+                                ...prev.advancedSettings.locationRestrictions,
+                                enabled: checked,
+                              },
+                            },
+                          }))
+                        }
+                      />
+                    </div>
+                    <CardDescription>
+                      Control access based on IP addresses, geographic locations, and network requirements
+                    </CardDescription>
+                  </CardHeader>
+                  {formData.advancedSettings.locationRestrictions.enabled && (
+                    <CardContent className="space-y-4">
+                      <div>
+                        <Label>Allowed IP Addresses/Ranges</Label>
+                        <Textarea
+                          placeholder="Enter IP addresses or CIDR ranges, one per line&#10;Example:&#10;192.168.1.0/24&#10;10.0.0.1&#10;203.0.113.0/24"
+                          value={formData.advancedSettings.locationRestrictions.allowedIPs.join('\n')}
+                          onChange={(e) => {
+                            const ips = e.target.value.split('\n').filter(ip => ip.trim());
+                            setFormData((prev) => ({
+                              ...prev,
+                              advancedSettings: {
+                                ...prev.advancedSettings,
+                                locationRestrictions: {
+                                  ...prev.advancedSettings.locationRestrictions,
+                                  allowedIPs: ips,
+                                },
+                              },
+                            }));
+                          }}
+                          rows={4}
+                        />
+                      </div>
+
+                      <div>
+                        <Label>Blocked IP Addresses/Ranges</Label>
+                        <Textarea
+                          placeholder="Enter IP addresses or CIDR ranges to block, one per line"
+                          value={formData.advancedSettings.locationRestrictions.blockedIPs.join('\n')}
+                          onChange={(e) => {
+                            const ips = e.target.value.split('\n').filter(ip => ip.trim());
+                            setFormData((prev) => ({
+                              ...prev,
+                              advancedSettings: {
+                                ...prev.advancedSettings,
+                                locationRestrictions: {
+                                  ...prev.advancedSettings.locationRestrictions,
+                                  blockedIPs: ips,
+                                },
+                              },
+                            }));
+                          }}
+                          rows={3}
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label>Allowed Countries</Label>
+                          <Input
+                            placeholder="e.g., US, CA, GB (ISO codes)"
+                            value={formData.advancedSettings.locationRestrictions.allowedCountries.join(', ')}
+                            onChange={(e) => {
+                              const countries = e.target.value.split(',').map(c => c.trim()).filter(Boolean);
+                              setFormData((prev) => ({
+                                ...prev,
+                                advancedSettings: {
+                                  ...prev.advancedSettings,
+                                  locationRestrictions: {
+                                    ...prev.advancedSettings.locationRestrictions,
+                                    allowedCountries: countries,
+                                  },
+                                },
+                              }));
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <Label>Blocked Countries</Label>
+                          <Input
+                            placeholder="e.g., XX, YY (ISO codes)"
+                            value={formData.advancedSettings.locationRestrictions.blockedCountries.join(', ')}
+                            onChange={(e) => {
+                              const countries = e.target.value.split(',').map(c => c.trim()).filter(Boolean);
+                              setFormData((prev) => ({
+                                ...prev,
+                                advancedSettings: {
+                                  ...prev.advancedSettings,
+                                  locationRestrictions: {
+                                    ...prev.advancedSettings.locationRestrictions,
+                                    blockedCountries: countries,
+                                  },
+                                },
+                              }));
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="requireVPN"
+                          checked={formData.advancedSettings.locationRestrictions.requireVPN}
+                          onCheckedChange={(checked) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              advancedSettings: {
+                                ...prev.advancedSettings,
+                                locationRestrictions: {
+                                  ...prev.advancedSettings.locationRestrictions,
+                                  requireVPN: !!checked,
+                                },
+                              },
+                            }))
+                          }
+                        />
+                        <Label htmlFor="requireVPN">Require VPN Connection</Label>
+                      </div>
+                    </CardContent>
+                  )}
+                </Card>
+              </TabsContent>
+
+              {/* Dynamic Attributes */}
+              <TabsContent value="dynamic" className="space-y-4 mt-4">
+                <Card>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <Zap className="h-5 w-5 text-purple-600" />
+                        <CardTitle className="text-base">Dynamic Attributes</CardTitle>
+                      </div>
+                      <Switch
+                        checked={formData.advancedSettings.dynamicAttributes.enabled}
+                        onCheckedChange={(checked) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            advancedSettings: {
+                              ...prev.advancedSettings,
+                              dynamicAttributes: {
+                                ...prev.advancedSettings.dynamicAttributes,
+                                enabled: checked,
+                              },
+                            },
+                          }))
+                        }
+                      />
+                    </div>
+                    <CardDescription>
+                      Configure dynamic attribute resolution and contextual evaluation
+                    </CardDescription>
+                  </CardHeader>
+                  {formData.advancedSettings.dynamicAttributes.enabled && (
+                    <CardContent className="space-y-4">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="contextualEvaluation"
+                          checked={formData.advancedSettings.dynamicAttributes.contextualEvaluation}
+                          onCheckedChange={(checked) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              advancedSettings: {
+                                ...prev.advancedSettings,
+                                dynamicAttributes: {
+                                  ...prev.advancedSettings.dynamicAttributes,
+                                  contextualEvaluation: !!checked,
+                                },
+                              },
+                            }))
+                          }
+                        />
+                        <Label htmlFor="contextualEvaluation">Enable Contextual Evaluation</Label>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label>Attribute Resolution</Label>
+                          <Select
+                            value={formData.advancedSettings.dynamicAttributes.attributeResolution}
+                            onValueChange={(value: "lazy" | "eager") =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                advancedSettings: {
+                                  ...prev.advancedSettings,
+                                  dynamicAttributes: {
+                                    ...prev.advancedSettings.dynamicAttributes,
+                                    attributeResolution: value,
+                                  },
+                                },
+                              }))
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="lazy">Lazy (On-demand)</SelectItem>
+                              <SelectItem value="eager">Eager (Pre-load)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label>Cache Timeout (seconds)</Label>
+                          <Input
+                            type="number"
+                            min="0"
+                            max="3600"
+                            value={formData.advancedSettings.dynamicAttributes.cacheTimeout}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                advancedSettings: {
+                                  ...prev.advancedSettings,
+                                  dynamicAttributes: {
+                                    ...prev.advancedSettings.dynamicAttributes,
+                                    cacheTimeout: parseInt(e.target.value) || 300,
+                                  },
+                                },
+                              }))
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label>Custom Attributes</Label>
+                        <div className="space-y-3 mt-2">
+                          {formData.advancedSettings.dynamicAttributes.customAttributes.map((attr, index) => (
+                            <div key={index} className="grid grid-cols-12 gap-2 items-end">
+                              <div className="col-span-3">
+                                <Input
+                                  placeholder="Attribute key"
+                                  value={attr.key}
+                                  onChange={(e) => {
+                                    const newAttrs = [...formData.advancedSettings.dynamicAttributes.customAttributes];
+                                    newAttrs[index].key = e.target.value;
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      advancedSettings: {
+                                        ...prev.advancedSettings,
+                                        dynamicAttributes: {
+                                          ...prev.advancedSettings.dynamicAttributes,
+                                          customAttributes: newAttrs,
+                                        },
+                                      },
+                                    }));
+                                  }}
+                                />
+                              </div>
+                              <div className="col-span-4">
+                                <Input
+                                  placeholder="Source/Expression"
+                                  value={attr.source}
+                                  onChange={(e) => {
+                                    const newAttrs = [...formData.advancedSettings.dynamicAttributes.customAttributes];
+                                    newAttrs[index].source = e.target.value;
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      advancedSettings: {
+                                        ...prev.advancedSettings,
+                                        dynamicAttributes: {
+                                          ...prev.advancedSettings.dynamicAttributes,
+                                          customAttributes: newAttrs,
+                                        },
+                                      },
+                                    }));
+                                  }}
+                                />
+                              </div>
+                              <div className="col-span-4">
+                                <Input
+                                  placeholder="Default value"
+                                  value={attr.defaultValue}
+                                  onChange={(e) => {
+                                    const newAttrs = [...formData.advancedSettings.dynamicAttributes.customAttributes];
+                                    newAttrs[index].defaultValue = e.target.value;
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      advancedSettings: {
+                                        ...prev.advancedSettings,
+                                        dynamicAttributes: {
+                                          ...prev.advancedSettings.dynamicAttributes,
+                                          customAttributes: newAttrs,
+                                        },
+                                      },
+                                    }));
+                                  }}
+                                />
+                              </div>
+                              <div className="col-span-1">
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    const newAttrs = formData.advancedSettings.dynamicAttributes.customAttributes.filter((_, i) => i !== index);
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      advancedSettings: {
+                                        ...prev.advancedSettings,
+                                        dynamicAttributes: {
+                                          ...prev.advancedSettings.dynamicAttributes,
+                                          customAttributes: newAttrs,
+                                        },
+                                      },
+                                    }));
+                                  }}
+                                  className="text-red-600"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const newAttr = { key: "", source: "", defaultValue: "" };
+                              setFormData((prev) => ({
+                                ...prev,
+                                advancedSettings: {
+                                  ...prev.advancedSettings,
+                                  dynamicAttributes: {
+                                    ...prev.advancedSettings.dynamicAttributes,
+                                    customAttributes: [...prev.advancedSettings.dynamicAttributes.customAttributes, newAttr],
+                                  },
+                                },
+                              }));
+                            }}
+                          >
+                            <Plus className="mr-2 h-4 w-4" />
+                            Add Custom Attribute
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  )}
+                </Card>
+              </TabsContent>
+
+              {/* Custom Expressions */}
+              <TabsContent value="expressions" className="space-y-4 mt-4">
+                <Card>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <Code className="h-5 w-5 text-orange-600" />
+                        <CardTitle className="text-base">Custom Expressions</CardTitle>
+                      </div>
+                      <Switch
+                        checked={formData.advancedSettings.customExpressions.enabled}
+                        onCheckedChange={(checked) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            advancedSettings: {
+                              ...prev.advancedSettings,
+                              customExpressions: {
+                                ...prev.advancedSettings.customExpressions,
+                                enabled: checked,
+                              },
+                            },
+                          }))
+                        }
+                      />
+                    </div>
+                    <CardDescription>
+                      Define custom logical expressions for complex policy evaluation
+                    </CardDescription>
+                  </CardHeader>
+                  {formData.advancedSettings.customExpressions.enabled && (
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="allowJavaScript"
+                            checked={formData.advancedSettings.customExpressions.allowJavaScript}
+                            onCheckedChange={(checked) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                advancedSettings: {
+                                  ...prev.advancedSettings,
+                                  customExpressions: {
+                                    ...prev.advancedSettings.customExpressions,
+                                    allowJavaScript: !!checked,
+                                  },
+                                },
+                              }))
+                            }
+                          />
+                          <Label htmlFor="allowJavaScript">Allow JavaScript Expressions</Label>
+                        </div>
+                        <div>
+                          <Label>Max Execution Time (ms)</Label>
+                          <Input
+                            type="number"
+                            min="100"
+                            max="10000"
+                            value={formData.advancedSettings.customExpressions.maxExecutionTime}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                advancedSettings: {
+                                  ...prev.advancedSettings,
+                                  customExpressions: {
+                                    ...prev.advancedSettings.customExpressions,
+                                    maxExecutionTime: parseInt(e.target.value) || 1000,
+                                  },
+                                },
+                              }))
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label>Custom Expressions</Label>
+                        <div className="space-y-3 mt-2">
+                          {formData.advancedSettings.customExpressions.expressions.map((expr, index) => (
+                            <Card key={index} className="border">
+                              <CardContent className="p-4 space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <Input
+                                    placeholder="Expression name"
+                                    value={expr.name}
+                                    onChange={(e) => {
+                                      const newExprs = [...formData.advancedSettings.customExpressions.expressions];
+                                      newExprs[index].name = e.target.value;
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        advancedSettings: {
+                                          ...prev.advancedSettings,
+                                          customExpressions: {
+                                            ...prev.advancedSettings.customExpressions,
+                                            expressions: newExprs,
+                                          },
+                                        },
+                                      }));
+                                    }}
+                                    className="flex-1 mr-2"
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => {
+                                      const newExprs = formData.advancedSettings.customExpressions.expressions.filter((_, i) => i !== index);
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        advancedSettings: {
+                                          ...prev.advancedSettings,
+                                          customExpressions: {
+                                            ...prev.advancedSettings.customExpressions,
+                                            expressions: newExprs,
+                                          },
+                                        },
+                                      }));
+                                    }}
+                                    className="text-red-600"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                                <Textarea
+                                  placeholder="Enter expression (e.g., user.department === 'finance' && time.hour >= 9 && time.hour <= 17)"
+                                  value={expr.expression}
+                                  onChange={(e) => {
+                                    const newExprs = [...formData.advancedSettings.customExpressions.expressions];
+                                    newExprs[index].expression = e.target.value;
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      advancedSettings: {
+                                        ...prev.advancedSettings,
+                                        customExpressions: {
+                                          ...prev.advancedSettings.customExpressions,
+                                          expressions: newExprs,
+                                        },
+                                      },
+                                    }));
+                                  }}
+                                  rows={3}
+                                  className="font-mono text-sm"
+                                />
+                                <Input
+                                  placeholder="Description"
+                                  value={expr.description}
+                                  onChange={(e) => {
+                                    const newExprs = [...formData.advancedSettings.customExpressions.expressions];
+                                    newExprs[index].description = e.target.value;
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      advancedSettings: {
+                                        ...prev.advancedSettings,
+                                        customExpressions: {
+                                          ...prev.advancedSettings.customExpressions,
+                                          expressions: newExprs,
+                                        },
+                                      },
+                                    }));
+                                  }}
+                                />
+                              </CardContent>
+                            </Card>
+                          ))}
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const newExpr = { name: "", expression: "", description: "" };
+                              setFormData((prev) => ({
+                                ...prev,
+                                advancedSettings: {
+                                  ...prev.advancedSettings,
+                                  customExpressions: {
+                                    ...prev.advancedSettings.customExpressions,
+                                    expressions: [...prev.advancedSettings.customExpressions.expressions, newExpr],
+                                  },
+                                },
+                              }));
+                            }}
+                          >
+                            <Plus className="mr-2 h-4 w-4" />
+                            Add Expression
+                          </Button>
+                        </div>
+                      </div>
+
+                      <Alert>
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertDescription>
+                          Custom expressions are evaluated in a sandboxed environment. Available variables include user, resource, environment, and time objects.
+                        </AlertDescription>
+                      </Alert>
+                    </CardContent>
+                  )}
+                </Card>
+              </TabsContent>
+
+              {/* Compliance Settings */}
+              <TabsContent value="compliance" className="space-y-4 mt-4">
+                <Card>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <Shield className="h-5 w-5 text-red-600" />
+                        <CardTitle className="text-base">Compliance & Audit</CardTitle>
+                      </div>
+                      <Switch
+                        checked={formData.advancedSettings.complianceSettings.enabled}
+                        onCheckedChange={(checked) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            advancedSettings: {
+                              ...prev.advancedSettings,
+                              complianceSettings: {
+                                ...prev.advancedSettings.complianceSettings,
+                                enabled: checked,
+                              },
+                            },
+                          }))
+                        }
+                      />
+                    </div>
+                    <CardDescription>
+                      Configure compliance, auditing, and data protection settings
+                    </CardDescription>
+                  </CardHeader>
+                  {formData.advancedSettings.complianceSettings.enabled && (
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label>Audit Level</Label>
+                          <Select
+                            value={formData.advancedSettings.complianceSettings.auditLevel}
+                            onValueChange={(value: "basic" | "detailed" | "full") =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                advancedSettings: {
+                                  ...prev.advancedSettings,
+                                  complianceSettings: {
+                                    ...prev.advancedSettings.complianceSettings,
+                                    auditLevel: value,
+                                  },
+                                },
+                              }))
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="basic">Basic (Access decisions only)</SelectItem>
+                              <SelectItem value="detailed">Detailed (Include attributes)</SelectItem>
+                              <SelectItem value="full">Full (Complete evaluation trace)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label>Data Retention (days)</Label>
+                          <Input
+                            type="number"
+                            min="1"
+                            max="3650"
+                            value={formData.advancedSettings.complianceSettings.dataRetention}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                advancedSettings: {
+                                  ...prev.advancedSettings,
+                                  complianceSettings: {
+                                    ...prev.advancedSettings.complianceSettings,
+                                    dataRetention: parseInt(e.target.value) || 30,
+                                  },
+                                },
+                              }))
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label>PII Handling</Label>
+                        <Select
+                          value={formData.advancedSettings.complianceSettings.piiHandling}
+                          onValueChange={(value: "standard" | "strict" | "minimal") =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              advancedSettings: {
+                                ...prev.advancedSettings,
+                                complianceSettings: {
+                                  ...prev.advancedSettings.complianceSettings,
+                                  piiHandling: value,
+                                },
+                              },
+                            }))
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="minimal">Minimal (Anonymize all PII)</SelectItem>
+                            <SelectItem value="standard">Standard (Hash sensitive fields)</SelectItem>
+                            <SelectItem value="strict">Strict (Full logging with encryption)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="requireJustification"
+                          checked={formData.advancedSettings.complianceSettings.requireJustification}
+                          onCheckedChange={(checked) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              advancedSettings: {
+                                ...prev.advancedSettings,
+                                complianceSettings: {
+                                  ...prev.advancedSettings.complianceSettings,
+                                  requireJustification: !!checked,
+                                },
+                              },
+                            }))
+                          }
+                        />
+                        <Label htmlFor="requireJustification">Require Access Justification</Label>
+                      </div>
+                    </CardContent>
+                  )}
+                </Card>
+              </TabsContent>
+
+              {/* Integration Settings */}
+              <TabsContent value="integration" className="space-y-4 mt-4">
+                <Card>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center space-x-2">
+                      <Layers className="h-5 w-5 text-indigo-600" />
+                      <CardTitle className="text-base">Integration Settings</CardTitle>
+                    </div>
+                    <CardDescription>
+                      Configure webhooks, notifications, and external validation
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {/* Webhooks */}
+                    <div>
+                      <Label className="text-sm font-medium">Webhooks</Label>
+                      <div className="space-y-3 mt-2">
+                        {formData.advancedSettings.integrationSettings.webhooks.map((webhook, index) => (
+                          <Card key={index} className="border">
+                            <CardContent className="p-4 space-y-3">
+                              <div className="flex items-center justify-between">
+                                <Input
+                                  placeholder="Webhook URL"
+                                  value={webhook.url}
+                                  onChange={(e) => {
+                                    const newWebhooks = [...formData.advancedSettings.integrationSettings.webhooks];
+                                    newWebhooks[index].url = e.target.value;
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      advancedSettings: {
+                                        ...prev.advancedSettings,
+                                        integrationSettings: {
+                                          ...prev.advancedSettings.integrationSettings,
+                                          webhooks: newWebhooks,
+                                        },
+                                      },
+                                    }));
+                                  }}
+                                  className="flex-1 mr-2"
+                                />
+                                <Switch
+                                  checked={webhook.enabled}
+                                  onCheckedChange={(checked) => {
+                                    const newWebhooks = [...formData.advancedSettings.integrationSettings.webhooks];
+                                    newWebhooks[index].enabled = checked;
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      advancedSettings: {
+                                        ...prev.advancedSettings,
+                                        integrationSettings: {
+                                          ...prev.advancedSettings.integrationSettings,
+                                          webhooks: newWebhooks,
+                                        },
+                                      },
+                                    }));
+                                  }}
+                                />
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    const newWebhooks = formData.advancedSettings.integrationSettings.webhooks.filter((_, i) => i !== index);
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      advancedSettings: {
+                                        ...prev.advancedSettings,
+                                        integrationSettings: {
+                                          ...prev.advancedSettings.integrationSettings,
+                                          webhooks: newWebhooks,
+                                        },
+                                      },
+                                    }));
+                                  }}
+                                  className="text-red-600 ml-2"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                              <Input
+                                placeholder="Events (e.g., policy_evaluated, access_granted, access_denied)"
+                                value={webhook.events.join(', ')}
+                                onChange={(e) => {
+                                  const events = e.target.value.split(',').map(e => e.trim()).filter(Boolean);
+                                  const newWebhooks = [...formData.advancedSettings.integrationSettings.webhooks];
+                                  newWebhooks[index].events = events;
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    advancedSettings: {
+                                      ...prev.advancedSettings,
+                                      integrationSettings: {
+                                        ...prev.advancedSettings.integrationSettings,
+                                        webhooks: newWebhooks,
+                                      },
+                                    },
+                                  }));
+                                }}
+                              />
+                            </CardContent>
+                          </Card>
+                        ))}
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const newWebhook = { url: "", events: [], enabled: true };
+                            setFormData((prev) => ({
+                              ...prev,
+                              advancedSettings: {
+                                ...prev.advancedSettings,
+                                integrationSettings: {
+                                  ...prev.advancedSettings.integrationSettings,
+                                  webhooks: [...prev.advancedSettings.integrationSettings.webhooks, newWebhook],
+                                },
+                              },
+                            }));
+                          }}
+                        >
+                          <Plus className="mr-2 h-4 w-4" />
+                          Add Webhook
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* External Validation */}
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <Label className="text-sm font-medium">External Validation</Label>
+                        <Switch
+                          checked={formData.advancedSettings.integrationSettings.externalValidation.enabled}
+                          onCheckedChange={(checked) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              advancedSettings: {
+                                ...prev.advancedSettings,
+                                integrationSettings: {
+                                  ...prev.advancedSettings.integrationSettings,
+                                  externalValidation: {
+                                    ...prev.advancedSettings.integrationSettings.externalValidation,
+                                    enabled: checked,
+                                  },
+                                },
+                              },
+                            }))
+                          }
+                        />
+                      </div>
+                      {formData.advancedSettings.integrationSettings.externalValidation.enabled && (
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <Label>Validation Endpoint</Label>
+                            <Input
+                              placeholder="https://api.example.com/validate"
+                              value={formData.advancedSettings.integrationSettings.externalValidation.endpoint}
+                              onChange={(e) =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  advancedSettings: {
+                                    ...prev.advancedSettings,
+                                    integrationSettings: {
+                                      ...prev.advancedSettings.integrationSettings,
+                                      externalValidation: {
+                                        ...prev.advancedSettings.integrationSettings.externalValidation,
+                                        endpoint: e.target.value,
+                                      },
+                                    },
+                                  },
+                                }))
+                              }
+                            />
+                          </div>
+                          <div>
+                            <Label>Timeout (ms)</Label>
+                            <Input
+                              type="number"
+                              min="1000"
+                              max="30000"
+                              value={formData.advancedSettings.integrationSettings.externalValidation.timeout}
+                              onChange={(e) =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  advancedSettings: {
+                                    ...prev.advancedSettings,
+                                    integrationSettings: {
+                                      ...prev.advancedSettings.integrationSettings,
+                                      externalValidation: {
+                                        ...prev.advancedSettings.integrationSettings.externalValidation,
+                                        timeout: parseInt(e.target.value) || 5000,
+                                      },
+                                    },
+                                  },
+                                }))
+                              }
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Notifications */}
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <Label className="text-sm font-medium">Notifications</Label>
+                        <Switch
+                          checked={formData.advancedSettings.integrationSettings.notifications.enabled}
+                          onCheckedChange={(checked) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              advancedSettings: {
+                                ...prev.advancedSettings,
+                                integrationSettings: {
+                                  ...prev.advancedSettings.integrationSettings,
+                                  notifications: {
+                                    ...prev.advancedSettings.integrationSettings.notifications,
+                                    enabled: checked,
+                                  },
+                                },
+                              },
+                            }))
+                          }
+                        />
+                      </div>
+                      {formData.advancedSettings.integrationSettings.notifications.enabled && (
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <Label>Notification Channels</Label>
+                            <Input
+                              placeholder="email, slack, teams (comma-separated)"
+                              value={formData.advancedSettings.integrationSettings.notifications.channels.join(', ')}
+                              onChange={(e) => {
+                                const channels = e.target.value.split(',').map(c => c.trim()).filter(Boolean);
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  advancedSettings: {
+                                    ...prev.advancedSettings,
+                                    integrationSettings: {
+                                      ...prev.advancedSettings.integrationSettings,
+                                      notifications: {
+                                        ...prev.advancedSettings.integrationSettings.notifications,
+                                        channels,
+                                      },
+                                    },
+                                  },
+                                }));
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <Label>Events to Notify</Label>
+                            <Input
+                              placeholder="policy_violation, suspicious_access (comma-separated)"
+                              value={formData.advancedSettings.integrationSettings.notifications.events.join(', ')}
+                              onChange={(e) => {
+                                const events = e.target.value.split(',').map(e => e.trim()).filter(Boolean);
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  advancedSettings: {
+                                    ...prev.advancedSettings,
+                                    integrationSettings: {
+                                      ...prev.advancedSettings.integrationSettings,
+                                      notifications: {
+                                        ...prev.advancedSettings.integrationSettings.notifications,
+                                        events,
+                                      },
+                                    },
+                                  },
+                                }));
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
           </TabsContent>
 
           <TabsContent value="validation" className="space-y-4">
