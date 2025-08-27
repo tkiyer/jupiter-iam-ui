@@ -1,5 +1,5 @@
 /**
- * Policy关联关���展示组件
+ * Policy关联关系展示组件
  * 可视化展示ABAC策略与用户、角色、资源的关联关系
  */
 
@@ -101,6 +101,21 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [activeTab, setActiveTab] = useState('relationships');
+
+  // CRUD操作状态
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingPolicy, setEditingPolicy] = useState<ABACPolicy | null>(null);
+
+  // 新策略表单状态
+  const [newPolicy, setNewPolicy] = useState({
+    name: '',
+    description: '',
+    effect: 'allow' as 'allow' | 'deny',
+    priority: 100,
+    category: '',
+    status: 'active' as 'active' | 'inactive' | 'draft'
+  });
 
   const { policies, loading: policiesLoading } = usePolicies();
   const { users, loading: usersLoading } = useUsers();
@@ -388,7 +403,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
 
           <Select value={filterCategory} onValueChange={setFilterCategory}>
             <SelectTrigger className="w-32">
-              <SelectValue placeholder="��类" />
+              <SelectValue placeholder="分类" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">所有分类</SelectItem>
@@ -434,7 +449,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* 适用主体 */}
+                {/* ���用主体 */}
                 <div>
                   <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
                     <Users className="h-4 w-4" />
