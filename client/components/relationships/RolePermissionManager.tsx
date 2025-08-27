@@ -867,13 +867,22 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                           <Eye className="h-4 w-4" />
                         </Button>
                         {assignment.assignmentType === 'direct' && (
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            onClick={() => handleDeleteAssignment(assignment.id)}
-                          >
-                            <Trash2 className="h-4 w-4 text-red-500" />
-                          </Button>
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleEditAssignment(assignment)}
+                            >
+                              <Edit className="h-4 w-4 text-blue-500" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDeleteAssignment(assignment.id)}
+                            >
+                              <Trash2 className="h-4 w-4 text-red-500" />
+                            </Button>
+                          </>
                         )}
                       </div>
                     </td>
