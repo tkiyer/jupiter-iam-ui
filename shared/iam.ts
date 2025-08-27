@@ -27,7 +27,7 @@ export interface CreateUserRequest {
   attributes?: Record<string, any>;
 }
 
-// Role Management Types (RBAC)
+// Role Management Types (RBAC + ABAC)
 export interface Role {
   id: string;
   name: string;
@@ -58,6 +58,12 @@ export interface Role {
   // Template information
   isTemplate: boolean;
   templateCategory?: string;
+  // ABAC Integration - Role-level conditions
+  abacConditions?: RoleABACCondition[];
+  // Contextual activation rules
+  activationRules?: ContextualActivationRule[];
+  // Dynamic attribute requirements
+  requiredAttributes?: AttributeRequirement[];
 }
 
 export interface CreateRoleRequest {
@@ -155,7 +161,7 @@ export interface RoleAnalytics {
   recommendations: string[];
 }
 
-// Permission Management Types
+// Permission Management Types (Enhanced RBAC + ABAC)
 export interface Permission {
   id: string;
   name: string;
@@ -184,6 +190,14 @@ export interface Permission {
   risk: 'low' | 'medium' | 'high' | 'critical';
   complianceRequired: boolean;
   autoCleanupDate?: string;
+  // ABAC Integration - Permission-level refinement
+  abacRefinementRules?: PermissionABACRule[];
+  // Dynamic scope evaluation
+  dynamicScope?: DynamicScopeRule[];
+  // Resource ownership checks
+  ownershipChecks?: OwnershipRule[];
+  // Temporal constraints
+  temporalConstraints?: TemporalConstraint[];
 }
 
 // Permission conditions for context-based access
@@ -330,15 +344,8 @@ export interface PermissionUsage {
   reason?: string;
 }
 
-export interface Resource {
-  id: string;
-  name: string;
-  type: string;
-  description: string;
-  attributes: Record<string, any>;
-}
 
-// ABAC Policy Types
+// Enhanced ABAC Policy Types
 export interface ABACPolicy {
   id: string;
   name: string;
@@ -346,21 +353,57 @@ export interface ABACPolicy {
   rules: PolicyRule[];
   effect: 'allow' | 'deny';
   priority: number;
-  status: 'active' | 'inactive';
+  status: 'active' | 'inactive' | 'draft' | 'deprecated';
   createdAt: string;
+  updatedAt?: string;
+  // Policy categorization
+  category: 'global' | 'role_refinement' | 'resource_specific' | 'temporal' | 'contextual';
+  // Applicability scope
+  applicableRoles?: string[];
+  applicableResources?: string[];
+  // Version control
+  version?: string;
+  basedOnPolicy?: string;
+  // Performance optimization
+  evaluationMode: 'strict' | 'optimized' | 'cached';
+  cacheTimeout?: number;
+  // Conflict resolution
+  conflictResolution?: 'deny_wins' | 'allow_wins' | 'priority_based' | 'most_specific';
 }
 
 export interface PolicyRule {
+  id?: string;
+  name?: string;
   subject: AttributeCondition[];
   resource: AttributeCondition[];
   action: string[];
   environment?: AttributeCondition[];
+  // Enhanced rule features
+  weight?: number;
+  isRequired?: boolean;
+  // Logical operators for complex conditions
+  subjectLogic?: 'AND' | 'OR' | 'NOT';
+  resourceLogic?: 'AND' | 'OR' | 'NOT';
+  environmentLogic?: 'AND' | 'OR' | 'NOT';
+  // Time-based conditions
+  timeConstraints?: TimeConstraint[];
+  // Custom evaluation functions
+  customEvaluator?: string;
 }
 
 export interface AttributeCondition {
   attribute: string;
-  operator: 'equals' | 'not_equals' | 'contains' | 'in' | 'not_in' | 'greater_than' | 'less_than';
+  operator: 'equals' | 'not_equals' | 'contains' | 'in' | 'not_in' | 'greater_than' | 'less_than' | 'starts_with' | 'ends_with' | 'matches_regex' | 'exists' | 'is_null' | 'is_empty';
   value: any;
+  // Enhanced features
+  caseSensitive?: boolean;
+  allowPartialMatch?: boolean;
+  // Support for dynamic values and expressions
+  isDynamic?: boolean;
+  expression?: string;
+  // Validation and constraints
+  dataType?: 'string' | 'number' | 'boolean' | 'date' | 'array' | 'object';
+  required?: boolean;
 }
 
 // Access Control Types
@@ -388,6 +431,218 @@ export interface LoginResponse {
   token?: string;
   user?: User;
   message?: string;
+}
+
+// Enhanced ABAC Integration Types for Hybrid Model
+
+// Role-level ABAC conditions
+export interface RoleABACCondition {
+  id: string;
+  name: string;
+  description: string;
+  conditions: AttributeCondition[];
+  effect: 'activate' | 'deactivate' | 'restrict';
+  priority: number;
+  evaluationMode: 'always' | 'on_request' | 'cached';
+}
+
+// Contextual activation rules for roles
+export interface ContextualActivationRule {
+  id: string;
+  name: string;
+  triggers: AttributeCondition[];
+  activatedPermissions: string[];
+  deactivatedPermissions: string[];
+  duration?: number; // in minutes
+  maxUsages?: number;
+}
+
+// Attribute requirements for roles
+export interface AttributeRequirement {
+  attribute: string;
+  required: boolean;
+  defaultValue?: any;
+  validationRule?: string;
+  source: 'user' | 'environment' | 'resource' | 'computed';
+}
+
+// Permission-level ABAC refinement rules
+export interface PermissionABACRule {
+  id: string;
+  name: string;
+  description: string;
+  conditions: AttributeCondition[];
+  effect: 'allow' | 'deny' | 'modify_scope' | 'require_approval';
+  priority: number;
+  // Field modifications
+  fieldModifications?: FieldModification[];
+  // Scope restrictions
+  scopeRestrictions?: ScopeRestriction[];
+}
+
+// Dynamic scope evaluation
+export interface DynamicScopeRule {
+  id: string;
+  scopeType: 'resource_filter' | 'field_filter' | 'action_filter';
+  conditions: AttributeCondition[];
+  filterExpression: string;
+  priority: number;
+}
+
+// Resource ownership checks
+export interface OwnershipRule {
+  id: string;
+  ownershipAttribute: string;
+  ownershipType: 'direct' | 'group' | 'hierarchical' | 'delegated';
+  allowSelfAccess: boolean;
+  allowGroupAccess: boolean;
+  delegationRules?: DelegationRule[];
+}
+
+// Temporal constraints
+export interface TemporalConstraint {
+  id: string;
+  type: 'time_window' | 'duration_limit' | 'cooldown' | 'expiration';
+  timeWindow?: TimeWindow;
+  maxDuration?: number; // in minutes
+  cooldownPeriod?: number; // in minutes
+  expirationDate?: string;
+  renewalRequired?: boolean;
+}
+
+// Time-based conditions
+export interface TimeConstraint {
+  type: 'time_of_day' | 'day_of_week' | 'date_range' | 'timezone';
+  startTime?: string;
+  endTime?: string;
+  daysOfWeek?: string[];
+  startDate?: string;
+  endDate?: string;
+  timezone?: string;
+  allowedTimezones?: string[];
+}
+
+// Field modification rules
+export interface FieldModification {
+  field: string;
+  modification: 'hide' | 'mask' | 'encrypt' | 'aggregate' | 'transform';
+  maskingPattern?: string;
+  transformFunction?: string;
+  conditions?: AttributeCondition[];
+}
+
+// Scope restriction rules
+export interface ScopeRestriction {
+  restrictionType: 'resource_limit' | 'action_limit' | 'field_limit' | 'quantity_limit';
+  allowedResources?: string[];
+  deniedResources?: string[];
+  allowedActions?: string[];
+  deniedActions?: string[];
+  allowedFields?: string[];
+  deniedFields?: string[];
+  maxQuantity?: number;
+  timeWindow?: TimeWindow;
+}
+
+// Delegation rules
+export interface DelegationRule {
+  canDelegate: boolean;
+  maxDelegationDepth: number;
+  allowedDelegates: string[];
+  delegationDuration?: number;
+  requiresApproval: boolean;
+  approvers?: string[];
+}
+
+// Time window definition
+export interface TimeWindow {
+  start: string;
+  end: string;
+  timezone?: string;
+  recurring?: boolean;
+  recurrencePattern?: string;
+}
+
+// Enhanced attribute resolution context
+export interface AttributeResolutionContext {
+  userId: string;
+  resourceId?: string;
+  sessionId?: string;
+  requestTime: Date;
+  clientInfo: ClientInfo;
+  computedAttributes?: Record<string, any>;
+  externalAttributes?: Record<string, any>;
+}
+
+// Client information
+export interface ClientInfo {
+  ipAddress: string;
+  userAgent: string;
+  location?: GeoLocation;
+  deviceInfo?: DeviceInfo;
+  networkInfo?: NetworkInfo;
+}
+
+// Geographic location
+export interface GeoLocation {
+  country: string;
+  region: string;
+  city: string;
+  latitude?: number;
+  longitude?: number;
+  timezone: string;
+}
+
+// Device information
+export interface DeviceInfo {
+  type: 'desktop' | 'mobile' | 'tablet' | 'server' | 'iot';
+  os: string;
+  browser?: string;
+  isTrusted: boolean;
+  isManaged: boolean;
+  deviceId?: string;
+}
+
+// Network information
+export interface NetworkInfo {
+  type: 'internal' | 'external' | 'vpn' | 'mobile';
+  trustLevel: 'trusted' | 'semi_trusted' | 'untrusted';
+  bandwidth?: string;
+  latency?: number;
+}
+
+// Policy evaluation result with detailed context
+export interface DetailedAccessResponse {
+  allowed: boolean;
+  reason: string;
+  appliedPolicies: string[];
+  appliedRules: string[];
+  evaluationPath: EvaluationStep[];
+  computedAttributes: Record<string, any>;
+  warnings: string[];
+  recommendations: string[];
+  evaluationTime: number;
+  cacheableUntil?: Date;
+}
+
+// Evaluation step for audit trail
+export interface EvaluationStep {
+  step: string;
+  component: 'rbac' | 'abac' | 'role_condition' | 'permission_refinement';
+  evaluation: 'passed' | 'failed' | 'skipped';
+  details: Record<string, any>;
+  timestamp: Date;
+  duration: number;
+}
+
+// Hybrid policy configuration
+export interface HybridPolicyConfig {
+  evaluationOrder: ('rbac' | 'abac' | 'role_conditions' | 'permission_refinements')[];
+  conflictResolution: 'deny_wins' | 'allow_wins' | 'most_specific' | 'highest_priority';
+  enableCaching: boolean;
+  cacheTimeout: number;
+  enableOptimizations: boolean;
+  auditLevel: 'minimal' | 'standard' | 'detailed' | 'comprehensive';
 }
 
 // Audit Log Types

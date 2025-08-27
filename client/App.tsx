@@ -4,7 +4,7 @@ import "./global.css";
 import "@/utils/resizeObserver";
 
 // Import accessibility validation in development
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === "development") {
   import("@/utils/accessibility-check");
 }
 
@@ -23,6 +23,7 @@ import Users from "./pages/Users";
 import Roles from "./pages/Roles";
 import Permissions from "./pages/Permissions";
 import Policies from "./pages/Policies";
+import Relationships from "./pages/Relationships";
 import AccessControl from "./pages/AccessControl";
 import BusinessScenarios from "./pages/BusinessScenarios";
 import Audit from "./pages/Audit";
@@ -44,25 +45,34 @@ class ErrorBoundary extends React.Component<
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // Suppress ResizeObserver errors
-    if (error.message.includes('ResizeObserver loop completed')) {
-      console.warn('ResizeObserver error caught and suppressed in ErrorBoundary');
+    if (error.message.includes("ResizeObserver loop completed")) {
+      console.warn(
+        "ResizeObserver error caught and suppressed in ErrorBoundary",
+      );
       this.setState({ hasError: false, error: undefined });
       return;
     }
 
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    console.error("ErrorBoundary caught an error:", error, errorInfo);
   }
 
   render() {
-    if (this.state.hasError && this.state.error &&
-        !this.state.error.message.includes('ResizeObserver loop completed')) {
+    if (
+      this.state.hasError &&
+      this.state.error &&
+      !this.state.error.message.includes("ResizeObserver loop completed")
+    ) {
       return (
         <div className="flex items-center justify-center min-h-screen bg-red-50">
           <div className="text-center p-8">
-            <h1 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h1>
+            <h1 className="text-2xl font-bold text-red-600 mb-4">
+              Something went wrong
+            </h1>
             <p className="text-gray-600 mb-4">An unexpected error occurred</p>
             <button
-              onClick={() => this.setState({ hasError: false, error: undefined })}
+              onClick={() =>
+                this.setState({ hasError: false, error: undefined })
+              }
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
               Try again
@@ -82,7 +92,10 @@ const queryClient = new QueryClient({
       staleTime: 5 * 60 * 1000, // 5 minutes
       retry: (failureCount, error) => {
         // Don't retry on ResizeObserver-related errors
-        if (error instanceof Error && error.message.includes('ResizeObserver')) {
+        if (
+          error instanceof Error &&
+          error.message.includes("ResizeObserver")
+        ) {
           return false;
         }
         return failureCount < 3;
@@ -92,7 +105,7 @@ const queryClient = new QueryClient({
 });
 
 // Debug message to confirm ResizeObserver fix is loaded
-console.log('✅ ResizeObserver error handling initialized');
+console.log("✅ ResizeObserver error handling initialized");
 
 const App = () => (
   <ErrorBoundary>
@@ -142,6 +155,14 @@ const App = () => (
                 element={
                   <DashboardLayout>
                     <Policies />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/relationships"
+                element={
+                  <DashboardLayout>
+                    <Relationships />
                   </DashboardLayout>
                 }
               />
