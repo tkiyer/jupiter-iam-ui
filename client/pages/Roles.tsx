@@ -1543,6 +1543,21 @@ const RoleHierarchyView: React.FC<{ roles: Role[] }> = ({ roles }) => {
     return <User className="h-4 w-4 text-gray-600" />;
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "active":
+        return "bg-green-500 text-white";
+      case "inactive":
+        return "bg-gray-500 text-white";
+      case "deprecated":
+        return "bg-yellow-500 text-white";
+      case "draft":
+        return "bg-blue-500 text-white";
+      default:
+        return "bg-gray-500 text-white";
+    }
+  };
+
   const buildHierarchy = (roles: Role[]) => {
     const roleMap = new Map(roles.map((role) => [role.id, role]));
     const hierarchy: Role[] = [];
