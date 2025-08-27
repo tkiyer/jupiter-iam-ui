@@ -306,7 +306,7 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
         requireApproval: false
       });
       setIsAddDialogOpen(false);
-      toast.success(`成功分配 ${newAssignments.length} 个权限`);
+      toast.success(`成��分配 ${newAssignments.length} 个权限`);
       
     } catch (error) {
       toast.error('分配失败，请重试');
@@ -435,7 +435,7 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
     }
 
     try {
-      // 这里应该调用API来批量撤销权限
+      // 这里应该调用API来批���撤销权限
       // await bulkRevokePermissions(selectedAssignments);
 
       setAssignments(prev => prev.filter(a => !selectedAssignments.includes(a.id)));
@@ -622,11 +622,18 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
 
         {/* 操作按钮 */}
         <div className="flex gap-2">
+          {selectedAssignments.length > 0 && (
+            <Button variant="destructive" size="sm" onClick={handleBulkRevocation}>
+              <Trash2 className="h-4 w-4 mr-2" />
+              撤销选中 ({selectedAssignments.length})
+            </Button>
+          )}
+
           <Button variant="outline" onClick={() => setActiveTab('matrix')}>
             <GitBranch className="h-4 w-4 mr-2" />
             矩阵视图
           </Button>
-          
+
           <Dialog open={isBulkAssignDialogOpen} onOpenChange={setIsBulkAssignDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="outline">
@@ -1052,7 +1059,7 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">直接分配</p>
+                <p className="text-sm text-muted-foreground">直接���配</p>
                 <p className="text-2xl font-bold text-blue-600">
                   {assignments.filter(a => a.assignmentType === 'direct').length}
                 </p>
