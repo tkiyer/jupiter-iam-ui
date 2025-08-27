@@ -218,7 +218,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
           }
         });
       } else if (condition.attribute === 'user_id' || condition.attribute === 'userId') {
-        // 基于用户的条件
+        // 基于用户的��件
         const userValue = condition.value;
         const user = users.find(u => u.id === userValue);
         if (user) {
@@ -570,6 +570,23 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
           </p>
         </div>
         <div className="flex gap-2">
+          {selectedPolicies.length > 0 && (
+            <>
+              <Button variant="destructive" size="sm" onClick={handleBatchDelete}>
+                <Trash2 className="h-4 w-4 mr-2" />
+                删除选中 ({selectedPolicies.length})
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleBatchActivate}>
+                <CheckCircle2 className="h-4 w-4 mr-2" />
+                批量激活
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleBatchDeactivate}>
+                <XCircle className="h-4 w-4 mr-2" />
+                批量停用
+              </Button>
+            </>
+          )}
+
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
               <Button>
@@ -1039,7 +1056,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="policy-category">策略分类</Label>
+              <Label htmlFor="policy-category">策略分���</Label>
               <Input
                 id="policy-category"
                 placeholder="例如：access, security, compliance"
