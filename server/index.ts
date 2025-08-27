@@ -1,9 +1,11 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import { handleDemo } from "./routes/demo";
 import { handleLogin, handleVerifyToken } from "./routes/auth";
-import { handleDashboardStats, handleDetailedAnalytics } from "./routes/dashboard";
+import {
+  handleDashboardStats,
+  handleDetailedAnalytics,
+} from "./routes/dashboard";
 import {
   handleGetUsers,
   handleGetUser,
@@ -94,8 +96,6 @@ export function createServer() {
     const ping = process.env.PING_MESSAGE ?? "ping";
     res.json({ message: ping });
   });
-
-  app.get("/api/demo", handleDemo);
 
   // IAM Authentication routes
   app.post("/api/auth/login", handleLogin);
@@ -192,7 +192,8 @@ export function createServer() {
   app.use("/api/access-control", accessControlRoutes);
 
   // Enhanced Access Control routes (Hybrid RBAC-ABAC)
-  const enhancedAccessControlRoutes = require("./routes/enhanced-access-control").default;
+  const enhancedAccessControlRoutes =
+    require("./routes/enhanced-access-control").default;
   app.use("/api/access-control-enhanced", enhancedAccessControlRoutes);
 
   return app;
