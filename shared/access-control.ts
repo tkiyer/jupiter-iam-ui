@@ -1072,6 +1072,28 @@ export class EnhancedAccessControlEngine {
 // Enhanced utility functions
 export class EnhancedAccessControlUtils {
   /**
+   * Check if user has a specific role
+   */
+  static hasRole(user: User, roleName: string, roles: Role[]): boolean {
+    // Check if user's roles include the specified role
+    if (!user.roles || !Array.isArray(user.roles)) {
+      return false;
+    }
+
+    // Check by role name or role ID
+    return user.roles.some(userRole => {
+      if (typeof userRole === 'string') {
+        return userRole === roleName;
+      }
+      return userRole === roleName || roles.some(role =>
+        role.id === userRole && role.name === roleName
+      );
+    }) || roles.some(role =>
+      role.name === roleName && user.roles.includes(role.id)
+    );
+  }
+
+  /**
    * Check if user has permission with enhanced context
    */
   static async hasEnhancedPermission(
