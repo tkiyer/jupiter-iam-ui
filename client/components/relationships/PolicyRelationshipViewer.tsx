@@ -429,7 +429,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
       toast.success('策略更新成功');
 
     } catch (error) {
-      toast.error('更新策略失败，请重试');
+      toast.error('更新策略失败��请重试');
     }
   };
 
@@ -494,6 +494,15 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
           </p>
         </div>
         <div className="flex gap-2">
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                添加策略
+              </Button>
+            </DialogTrigger>
+          </Dialog>
+
           <div className="relative">
             <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <Input
