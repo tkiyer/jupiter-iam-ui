@@ -429,7 +429,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
       toast.success('策略更新成功');
 
     } catch (error) {
-      toast.error('更新策略失败��请重试');
+      toast.error('更新策略失败，请重试');
     }
   };
 
@@ -668,17 +668,45 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                   )}
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     size="sm"
                     onClick={() => onPolicySelect?.(relationship.policyId)}
                   >
                     <Eye className="h-4 w-4 mr-2" />
                     查看详情
                   </Button>
-                  <Button variant="ghost" size="sm">
-                    <Settings className="h-4 w-4 mr-2" />
-                    配置策略
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleEditPolicy(relationship.policyId)}
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    编辑策略
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleTogglePolicyStatus(
+                      relationship.policyId,
+                      relationship.status === 'active' ? 'inactive' : 'active'
+                    )}
+                  >
+                    {relationship.status === 'active' ? (
+                      <XCircle className="h-4 w-4 mr-2" />
+                    ) : (
+                      <CheckCircle2 className="h-4 w-4 mr-2" />
+                    )}
+                    {relationship.status === 'active' ? '停用' : '激活'}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDeletePolicy(relationship.policyId)}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    删除
                   </Button>
                 </div>
               </div>
