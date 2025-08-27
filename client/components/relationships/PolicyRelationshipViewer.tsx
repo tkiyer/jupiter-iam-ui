@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -175,7 +176,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
         // 分析资源条件
         analyzeResourceConditions(rule.resource, relationship);
         
-        // 收集动作
+        // 收集��作
         relationship.allowedActions = [...new Set([...relationship.allowedActions, ...rule.action])];
         
         // 分析环境条件
@@ -314,7 +315,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
         });
       });
 
-      // 计算风险���别
+      // 计算风险级别
       let riskLevel: 'low' | 'medium' | 'high' | 'critical' = 'low';
       if (policy.effect === 'allow' && affectedUsers > 50) {
         riskLevel = 'high';
@@ -381,7 +382,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
         priority: newPolicy.priority,
         category: newPolicy.category || 'general',
         status: newPolicy.status,
-        rules: [], // 新策略从空规���开始
+        rules: [], // 新策略从空规则开始
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         createdBy: 'Admin'
@@ -1051,7 +1052,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
               <Label htmlFor="policy-description">策略描述</Label>
               <Textarea
                 id="policy-description"
-                placeholder="描述策略的用途和作用..."
+                placeholder="描述策略的用途���作用..."
                 value={newPolicy.description}
                 onChange={(e) => setNewPolicy(prev => ({ ...prev, description: e.target.value }))}
                 rows={3}
