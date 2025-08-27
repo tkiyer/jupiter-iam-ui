@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  getStatusColor,
+  getPriorityBadge,
+  getEffectColor,
+} from "@/lib/statusUtils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -335,38 +340,6 @@ const Policies: React.FC = () => {
     }
 
     setFilteredPolicies(filtered);
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "bg-green-100 text-green-800";
-      case "inactive":
-        return "bg-gray-100 text-gray-800";
-      case "draft":
-        return "bg-yellow-100 text-yellow-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const getEffectColor = (effect: string) => {
-    switch (effect) {
-      case "allow":
-        return "bg-green-100 text-green-800";
-      case "deny":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const getPriorityBadge = (priority: number) => {
-    if (priority >= 150)
-      return { label: "High", color: "bg-red-100 text-red-800" };
-    if (priority >= 100)
-      return { label: "Medium", color: "bg-yellow-100 text-yellow-800" };
-    return { label: "Low", color: "bg-blue-100 text-blue-800" };
   };
 
   const handleCreatePolicy = async (policyData: any) => {
