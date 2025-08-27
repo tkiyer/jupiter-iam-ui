@@ -225,21 +225,6 @@ const Roles: React.FC = () => {
     setFilteredRoles(filtered);
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "bg-green-100 text-green-800";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "inactive":
-        return "bg-gray-100 text-gray-800";
-      case "deprecated":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "active":
@@ -1500,21 +1485,6 @@ const RoleHierarchyView: React.FC<{ roles: Role[] }> = ({ roles }) => {
     if (level >= 3) return <Shield className="h-4 w-4 text-blue-600" />;
     if (level >= 2) return <Users className="h-4 w-4 text-green-600" />;
     return <User className="h-4 w-4 text-gray-600" />;
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "bg-green-100 text-green-800";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "inactive":
-        return "bg-gray-100 text-gray-800";
-      case "deprecated":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
   };
 
   const buildHierarchy = (roles: Role[]) => {
