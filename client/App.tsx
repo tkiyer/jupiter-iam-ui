@@ -147,6 +147,14 @@ const App = () => (
                 }
               />
               <Route
+                path="/relationships"
+                element={
+                  <DashboardLayout>
+                    <Relationships />
+                  </DashboardLayout>
+                }
+              />
+              <Route
                 path="/access-control"
                 element={
                   <DashboardLayout>
