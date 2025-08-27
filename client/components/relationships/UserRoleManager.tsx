@@ -94,6 +94,15 @@ export default function UserRoleManager({ onAssignmentChange }: UserRoleManagerP
     requireApproval: false
   });
 
+  // 批量分配状态
+  const [bulkAssignment, setBulkAssignment] = useState({
+    userIds: [] as string[],
+    roleIds: [] as string[],
+    reason: '',
+    temporaryAccess: false,
+    expiresAt: ''
+  });
+
   // 加载现有的用户-角色分配
   useEffect(() => {
     if (users && roles) {
@@ -131,7 +140,7 @@ export default function UserRoleManager({ onAssignmentChange }: UserRoleManagerP
     onAssignmentChange?.(builtAssignments);
   };
 
-  // 过滤���配列表
+  // 过滤分配列表
   const filteredAssignments = assignments.filter(assignment => {
     const matchesSearch = 
       assignment.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
