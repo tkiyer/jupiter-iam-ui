@@ -3,14 +3,20 @@
  * 可视化展示ABAC策略与用户、角色、资源的关联关系
  */
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -18,16 +24,16 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog';
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   FileText,
   Users,
@@ -50,24 +56,31 @@ import {
   Edit,
   Trash2,
   Save,
-  X
-} from 'lucide-react';
-import { ABACPolicy, User, Role, Permission, PolicyRule, AttributeCondition } from '../../../shared/iam';
-import { usePolicies } from '../../hooks/usePolicies';
-import { useUsers } from '../../hooks/useUsers';
-import { useRoles } from '../../hooks/useRoles';
-import { usePermissions } from '../../hooks/usePermissions';
-import { toast } from 'sonner';
+  X,
+} from "lucide-react";
+import {
+  ABACPolicy,
+  User,
+  Role,
+  Permission,
+  PolicyRule,
+  AttributeCondition,
+} from "../../../shared/iam";
+import { usePolicies } from "../../hooks/usePolicies";
+import { useUsers } from "../../hooks/useUsers";
+import { useRoles } from "../../hooks/useRoles";
+import { usePermissions } from "../../hooks/usePermissions";
+import { toast } from "sonner";
 
 interface PolicyRelationship {
   policyId: string;
   policyName: string;
-  effect: 'allow' | 'deny';
+  effect: "allow" | "deny";
   priority: number;
   status: string;
   category: string;
   applicableSubjects: {
-    type: 'user' | 'role' | 'attribute';
+    type: "user" | "role" | "attribute";
     id: string;
     name: string;
     conditions: AttributeCondition[];
@@ -79,7 +92,11 @@ interface PolicyRelationship {
   }[];
   allowedActions: string[];
   environmentConditions: AttributeCondition[];
-  effectiveScope: 'global' | 'role_specific' | 'resource_specific' | 'conditional';
+  effectiveScope:
+    | "global"
+    | "role_specific"
+    | "resource_specific"
+    | "conditional";
   conflictsWith: string[];
   dependsOn: string[];
 }
@@ -89,7 +106,7 @@ interface PolicyImpactAnalysis {
   affectedUsers: number;
   affectedRoles: number;
   affectedResources: number;
-  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  riskLevel: "low" | "medium" | "high" | "critical";
   compliance: {
     gdpr: boolean;
     sox: boolean;
@@ -106,14 +123,19 @@ interface PolicyRelationshipViewerProps {
   onPolicySelect?: (policyId: string) => void;
 }
 
-export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySelect }: PolicyRelationshipViewerProps) {
+export default function PolicyRelationshipViewer({
+  selectedPolicyId,
+  onPolicySelect,
+}: PolicyRelationshipViewerProps) {
   const [relationships, setRelationships] = useState<PolicyRelationship[]>([]);
-  const [impactAnalysis, setImpactAnalysis] = useState<PolicyImpactAnalysis[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterEffect, setFilterEffect] = useState<string>('all');
-  const [filterCategory, setFilterCategory] = useState<string>('all');
-  const [filterStatus, setFilterStatus] = useState<string>('all');
-  const [activeTab, setActiveTab] = useState('relationships');
+  const [impactAnalysis, setImpactAnalysis] = useState<PolicyImpactAnalysis[]>(
+    [],
+  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterEffect, setFilterEffect] = useState<string>("all");
+  const [filterCategory, setFilterCategory] = useState<string>("all");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [activeTab, setActiveTab] = useState("relationships");
 
   // CRUD操作状态
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -122,12 +144,12 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
 
   // 新策略表单状态
   const [newPolicy, setNewPolicy] = useState({
-    name: '',
-    description: '',
-    effect: 'allow' as 'allow' | 'deny',
+    name: "",
+    description: "",
+    effect: "allow" as "allow" | "deny",
     priority: 100,
-    category: '',
-    status: 'active' as 'active' | 'inactive' | 'draft'
+    category: "",
+    status: "active" as "active" | "inactive" | "draft",
   });
 
   // 批量操作状态
@@ -138,7 +160,8 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
   const { roles, loading: rolesLoading } = useRoles();
   const { permissions, loading: permissionsLoading } = usePermissions();
 
-  const isLoading = policiesLoading || usersLoading || rolesLoading || permissionsLoading;
+  const isLoading =
+    policiesLoading || usersLoading || rolesLoading || permissionsLoading;
 
   // 构建策略关联关系
   useEffect(() => {
@@ -151,37 +174,42 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
   const buildPolicyRelationships = () => {
     if (!policies || !users || !roles || !permissions) return;
 
-    const builtRelationships: PolicyRelationship[] = policies.map(policy => {
+    const builtRelationships: PolicyRelationship[] = policies.map((policy) => {
       const relationship: PolicyRelationship = {
         policyId: policy.id,
         policyName: policy.name,
         effect: policy.effect,
         priority: policy.priority,
         status: policy.status,
-        category: policy.category || 'general',
+        category: policy.category || "general",
         applicableSubjects: [],
         applicableResources: [],
         allowedActions: [],
         environmentConditions: [],
-        effectiveScope: 'global',
+        effectiveScope: "global",
         conflictsWith: [],
-        dependsOn: []
+        dependsOn: [],
       };
 
       // 分析策略规则
-      policy.rules.forEach(rule => {
+      policy.rules.forEach((rule) => {
         // 分析主体条件
         analyzeSubjectConditions(rule.subject, relationship, users, roles);
-        
+
         // 分析资源条件
         analyzeResourceConditions(rule.resource, relationship);
-        
+
         // 收集��作
-        relationship.allowedActions = [...new Set([...relationship.allowedActions, ...rule.action])];
-        
+        relationship.allowedActions = [
+          ...new Set([...relationship.allowedActions, ...rule.action]),
+        ];
+
         // 分析环境条件
         if (rule.environment) {
-          relationship.environmentConditions = [...relationship.environmentConditions, ...rule.environment];
+          relationship.environmentConditions = [
+            ...relationship.environmentConditions,
+            ...rule.environment,
+          ];
         }
       });
 
@@ -201,42 +229,49 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
     conditions: AttributeCondition[],
     relationship: PolicyRelationship,
     users: User[],
-    roles: Role[]
+    roles: Role[],
   ) => {
-    conditions.forEach(condition => {
-      if (condition.attribute === 'role' || condition.attribute === 'roles') {
+    conditions.forEach((condition) => {
+      if (condition.attribute === "role" || condition.attribute === "roles") {
         // 基于角色的条件
-        const roleValues = Array.isArray(condition.value) ? condition.value : [condition.value];
-        roleValues.forEach(roleValue => {
-          const role = roles.find(r => r.name === roleValue || r.id === roleValue);
+        const roleValues = Array.isArray(condition.value)
+          ? condition.value
+          : [condition.value];
+        roleValues.forEach((roleValue) => {
+          const role = roles.find(
+            (r) => r.name === roleValue || r.id === roleValue,
+          );
           if (role) {
             relationship.applicableSubjects.push({
-              type: 'role',
+              type: "role",
               id: role.id,
               name: role.name,
-              conditions: [condition]
+              conditions: [condition],
             });
           }
         });
-      } else if (condition.attribute === 'user_id' || condition.attribute === 'userId') {
+      } else if (
+        condition.attribute === "user_id" ||
+        condition.attribute === "userId"
+      ) {
         // 基于用户的条件
         const userValue = condition.value;
-        const user = users.find(u => u.id === userValue);
+        const user = users.find((u) => u.id === userValue);
         if (user) {
           relationship.applicableSubjects.push({
-            type: 'user',
+            type: "user",
             id: user.id,
             name: `${user.firstName} ${user.lastName}`,
-            conditions: [condition]
+            conditions: [condition],
           });
         }
       } else {
         // 基于属性的条件
         relationship.applicableSubjects.push({
-          type: 'attribute',
+          type: "attribute",
           id: condition.attribute,
           name: `${condition.attribute} ${condition.operator} ${condition.value}`,
-          conditions: [condition]
+          conditions: [condition],
         });
       }
     });
@@ -244,71 +279,88 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
 
   const analyzeResourceConditions = (
     conditions: AttributeCondition[],
-    relationship: PolicyRelationship
+    relationship: PolicyRelationship,
   ) => {
-    conditions.forEach(condition => {
+    conditions.forEach((condition) => {
       relationship.applicableResources.push({
         type: condition.attribute,
         name: `${condition.attribute} ${condition.operator} ${condition.value}`,
-        conditions: [condition]
+        conditions: [condition],
       });
     });
   };
 
-  const determineEffectiveScope = (relationship: PolicyRelationship): 'global' | 'role_specific' | 'resource_specific' | 'conditional' => {
-    if (relationship.applicableSubjects.length === 0 && relationship.applicableResources.length === 0) {
-      return 'global';
+  const determineEffectiveScope = (
+    relationship: PolicyRelationship,
+  ): "global" | "role_specific" | "resource_specific" | "conditional" => {
+    if (
+      relationship.applicableSubjects.length === 0 &&
+      relationship.applicableResources.length === 0
+    ) {
+      return "global";
     }
-    
-    if (relationship.applicableSubjects.some(s => s.type === 'role')) {
-      return 'role_specific';
+
+    if (relationship.applicableSubjects.some((s) => s.type === "role")) {
+      return "role_specific";
     }
-    
+
     if (relationship.applicableResources.length > 0) {
-      return 'resource_specific';
+      return "resource_specific";
     }
-    
-    return 'conditional';
+
+    return "conditional";
   };
 
-  const detectPolicyConflicts = (policy: ABACPolicy, allPolicies: ABACPolicy[]): string[] => {
+  const detectPolicyConflicts = (
+    policy: ABACPolicy,
+    allPolicies: ABACPolicy[],
+  ): string[] => {
     const conflicts: string[] = [];
-    
-    allPolicies.forEach(otherPolicy => {
-      if (otherPolicy.id !== policy.id && otherPolicy.effect !== policy.effect) {
+
+    allPolicies.forEach((otherPolicy) => {
+      if (
+        otherPolicy.id !== policy.id &&
+        otherPolicy.effect !== policy.effect
+      ) {
         // 简化的冲突检测逻辑
-        const hasOverlappingRules = policy.rules.some(rule1 =>
-          otherPolicy.rules.some(rule2 =>
-            rule1.action.some(action => rule2.action.includes(action))
-          )
+        const hasOverlappingRules = policy.rules.some((rule1) =>
+          otherPolicy.rules.some((rule2) =>
+            rule1.action.some((action) => rule2.action.includes(action)),
+          ),
         );
-        
+
         if (hasOverlappingRules) {
           conflicts.push(otherPolicy.id);
         }
       }
     });
-    
+
     return conflicts;
   };
 
   const buildImpactAnalysis = () => {
     if (!policies || !users || !roles) return;
 
-    const analysis: PolicyImpactAnalysis[] = policies.map(policy => {
+    const analysis: PolicyImpactAnalysis[] = policies.map((policy) => {
       // 计算受影响的用户数量
       let affectedUsers = 0;
       let affectedRoles = 0;
 
-      policy.rules.forEach(rule => {
-        rule.subject.forEach(condition => {
-          if (condition.attribute === 'role') {
-            const roleValues = Array.isArray(condition.value) ? condition.value : [condition.value];
-            roleValues.forEach(roleValue => {
-              const role = roles.find(r => r.name === roleValue || r.id === roleValue);
+      policy.rules.forEach((rule) => {
+        rule.subject.forEach((condition) => {
+          if (condition.attribute === "role") {
+            const roleValues = Array.isArray(condition.value)
+              ? condition.value
+              : [condition.value];
+            roleValues.forEach((roleValue) => {
+              const role = roles.find(
+                (r) => r.name === roleValue || r.id === roleValue,
+              );
               if (role) {
                 affectedRoles++;
-                affectedUsers += users.filter(u => u.roles.includes(role.id)).length;
+                affectedUsers += users.filter((u) =>
+                  u.roles.includes(role.id),
+                ).length;
               }
             });
           }
@@ -316,32 +368,48 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
       });
 
       // 计算风险级别
-      let riskLevel: 'low' | 'medium' | 'high' | 'critical' = 'low';
-      if (policy.effect === 'allow' && affectedUsers > 50) {
-        riskLevel = 'high';
-      } else if (policy.effect === 'deny' && affectedUsers > 20) {
-        riskLevel = 'critical';
+      let riskLevel: "low" | "medium" | "high" | "critical" = "low";
+      if (policy.effect === "allow" && affectedUsers > 50) {
+        riskLevel = "high";
+      } else if (policy.effect === "deny" && affectedUsers > 20) {
+        riskLevel = "critical";
       } else if (affectedUsers > 10) {
-        riskLevel = 'medium';
+        riskLevel = "medium";
       }
 
       return {
         policyId: policy.id,
         affectedUsers,
         affectedRoles,
-        affectedResources: policy.rules.reduce((count, rule) => count + rule.resource.length, 0),
+        affectedResources: policy.rules.reduce(
+          (count, rule) => count + rule.resource.length,
+          0,
+        ),
         riskLevel,
         compliance: {
-          gdpr: policy.name.toLowerCase().includes('gdpr') || policy.description?.toLowerCase().includes('gdpr'),
-          sox: policy.name.toLowerCase().includes('sox') || policy.description?.toLowerCase().includes('sox'),
-          hipaa: policy.name.toLowerCase().includes('hipaa') || policy.description?.toLowerCase().includes('hipaa')
+          gdpr:
+            policy.name.toLowerCase().includes("gdpr") ||
+            policy.description?.toLowerCase().includes("gdpr"),
+          sox:
+            policy.name.toLowerCase().includes("sox") ||
+            policy.description?.toLowerCase().includes("sox"),
+          hipaa:
+            policy.name.toLowerCase().includes("hipaa") ||
+            policy.description?.toLowerCase().includes("hipaa"),
         },
         performance: {
-          complexity: policy.rules.length * 2 + policy.rules.reduce((sum, rule) => 
-            sum + rule.subject.length + rule.resource.length + (rule.environment?.length || 0), 0
-          ),
-          evaluationTime: Math.random() * 10 + 1 // 模拟评估时间
-        }
+          complexity:
+            policy.rules.length * 2 +
+            policy.rules.reduce(
+              (sum, rule) =>
+                sum +
+                rule.subject.length +
+                rule.resource.length +
+                (rule.environment?.length || 0),
+              0,
+            ),
+          evaluationTime: Math.random() * 10 + 1, // 模拟评估时间
+        },
       };
     });
 
@@ -349,27 +417,34 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
   };
 
   // ���滤策略关联关系
-  const filteredRelationships = relationships.filter(relationship => {
-    const matchesSearch = 
-      relationship.policyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      relationship.applicableSubjects.some(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredRelationships = relationships.filter((relationship) => {
+    const matchesSearch =
+      relationship.policyName
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      relationship.applicableSubjects.some((s) =>
+        s.name.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
 
-    const matchesEffect = filterEffect === 'all' || relationship.effect === filterEffect;
-    const matchesCategory = filterCategory === 'all' || relationship.category === filterCategory;
-    const matchesStatus = filterStatus === 'all' || relationship.status === filterStatus;
+    const matchesEffect =
+      filterEffect === "all" || relationship.effect === filterEffect;
+    const matchesCategory =
+      filterCategory === "all" || relationship.category === filterCategory;
+    const matchesStatus =
+      filterStatus === "all" || relationship.status === filterStatus;
 
     return matchesSearch && matchesEffect && matchesCategory && matchesStatus;
   });
 
   // 获取策略分类
-  const policyCategories = [...new Set(relationships.map(r => r.category))];
+  const policyCategories = [...new Set(relationships.map((r) => r.category))];
 
   // CRUD操作处理函数
 
   // 添加新策略
   const handleAddPolicy = async () => {
     if (!newPolicy.name.trim()) {
-      toast.error('请输入策略名称');
+      toast.error("请输入策略名称");
       return;
     }
 
@@ -380,39 +455,38 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
         description: newPolicy.description,
         effect: newPolicy.effect,
         priority: newPolicy.priority,
-        category: newPolicy.category || 'general',
+        category: newPolicy.category || "general",
         status: newPolicy.status,
         rules: [], // 新策略从空规则开始
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        createdBy: 'Admin'
+        createdBy: "Admin",
       };
 
       // 这里应该调用API来创建策略
       // await createPolicy(policyData);
 
       // 模拟添加到本地状态
-      console.log('创建新策略:', policyData);
+      console.log("创建新策略:", policyData);
 
       setNewPolicy({
-        name: '',
-        description: '',
-        effect: 'allow',
+        name: "",
+        description: "",
+        effect: "allow",
         priority: 100,
-        category: '',
-        status: 'active'
+        category: "",
+        status: "active",
       });
       setIsAddDialogOpen(false);
-      toast.success('策略创建成功');
-
+      toast.success("策略创建成功");
     } catch (error) {
-      toast.error('创建策略失败，请重试');
+      toast.error("创建策略失败，请重试");
     }
   };
 
   // 编辑策略
   const handleEditPolicy = (policyId: string) => {
-    const policy = policies?.find(p => p.id === policyId);
+    const policy = policies?.find((p) => p.id === policyId);
     if (policy) {
       setEditingPolicy({ ...policy });
       setIsEditDialogOpen(true);
@@ -427,43 +501,43 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
       // 这里应该调用API来更新策略
       // await updatePolicy(editingPolicy);
 
-      console.log('更新策略:', editingPolicy);
+      console.log("更新策略:", editingPolicy);
       setIsEditDialogOpen(false);
       setEditingPolicy(null);
-      toast.success('策略更新成功');
-
+      toast.success("策略更新成功");
     } catch (error) {
-      toast.error('更新策略失败，请重试');
+      toast.error("更新策略失败，请重试");
     }
   };
 
   // 删除策略
   const handleDeletePolicy = async (policyId: string) => {
-    if (window.confirm('确定要删除这个策略吗？此操作不可撤销。')) {
+    if (window.confirm("确定要删除这个策略吗？此操作不可撤销。")) {
       try {
         // 这里应该调用API来删除策略
         // await deletePolicy(policyId);
 
-        console.log('删除策略:', policyId);
-        toast.success('策略删除成功');
-
+        console.log("删除策略:", policyId);
+        toast.success("策略删除成功");
       } catch (error) {
-        toast.error('删除策略失败，请重试');
+        toast.error("删除策略失败，请重试");
       }
     }
   };
 
   // 切换策略状态
-  const handleTogglePolicyStatus = async (policyId: string, newStatus: 'active' | 'inactive') => {
+  const handleTogglePolicyStatus = async (
+    policyId: string,
+    newStatus: "active" | "inactive",
+  ) => {
     try {
       // 这里应该调用API来更新策略状态
       // await updatePolicyStatus(policyId, newStatus);
 
-      console.log('切换策略状态:', policyId, newStatus);
-      toast.success(`策略已${newStatus === 'active' ? '激活' : '停用'}`);
-
+      console.log("切换策略状态:", policyId, newStatus);
+      toast.success(`策略已${newStatus === "active" ? "激活" : "停用"}`);
     } catch (error) {
-      toast.error('状态更新失败，请重试');
+      toast.error("状态更新失败，请重试");
     }
   };
 
@@ -472,21 +546,24 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
   // 批量删除策略
   const handleBatchDelete = async () => {
     if (selectedPolicies.length === 0) {
-      toast.error('请选择要删除的策略');
+      toast.error("请选择要删除的策略");
       return;
     }
 
-    if (window.confirm(`确定要删除 ${selectedPolicies.length} 个策略吗？此操作不可撤销。`)) {
+    if (
+      window.confirm(
+        `确定要删除 ${selectedPolicies.length} 个策略吗？此操作不可撤销。`,
+      )
+    ) {
       try {
         // 这里应该调用API来批量删除策略
         // await batchDeletePolicies(selectedPolicies);
 
-        console.log('批量删除策略:', selectedPolicies);
+        console.log("批量删除策略:", selectedPolicies);
         setSelectedPolicies([]);
         toast.success(`已删除 ${selectedPolicies.length} 个策略`);
-
       } catch (error) {
-        toast.error('批量删除失败，请重试');
+        toast.error("批量删除失败，请重试");
       }
     }
   };
@@ -494,7 +571,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
   // 批量激活策略
   const handleBatchActivate = async () => {
     if (selectedPolicies.length === 0) {
-      toast.error('请选择要激活的策略');
+      toast.error("请选择要激活的策略");
       return;
     }
 
@@ -502,19 +579,18 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
       // 这里应该调用API来批量激活策略
       // await batchUpdatePolicyStatus(selectedPolicies, 'active');
 
-      console.log('批量激活策略:', selectedPolicies);
+      console.log("批量激活策略:", selectedPolicies);
       setSelectedPolicies([]);
       toast.success(`已激活 ${selectedPolicies.length} 个策略`);
-
     } catch (error) {
-      toast.error('批量激活失败，请重试');
+      toast.error("批量激活失败，请重试");
     }
   };
 
   // 批量停用策略
   const handleBatchDeactivate = async () => {
     if (selectedPolicies.length === 0) {
-      toast.error('请选择要停用的策略');
+      toast.error("请选择要停用的策略");
       return;
     }
 
@@ -522,19 +598,18 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
       // 这里应该调用API来批量停用策略
       // await batchUpdatePolicyStatus(selectedPolicies, 'inactive');
 
-      console.log('批量停用策略:', selectedPolicies);
+      console.log("批量停用策略:", selectedPolicies);
       setSelectedPolicies([]);
       toast.success(`已停用 ${selectedPolicies.length} 个策略`);
-
     } catch (error) {
-      toast.error('批量停用���败，请重试');
+      toast.error("批量停用���败，请重试");
     }
   };
 
   // 选择所有策略
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedPolicies(filteredRelationships.map(r => r.policyId));
+      setSelectedPolicies(filteredRelationships.map((r) => r.policyId));
     } else {
       setSelectedPolicies([]);
     }
@@ -543,17 +618,17 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
   // 渲染环境条件图标
   const renderEnvironmentCondition = (condition: AttributeCondition) => {
     const iconProps = { className: "h-4 w-4" };
-    
+
     switch (condition.attribute) {
-      case 'time':
-      case 'current_time':
-      case 'current_hour':
+      case "time":
+      case "current_time":
+      case "current_hour":
         return <Clock {...iconProps} />;
-      case 'location':
-      case 'client_ip':
+      case "location":
+      case "client_ip":
         return <MapPin {...iconProps} />;
-      case 'device':
-      case 'user_agent':
+      case "device":
+      case "user_agent":
         return <Smartphone {...iconProps} />;
       default:
         return <Settings {...iconProps} />;
@@ -573,7 +648,11 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
         <div className="flex gap-2">
           {selectedPolicies.length > 0 && (
             <>
-              <Button variant="destructive" size="sm" onClick={handleBatchDelete}>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleBatchDelete}
+              >
                 <Trash2 className="h-4 w-4 mr-2" />
                 删除选中 ({selectedPolicies.length})
               </Button>
@@ -581,7 +660,11 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                 <CheckCircle2 className="h-4 w-4 mr-2" />
                 批量激活
               </Button>
-              <Button variant="outline" size="sm" onClick={handleBatchDeactivate}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleBatchDeactivate}
+              >
                 <XCircle className="h-4 w-4 mr-2" />
                 批量停用
               </Button>
@@ -606,7 +689,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
               className="pl-10 w-64"
             />
           </div>
-          
+
           <Select value={filterEffect} onValueChange={setFilterEffect}>
             <SelectTrigger className="w-32">
               <Filter className="h-4 w-4 mr-2" />
@@ -625,7 +708,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">所有分类</SelectItem>
-              {policyCategories.map(category => (
+              {policyCategories.map((category) => (
                 <SelectItem key={category} value={category}>
                   {category}
                 </SelectItem>
@@ -640,7 +723,10 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
         <div className="flex items-center space-x-2">
           <Checkbox
             id="select-all"
-            checked={selectedPolicies.length === filteredRelationships.length && filteredRelationships.length > 0}
+            checked={
+              selectedPolicies.length === filteredRelationships.length &&
+              filteredRelationships.length > 0
+            }
             onCheckedChange={handleSelectAll}
           />
           <Label htmlFor="select-all" className="text-sm">
@@ -657,7 +743,10 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
 
       <div className="grid gap-4">
         {filteredRelationships.map((relationship) => (
-          <Card key={relationship.policyId} className="hover:shadow-md transition-shadow">
+          <Card
+            key={relationship.policyId}
+            className="hover:shadow-md transition-shadow"
+          >
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -665,9 +754,14 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                     checked={selectedPolicies.includes(relationship.policyId)}
                     onCheckedChange={(checked) => {
                       if (checked) {
-                        setSelectedPolicies(prev => [...prev, relationship.policyId]);
+                        setSelectedPolicies((prev) => [
+                          ...prev,
+                          relationship.policyId,
+                        ]);
                       } else {
-                        setSelectedPolicies(prev => prev.filter(id => id !== relationship.policyId));
+                        setSelectedPolicies((prev) =>
+                          prev.filter((id) => id !== relationship.policyId),
+                        );
                       }
                     }}
                   />
@@ -688,10 +782,20 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant={relationship.effect === 'allow' ? 'default' : 'destructive'}>
-                    {relationship.effect === 'allow' ? '允许' : '拒绝'}
+                  <Badge
+                    variant={
+                      relationship.effect === "allow"
+                        ? "default"
+                        : "destructive"
+                    }
+                  >
+                    {relationship.effect === "allow" ? "允许" : "拒绝"}
                   </Badge>
-                  <Badge variant={relationship.status === 'active' ? 'default' : 'secondary'}>
+                  <Badge
+                    variant={
+                      relationship.status === "active" ? "default" : "secondary"
+                    }
+                  >
                     {relationship.status}
                   </Badge>
                 </div>
@@ -709,9 +813,9 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                     {relationship.applicableSubjects.length > 0 ? (
                       relationship.applicableSubjects.map((subject, index) => (
                         <div key={index} className="flex items-center gap-2">
-                          {subject.type === 'role' ? (
+                          {subject.type === "role" ? (
                             <Shield className="h-3 w-3 text-blue-500" />
-                          ) : subject.type === 'user' ? (
+                          ) : subject.type === "user" ? (
                             <Users className="h-3 w-3 text-green-500" />
                           ) : (
                             <Target className="h-3 w-3 text-purple-500" />
@@ -720,7 +824,9 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                         </div>
                       ))
                     ) : (
-                      <span className="text-sm text-muted-foreground">所有主体</span>
+                      <span className="text-sm text-muted-foreground">
+                        所有主体
+                      </span>
                     )}
                   </div>
                 </div>
@@ -733,14 +839,18 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                   </h4>
                   <div className="space-y-2 max-h-32 overflow-y-auto">
                     {relationship.applicableResources.length > 0 ? (
-                      relationship.applicableResources.map((resource, index) => (
-                        <div key={index} className="flex items-center gap-2">
-                          <GitBranch className="h-3 w-3 text-orange-500" />
-                          <span className="text-sm">{resource.name}</span>
-                        </div>
-                      ))
+                      relationship.applicableResources.map(
+                        (resource, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            <GitBranch className="h-3 w-3 text-orange-500" />
+                            <span className="text-sm">{resource.name}</span>
+                          </div>
+                        ),
+                      )
                     ) : (
-                      <span className="text-sm text-muted-foreground">所有资源</span>
+                      <span className="text-sm text-muted-foreground">
+                        所有资源
+                      </span>
                     )}
                   </div>
                 </div>
@@ -753,16 +863,21 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                   </h4>
                   <div className="space-y-2 max-h-32 overflow-y-auto">
                     {relationship.environmentConditions.length > 0 ? (
-                      relationship.environmentConditions.map((condition, index) => (
-                        <div key={index} className="flex items-center gap-2">
-                          {renderEnvironmentCondition(condition)}
-                          <span className="text-sm">
-                            {condition.attribute} {condition.operator} {String(condition.value)}
-                          </span>
-                        </div>
-                      ))
+                      relationship.environmentConditions.map(
+                        (condition, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            {renderEnvironmentCondition(condition)}
+                            <span className="text-sm">
+                              {condition.attribute} {condition.operator}{" "}
+                              {String(condition.value)}
+                            </span>
+                          </div>
+                        ),
+                      )
                     ) : (
-                      <span className="text-sm text-muted-foreground">无环境限制</span>
+                      <span className="text-sm text-muted-foreground">
+                        无环境限制
+                      </span>
                     )}
                   </div>
                 </div>
@@ -813,17 +928,21 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleTogglePolicyStatus(
-                      relationship.policyId,
-                      relationship.status === 'active' ? 'inactive' : 'active'
-                    )}
+                    onClick={() =>
+                      handleTogglePolicyStatus(
+                        relationship.policyId,
+                        relationship.status === "active"
+                          ? "inactive"
+                          : "active",
+                      )
+                    }
                   >
-                    {relationship.status === 'active' ? (
+                    {relationship.status === "active" ? (
                       <XCircle className="h-4 w-4 mr-2" />
                     ) : (
                       <CheckCircle2 className="h-4 w-4 mr-2" />
                     )}
-                    {relationship.status === 'active' ? '停用' : '激活'}
+                    {relationship.status === "active" ? "停用" : "激活"}
                   </Button>
                   <Button
                     variant="ghost"
@@ -861,7 +980,10 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
               <div>
                 <p className="text-sm text-muted-foreground">总受影响用户</p>
                 <p className="text-2xl font-bold">
-                  {impactAnalysis.reduce((sum, analysis) => sum + analysis.affectedUsers, 0)}
+                  {impactAnalysis.reduce(
+                    (sum, analysis) => sum + analysis.affectedUsers,
+                    0,
+                  )}
                 </p>
               </div>
               <Users className="h-8 w-8 text-blue-500" />
@@ -875,7 +997,10 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
               <div>
                 <p className="text-sm text-muted-foreground">总受影响角色</p>
                 <p className="text-2xl font-bold">
-                  {impactAnalysis.reduce((sum, analysis) => sum + analysis.affectedRoles, 0)}
+                  {impactAnalysis.reduce(
+                    (sum, analysis) => sum + analysis.affectedRoles,
+                    0,
+                  )}
                 </p>
               </div>
               <Shield className="h-8 w-8 text-green-500" />
@@ -889,7 +1014,12 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
               <div>
                 <p className="text-sm text-muted-foreground">高风险策略</p>
                 <p className="text-2xl font-bold text-red-600">
-                  {impactAnalysis.filter(a => a.riskLevel === 'high' || a.riskLevel === 'critical').length}
+                  {
+                    impactAnalysis.filter(
+                      (a) =>
+                        a.riskLevel === "high" || a.riskLevel === "critical",
+                    ).length
+                  }
                 </p>
               </div>
               <AlertTriangle className="h-8 w-8 text-red-500" />
@@ -903,7 +1033,14 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
               <div>
                 <p className="text-sm text-muted-foreground">合规策略</p>
                 <p className="text-2xl font-bold text-green-600">
-                  {impactAnalysis.filter(a => a.compliance.gdpr || a.compliance.sox || a.compliance.hipaa).length}
+                  {
+                    impactAnalysis.filter(
+                      (a) =>
+                        a.compliance.gdpr ||
+                        a.compliance.sox ||
+                        a.compliance.hipaa,
+                    ).length
+                  }
                 </p>
               </div>
               <CheckCircle2 className="h-8 w-8 text-green-500" />
@@ -934,9 +1071,14 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
               </thead>
               <tbody>
                 {impactAnalysis.map((analysis) => {
-                  const policy = policies?.find(p => p.id === analysis.policyId);
+                  const policy = policies?.find(
+                    (p) => p.id === analysis.policyId,
+                  );
                   return (
-                    <tr key={analysis.policyId} className="bg-white border-b hover:bg-gray-50">
+                    <tr
+                      key={analysis.policyId}
+                      className="bg-white border-b hover:bg-gray-50"
+                    >
                       <td className="px-6 py-4 font-medium">
                         {policy?.name || analysis.policyId}
                       </td>
@@ -959,12 +1101,15 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <Badge 
+                        <Badge
                           variant={
-                            analysis.riskLevel === 'critical' ? 'destructive' :
-                            analysis.riskLevel === 'high' ? 'outline' :
-                            analysis.riskLevel === 'medium' ? 'secondary' :
-                            'default'
+                            analysis.riskLevel === "critical"
+                              ? "destructive"
+                              : analysis.riskLevel === "high"
+                                ? "outline"
+                                : analysis.riskLevel === "medium"
+                                  ? "secondary"
+                                  : "default"
                           }
                         >
                           {analysis.riskLevel}
@@ -973,19 +1118,35 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           <div className="w-16 bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-blue-600 h-2 rounded-full" 
-                              style={{ width: `${Math.min(analysis.performance.complexity * 10, 100)}%` }}
+                            <div
+                              className="bg-blue-600 h-2 rounded-full"
+                              style={{
+                                width: `${Math.min(analysis.performance.complexity * 10, 100)}%`,
+                              }}
                             ></div>
                           </div>
-                          <span className="text-xs">{analysis.performance.complexity}</span>
+                          <span className="text-xs">
+                            {analysis.performance.complexity}
+                          </span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-1">
-                          {analysis.compliance.gdpr && <Badge variant="outline" className="text-xs">GDPR</Badge>}
-                          {analysis.compliance.sox && <Badge variant="outline" className="text-xs">SOX</Badge>}
-                          {analysis.compliance.hipaa && <Badge variant="outline" className="text-xs">HIPAA</Badge>}
+                          {analysis.compliance.gdpr && (
+                            <Badge variant="outline" className="text-xs">
+                              GDPR
+                            </Badge>
+                          )}
+                          {analysis.compliance.sox && (
+                            <Badge variant="outline" className="text-xs">
+                              SOX
+                            </Badge>
+                          )}
+                          {analysis.compliance.hipaa && (
+                            <Badge variant="outline" className="text-xs">
+                              HIPAA
+                            </Badge>
+                          )}
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -1022,9 +1183,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
           {renderRelationshipDetails()}
         </TabsContent>
 
-        <TabsContent value="impact">
-          {renderImpactAnalysis()}
-        </TabsContent>
+        <TabsContent value="impact">{renderImpactAnalysis()}</TabsContent>
       </Tabs>
 
       {/* Add Policy Dialog */}
@@ -1032,9 +1191,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>添加新策略</DialogTitle>
-            <DialogDescription>
-              创建新的ABAC策略
-            </DialogDescription>
+            <DialogDescription>创建新的ABAC策略</DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
@@ -1044,7 +1201,9 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                 id="policy-name"
                 placeholder="输入策略名称"
                 value={newPolicy.name}
-                onChange={(e) => setNewPolicy(prev => ({ ...prev, name: e.target.value }))}
+                onChange={(e) =>
+                  setNewPolicy((prev) => ({ ...prev, name: e.target.value }))
+                }
               />
             </div>
 
@@ -1054,7 +1213,12 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                 id="policy-description"
                 placeholder="描述策略的用途���作用..."
                 value={newPolicy.description}
-                onChange={(e) => setNewPolicy(prev => ({ ...prev, description: e.target.value }))}
+                onChange={(e) =>
+                  setNewPolicy((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
                 rows={3}
               />
             </div>
@@ -1062,9 +1226,12 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="policy-effect">策略效果</Label>
-                <Select value={newPolicy.effect} onValueChange={(value: 'allow' | 'deny') =>
-                  setNewPolicy(prev => ({ ...prev, effect: value }))
-                }>
+                <Select
+                  value={newPolicy.effect}
+                  onValueChange={(value: "allow" | "deny") =>
+                    setNewPolicy((prev) => ({ ...prev, effect: value }))
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -1083,7 +1250,12 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                   min="1"
                   max="1000"
                   value={newPolicy.priority}
-                  onChange={(e) => setNewPolicy(prev => ({ ...prev, priority: parseInt(e.target.value) || 100 }))}
+                  onChange={(e) =>
+                    setNewPolicy((prev) => ({
+                      ...prev,
+                      priority: parseInt(e.target.value) || 100,
+                    }))
+                  }
                 />
               </div>
             </div>
@@ -1094,15 +1266,23 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                 id="policy-category"
                 placeholder="例如：access, security, compliance"
                 value={newPolicy.category}
-                onChange={(e) => setNewPolicy(prev => ({ ...prev, category: e.target.value }))}
+                onChange={(e) =>
+                  setNewPolicy((prev) => ({
+                    ...prev,
+                    category: e.target.value,
+                  }))
+                }
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="policy-status">状态</Label>
-              <Select value={newPolicy.status} onValueChange={(value: 'active' | 'inactive' | 'draft') =>
-                setNewPolicy(prev => ({ ...prev, status: value }))
-              }>
+              <Select
+                value={newPolicy.status}
+                onValueChange={(value: "active" | "inactive" | "draft") =>
+                  setNewPolicy((prev) => ({ ...prev, status: value }))
+                }
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -1119,9 +1299,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
             <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
               取消
             </Button>
-            <Button onClick={handleAddPolicy}>
-              创建策略
-            </Button>
+            <Button onClick={handleAddPolicy}>创建策略</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -1131,9 +1309,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>编辑策略</DialogTitle>
-            <DialogDescription>
-              修改策略的基本信息
-            </DialogDescription>
+            <DialogDescription>修改策略的基本信息</DialogDescription>
           </DialogHeader>
 
           {editingPolicy && (
@@ -1143,9 +1319,11 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                 <Input
                   id="edit-policy-name"
                   value={editingPolicy.name}
-                  onChange={(e) => setEditingPolicy(prev =>
-                    prev ? { ...prev, name: e.target.value } : null
-                  )}
+                  onChange={(e) =>
+                    setEditingPolicy((prev) =>
+                      prev ? { ...prev, name: e.target.value } : null,
+                    )
+                  }
                 />
               </div>
 
@@ -1153,10 +1331,12 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                 <Label htmlFor="edit-policy-description">策略描述</Label>
                 <Textarea
                   id="edit-policy-description"
-                  value={editingPolicy.description || ''}
-                  onChange={(e) => setEditingPolicy(prev =>
-                    prev ? { ...prev, description: e.target.value } : null
-                  )}
+                  value={editingPolicy.description || ""}
+                  onChange={(e) =>
+                    setEditingPolicy((prev) =>
+                      prev ? { ...prev, description: e.target.value } : null,
+                    )
+                  }
                   rows={3}
                 />
               </div>
@@ -1164,9 +1344,14 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="edit-policy-effect">策略效果</Label>
-                  <Select value={editingPolicy.effect} onValueChange={(value: 'allow' | 'deny') =>
-                    setEditingPolicy(prev => prev ? { ...prev, effect: value } : null)
-                  }>
+                  <Select
+                    value={editingPolicy.effect}
+                    onValueChange={(value: "allow" | "deny") =>
+                      setEditingPolicy((prev) =>
+                        prev ? { ...prev, effect: value } : null,
+                      )
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -1185,9 +1370,16 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                     min="1"
                     max="1000"
                     value={editingPolicy.priority}
-                    onChange={(e) => setEditingPolicy(prev =>
-                      prev ? { ...prev, priority: parseInt(e.target.value) || 100 } : null
-                    )}
+                    onChange={(e) =>
+                      setEditingPolicy((prev) =>
+                        prev
+                          ? {
+                              ...prev,
+                              priority: parseInt(e.target.value) || 100,
+                            }
+                          : null,
+                      )
+                    }
                   />
                 </div>
               </div>
@@ -1196,18 +1388,25 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
                 <Label htmlFor="edit-policy-category">策略分类</Label>
                 <Input
                   id="edit-policy-category"
-                  value={editingPolicy.category || ''}
-                  onChange={(e) => setEditingPolicy(prev =>
-                    prev ? { ...prev, category: e.target.value } : null
-                  )}
+                  value={editingPolicy.category || ""}
+                  onChange={(e) =>
+                    setEditingPolicy((prev) =>
+                      prev ? { ...prev, category: e.target.value } : null,
+                    )
+                  }
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="edit-policy-status">状态</Label>
-                <Select value={editingPolicy.status} onValueChange={(value: 'active' | 'inactive' | 'draft') =>
-                  setEditingPolicy(prev => prev ? { ...prev, status: value } : null)
-                }>
+                <Select
+                  value={editingPolicy.status}
+                  onValueChange={(value: "active" | "inactive" | "draft") =>
+                    setEditingPolicy((prev) =>
+                      prev ? { ...prev, status: value } : null,
+                    )
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -1222,12 +1421,13 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
           )}
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsEditDialogOpen(false)}
+            >
               取消
             </Button>
-            <Button onClick={handleSavePolicy}>
-              保存更改
-            </Button>
+            <Button onClick={handleSavePolicy}>保存更改</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

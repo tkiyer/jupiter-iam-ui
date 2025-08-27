@@ -3,7 +3,7 @@
  * 提供角色与权限之间关联关系���完整管理功能
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,23 +11,23 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog';
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Shield,
   Key,
@@ -42,12 +42,12 @@ import {
   Eye,
   Copy,
   ArrowRight,
-  Settings
-} from 'lucide-react';
-import { Role, Permission } from '../../../shared/iam';
-import { useRoles } from '../../hooks/useRoles';
-import { usePermissions } from '../../hooks/usePermissions';
-import { toast } from 'sonner';
+  Settings,
+} from "lucide-react";
+import { Role, Permission } from "../../../shared/iam";
+import { useRoles } from "../../hooks/useRoles";
+import { usePermissions } from "../../hooks/usePermissions";
+import { toast } from "sonner";
 
 interface RolePermissionAssignment {
   id: string;
@@ -57,17 +57,17 @@ interface RolePermissionAssignment {
   permissionName: string;
   permissionCategory: string;
   permissionScope: string;
-  assignmentType: 'direct' | 'inherited';
+  assignmentType: "direct" | "inherited";
   source: string;
   assignedAt: string;
   assignedBy: string;
   conditions?: AssignmentCondition[];
   isActive: boolean;
-  risk: 'low' | 'medium' | 'high' | 'critical';
+  risk: "low" | "medium" | "high" | "critical";
 }
 
 interface AssignmentCondition {
-  type: 'time_based' | 'context_based' | 'approval_required';
+  type: "time_based" | "context_based" | "approval_required";
   description: string;
   value: any;
 }
@@ -78,7 +78,7 @@ interface PermissionMatrix {
   permissions: {
     [permissionId: string]: {
       hasPermission: boolean;
-      assignmentType: 'direct' | 'inherited' | 'none';
+      assignmentType: "direct" | "inherited" | "none";
       source?: string;
     };
   };
@@ -88,37 +88,44 @@ interface RolePermissionManagerProps {
   onAssignmentChange?: (assignments: RolePermissionAssignment[]) => void;
 }
 
-export default function RolePermissionManager({ onAssignmentChange }: RolePermissionManagerProps) {
-  const [assignments, setAssignments] = useState<RolePermissionAssignment[]>([]);
-  const [permissionMatrix, setPermissionMatrix] = useState<PermissionMatrix[]>([]);
+export default function RolePermissionManager({
+  onAssignmentChange,
+}: RolePermissionManagerProps) {
+  const [assignments, setAssignments] = useState<RolePermissionAssignment[]>(
+    [],
+  );
+  const [permissionMatrix, setPermissionMatrix] = useState<PermissionMatrix[]>(
+    [],
+  );
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isBulkAssignDialogOpen, setIsBulkAssignDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [editingAssignment, setEditingAssignment] = useState<RolePermissionAssignment | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterRole, setFilterRole] = useState<string>('all');
-  const [filterCategory, setFilterCategory] = useState<string>('all');
-  const [filterType, setFilterType] = useState<string>('all');
-  const [activeTab, setActiveTab] = useState('list');
+  const [editingAssignment, setEditingAssignment] =
+    useState<RolePermissionAssignment | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterRole, setFilterRole] = useState<string>("all");
+  const [filterCategory, setFilterCategory] = useState<string>("all");
+  const [filterType, setFilterType] = useState<string>("all");
+  const [activeTab, setActiveTab] = useState("list");
 
   const { roles, loading: rolesLoading } = useRoles();
   const { permissions, loading: permissionsLoading } = usePermissions();
 
   // 新增分配表单状态
   const [newAssignment, setNewAssignment] = useState({
-    roleId: '',
+    roleId: "",
     permissionIds: [] as string[],
-    reason: '',
+    reason: "",
     temporaryAccess: false,
-    expiresAt: '',
-    requireApproval: false
+    expiresAt: "",
+    requireApproval: false,
   });
 
   // 批量分配状态
   const [bulkAssignment, setBulkAssignment] = useState({
     roleIds: [] as string[],
     permissionIds: [] as string[],
-    reason: ''
+    reason: "",
   });
 
   // 批量撤销状态
@@ -136,11 +143,11 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
     if (!roles || !permissions) return;
 
     const builtAssignments: RolePermissionAssignment[] = [];
-    
-    roles.forEach(role => {
+
+    roles.forEach((role) => {
       // 直接分配的权限
-      role.permissions.forEach(permissionId => {
-        const permission = permissions.find(p => p.id === permissionId);
+      role.permissions.forEach((permissionId) => {
+        const permission = permissions.find((p) => p.id === permissionId);
         if (permission) {
           builtAssignments.push({
             id: `${role.id}-${permissionId}-direct`,
@@ -150,19 +157,19 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
             permissionName: permission.name,
             permissionCategory: permission.category,
             permissionScope: permission.scope,
-            assignmentType: 'direct',
-            source: 'Direct Assignment',
+            assignmentType: "direct",
+            source: "Direct Assignment",
             assignedAt: role.createdAt,
-            assignedBy: 'System',
-            isActive: role.status === 'active',
-            risk: permission.risk as 'low' | 'medium' | 'high' | 'critical'
+            assignedBy: "System",
+            isActive: role.status === "active",
+            risk: permission.risk as "low" | "medium" | "high" | "critical",
           });
         }
       });
 
       // 继承的权限
-      role.inheritedPermissions?.forEach(permissionId => {
-        const permission = permissions.find(p => p.id === permissionId);
+      role.inheritedPermissions?.forEach((permissionId) => {
+        const permission = permissions.find((p) => p.id === permissionId);
         if (permission) {
           builtAssignments.push({
             id: `${role.id}-${permissionId}-inherited`,
@@ -172,12 +179,12 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
             permissionName: permission.name,
             permissionCategory: permission.category,
             permissionScope: permission.scope,
-            assignmentType: 'inherited',
-            source: role.parentRole || 'Hierarchy',
+            assignmentType: "inherited",
+            source: role.parentRole || "Hierarchy",
             assignedAt: role.createdAt,
-            assignedBy: 'System',
-            isActive: role.status === 'active',
-            risk: permission.risk as 'low' | 'medium' | 'high' | 'critical'
+            assignedBy: "System",
+            isActive: role.status === "active",
+            risk: permission.risk as "low" | "medium" | "high" | "critical",
           });
         }
       });
@@ -190,35 +197,35 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
   const buildPermissionMatrix = () => {
     if (!roles || !permissions) return;
 
-    const matrix: PermissionMatrix[] = roles.map(role => {
+    const matrix: PermissionMatrix[] = roles.map((role) => {
       const rolePermissions: { [permissionId: string]: any } = {};
-      
-      permissions.forEach(permission => {
+
+      permissions.forEach((permission) => {
         let hasPermission = false;
-        let assignmentType: 'direct' | 'inherited' | 'none' = 'none';
+        let assignmentType: "direct" | "inherited" | "none" = "none";
         let source: string | undefined;
 
         if (role.permissions.includes(permission.id)) {
           hasPermission = true;
-          assignmentType = 'direct';
-          source = 'Direct Assignment';
+          assignmentType = "direct";
+          source = "Direct Assignment";
         } else if (role.inheritedPermissions?.includes(permission.id)) {
           hasPermission = true;
-          assignmentType = 'inherited';
-          source = role.parentRole || 'Hierarchy';
+          assignmentType = "inherited";
+          source = role.parentRole || "Hierarchy";
         }
 
         rolePermissions[permission.id] = {
           hasPermission,
           assignmentType,
-          source
+          source,
         };
       });
 
       return {
         roleId: role.id,
         roleName: role.name,
-        permissions: rolePermissions
+        permissions: rolePermissions,
       };
     });
 
@@ -226,45 +233,54 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
   };
 
   // 过滤分配列表
-  const filteredAssignments = assignments.filter(assignment => {
-    const matchesSearch = 
+  const filteredAssignments = assignments.filter((assignment) => {
+    const matchesSearch =
       assignment.roleName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      assignment.permissionName.toLowerCase().includes(searchQuery.toLowerCase());
+      assignment.permissionName
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
 
-    const matchesRole = filterRole === 'all' || assignment.roleId === filterRole;
-    const matchesCategory = filterCategory === 'all' || assignment.permissionCategory === filterCategory;
-    const matchesType = 
-      filterType === 'all' || 
-      assignment.assignmentType === filterType;
+    const matchesRole =
+      filterRole === "all" || assignment.roleId === filterRole;
+    const matchesCategory =
+      filterCategory === "all" ||
+      assignment.permissionCategory === filterCategory;
+    const matchesType =
+      filterType === "all" || assignment.assignmentType === filterType;
 
     return matchesSearch && matchesRole && matchesCategory && matchesType;
   });
 
   // 获取权限分类
-  const permissionCategories = [...new Set(permissions?.map(p => p.category) || [])];
+  const permissionCategories = [
+    ...new Set(permissions?.map((p) => p.category) || []),
+  ];
 
   // 添加单个角色-权限分配
   const handleAddAssignment = async () => {
     if (!newAssignment.roleId || newAssignment.permissionIds.length === 0) {
-      toast.error('请选择角色和权限');
+      toast.error("请选择角色和权限");
       return;
     }
 
-    const role = roles?.find(r => r.id === newAssignment.roleId);
+    const role = roles?.find((r) => r.id === newAssignment.roleId);
     if (!role) {
-      toast.error('角色不存在');
+      toast.error("角色不存在");
       return;
     }
 
     try {
       const newAssignments: RolePermissionAssignment[] = [];
 
-      newAssignment.permissionIds.forEach(permissionId => {
-        const permission = permissions?.find(p => p.id === permissionId);
+      newAssignment.permissionIds.forEach((permissionId) => {
+        const permission = permissions?.find((p) => p.id === permissionId);
         if (permission) {
           // 检查是否已存在相同的分配
           const existingAssignment = assignments.find(
-            a => a.roleId === newAssignment.roleId && a.permissionId === permissionId && a.assignmentType === 'direct'
+            (a) =>
+              a.roleId === newAssignment.roleId &&
+              a.permissionId === permissionId &&
+              a.assignmentType === "direct",
           );
 
           if (!existingAssignment) {
@@ -276,61 +292,66 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
               permissionName: permission.name,
               permissionCategory: permission.category,
               permissionScope: permission.scope,
-              assignmentType: 'direct',
-              source: 'Direct Assignment',
+              assignmentType: "direct",
+              source: "Direct Assignment",
               assignedAt: new Date().toISOString(),
-              assignedBy: 'Admin',
+              assignedBy: "Admin",
               isActive: true,
-              risk: permission.risk as 'low' | 'medium' | 'high' | 'critical',
-              conditions: []
+              risk: permission.risk as "low" | "medium" | "high" | "critical",
+              conditions: [],
             });
           }
         }
       });
 
       if (newAssignments.length === 0) {
-        toast.error('所选权限已分配给该角色');
+        toast.error("所选权限已分配给该角色");
         return;
       }
 
       // 这里应该调用API来保存分配
       // await assignPermissionsToRole(newAssignments);
-      
-      setAssignments(prev => [...prev, ...newAssignments]);
+
+      setAssignments((prev) => [...prev, ...newAssignments]);
       setNewAssignment({
-        roleId: '',
+        roleId: "",
         permissionIds: [],
-        reason: '',
+        reason: "",
         temporaryAccess: false,
-        expiresAt: '',
-        requireApproval: false
+        expiresAt: "",
+        requireApproval: false,
       });
       setIsAddDialogOpen(false);
       toast.success(`成��分配 ${newAssignments.length} 个权限`);
-      
     } catch (error) {
-      toast.error('分配失败，请重试');
+      toast.error("分配失败，请重试");
     }
   };
 
   // 批量分配权限
   const handleBulkAssignment = async () => {
-    if (bulkAssignment.roleIds.length === 0 || bulkAssignment.permissionIds.length === 0) {
-      toast.error('请选择角色和权限');
+    if (
+      bulkAssignment.roleIds.length === 0 ||
+      bulkAssignment.permissionIds.length === 0
+    ) {
+      toast.error("请选择角色和权限");
       return;
     }
 
     try {
       const newAssignments: RolePermissionAssignment[] = [];
 
-      bulkAssignment.roleIds.forEach(roleId => {
-        const role = roles?.find(r => r.id === roleId);
+      bulkAssignment.roleIds.forEach((roleId) => {
+        const role = roles?.find((r) => r.id === roleId);
         if (role) {
-          bulkAssignment.permissionIds.forEach(permissionId => {
-            const permission = permissions?.find(p => p.id === permissionId);
+          bulkAssignment.permissionIds.forEach((permissionId) => {
+            const permission = permissions?.find((p) => p.id === permissionId);
             if (permission) {
               const existingAssignment = assignments.find(
-                a => a.roleId === roleId && a.permissionId === permissionId && a.assignmentType === 'direct'
+                (a) =>
+                  a.roleId === roleId &&
+                  a.permissionId === permissionId &&
+                  a.assignmentType === "direct",
               );
 
               if (!existingAssignment) {
@@ -342,12 +363,16 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                   permissionName: permission.name,
                   permissionCategory: permission.category,
                   permissionScope: permission.scope,
-                  assignmentType: 'direct',
-                  source: 'Bulk Assignment',
+                  assignmentType: "direct",
+                  source: "Bulk Assignment",
                   assignedAt: new Date().toISOString(),
-                  assignedBy: 'Admin',
+                  assignedBy: "Admin",
                   isActive: true,
-                  risk: permission.risk as 'low' | 'medium' | 'high' | 'critical'
+                  risk: permission.risk as
+                    | "low"
+                    | "medium"
+                    | "high"
+                    | "critical",
                 });
               }
             }
@@ -356,40 +381,39 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
       });
 
       if (newAssignments.length === 0) {
-        toast.error('所选权限已分配给所选角色');
+        toast.error("所选权限已分配给所选角色");
         return;
       }
 
-      setAssignments(prev => [...prev, ...newAssignments]);
-      setBulkAssignment({ roleIds: [], permissionIds: [], reason: '' });
+      setAssignments((prev) => [...prev, ...newAssignments]);
+      setBulkAssignment({ roleIds: [], permissionIds: [], reason: "" });
       setIsBulkAssignDialogOpen(false);
       toast.success(`批量分配 ${newAssignments.length} 个权限`);
-      
     } catch (error) {
-      toast.error('批量分配失败，请重试');
+      toast.error("批量分配失败，请重试");
     }
   };
 
   // 删除分配
   const handleDeleteAssignment = async (assignmentId: string) => {
-    const assignment = assignments.find(a => a.id === assignmentId);
-    if (assignment?.assignmentType === 'inherited') {
-      toast.error('无法删除继承的权限');
+    const assignment = assignments.find((a) => a.id === assignmentId);
+    if (assignment?.assignmentType === "inherited") {
+      toast.error("无法删除继承的权限");
       return;
     }
 
     try {
-      setAssignments(prev => prev.filter(a => a.id !== assignmentId));
-      toast.success('权限分配已删除');
+      setAssignments((prev) => prev.filter((a) => a.id !== assignmentId));
+      toast.success("权限分配已删除");
     } catch (error) {
-      toast.error('删除失败，请重试');
+      toast.error("删除失败，请重试");
     }
   };
 
   // 编辑分配
   const handleEditAssignment = (assignment: RolePermissionAssignment) => {
-    if (assignment.assignmentType === 'inherited') {
-      toast.error('无法编辑继承的权限');
+    if (assignment.assignmentType === "inherited") {
+      toast.error("无法编辑继承的权限");
       return;
     }
     setEditingAssignment({ ...assignment });
@@ -404,33 +428,34 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
       // 这里应该调用API来更新分配
       // await updateRolePermissionAssignment(editingAssignment);
 
-      setAssignments(prev =>
-        prev.map(a => a.id === editingAssignment.id ? editingAssignment : a)
+      setAssignments((prev) =>
+        prev.map((a) =>
+          a.id === editingAssignment.id ? editingAssignment : a,
+        ),
       );
       setIsEditDialogOpen(false);
       setEditingAssignment(null);
-      toast.success('分配更新成功');
-
+      toast.success("分配更新成功");
     } catch (error) {
-      toast.error('更新失败，请重试');
+      toast.error("更新失败，请重试");
     }
   };
 
   // 批量撤销权限
   const handleBulkRevocation = async () => {
     if (selectedAssignments.length === 0) {
-      toast.error('请选择要撤销的权限分配');
+      toast.error("请选择要撤销的权限分配");
       return;
     }
 
     // 检查是否包含继承权限
-    const inheritedAssignments = selectedAssignments.filter(id => {
-      const assignment = assignments.find(a => a.id === id);
-      return assignment?.assignmentType === 'inherited';
+    const inheritedAssignments = selectedAssignments.filter((id) => {
+      const assignment = assignments.find((a) => a.id === id);
+      return assignment?.assignmentType === "inherited";
     });
 
     if (inheritedAssignments.length > 0) {
-      toast.error('无法撤销继承的权限，请先取消选择继承权限');
+      toast.error("无法撤销继承的权限，请先取消选择继承权限");
       return;
     }
 
@@ -438,12 +463,13 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
       // 这���应该调用API来批���撤销权限
       // await bulkRevokePermissions(selectedAssignments);
 
-      setAssignments(prev => prev.filter(a => !selectedAssignments.includes(a.id)));
+      setAssignments((prev) =>
+        prev.filter((a) => !selectedAssignments.includes(a.id)),
+      );
       setSelectedAssignments([]);
       toast.success(`已撤销 ${selectedAssignments.length} 个权限分配`);
-
     } catch (error) {
-      toast.error('批量撤销失败，请重试');
+      toast.error("批量撤销失败，请重试");
     }
   };
 
@@ -452,8 +478,8 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
     if (checked) {
       // 只选择直接分配的权限（排除继承权限）
       const directAssignments = filteredAssignments
-        .filter(a => a.assignmentType === 'direct')
-        .map(a => a.id);
+        .filter((a) => a.assignmentType === "direct")
+        .map((a) => a.id);
       setSelectedAssignments(directAssignments);
     } else {
       setSelectedAssignments([]);
@@ -473,14 +499,16 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                 查看所有角色和权限的分配关系矩阵
               </p>
             </div>
-            <Button variant="outline" onClick={() => setActiveTab('list')}>
+            <Button variant="outline" onClick={() => setActiveTab("list")}>
               <Eye className="h-4 w-4 mr-2" />
               切换到列表视图
             </Button>
           </div>
           <Card>
             <CardContent className="flex items-center justify-center h-32">
-              <p className="text-sm text-muted-foreground">加载权限矩阵数据...</p>
+              <p className="text-sm text-muted-foreground">
+                加载权限矩阵数据...
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -488,75 +516,89 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
     }
 
     return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-medium">权限分配矩阵</h3>
-          <p className="text-sm text-muted-foreground">
-            查看所有角色和权限的分配��系矩阵
-          </p>
-        </div>
-        <Button variant="outline" onClick={() => setActiveTab('list')}>
-          <Eye className="h-4 w-4 mr-2" />
-          切换到列表视图
-        </Button>
-      </div>
-
-      <Card>
-        <CardContent className="p-0">
-          <div className="relative overflow-auto max-h-96">
-            <table className="w-full text-sm">
-              <thead className="sticky top-0 bg-gray-50 z-10">
-                <tr>
-                  <th className="px-4 py-3 text-left font-medium border-r">角色</th>
-                  {permissions?.slice(0, 10).map(permission => (
-                    <th key={permission.id} className="px-2 py-3 text-center text-xs font-medium border-r min-w-20">
-                      <div className="transform -rotate-45 origin-center">
-                        {permission.name.substring(0, 10)}...
-                      </div>
-                    </th>
-                  ))}
-                  <th className="px-4 py-3 text-center">更多...</th>
-                </tr>
-              </thead>
-              <tbody>
-                {permissionMatrix.map(roleMatrix => (
-                  <tr key={roleMatrix.roleId} className="border-b hover:bg-gray-50">
-                    <td className="px-4 py-3 font-medium border-r bg-gray-50">
-                      {roleMatrix.roleName}
-                    </td>
-                    {permissions?.slice(0, 10).map(permission => {
-                      const permissionData = roleMatrix.permissions?.[permission.id];
-                      return (
-                        <td key={permission.id} className="px-2 py-3 text-center border-r">
-                          {permissionData?.hasPermission ? (
-                            <div className="flex flex-col items-center">
-                              <CheckCircle2
-                                className={`h-4 w-4 ${permissionData.assignmentType === 'direct' ? 'text-green-600' : 'text-blue-600'}`}
-                              />
-                              <span className="text-xs text-gray-500">
-                                {permissionData.assignmentType === 'direct' ? '直接' : '继承'}
-                              </span>
-                            </div>
-                          ) : (
-                            <div className="h-4 w-4 rounded border border-gray-300"></div>
-                          )}
-                        </td>
-                      );
-                    })}
-                    <td className="px-4 py-3 text-center">
-                      <Button variant="ghost" size="sm">
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-medium">权限分配矩阵</h3>
+            <p className="text-sm text-muted-foreground">
+              查看所有角色和权限的分配��系矩阵
+            </p>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+          <Button variant="outline" onClick={() => setActiveTab("list")}>
+            <Eye className="h-4 w-4 mr-2" />
+            切换到列表视图
+          </Button>
+        </div>
+
+        <Card>
+          <CardContent className="p-0">
+            <div className="relative overflow-auto max-h-96">
+              <table className="w-full text-sm">
+                <thead className="sticky top-0 bg-gray-50 z-10">
+                  <tr>
+                    <th className="px-4 py-3 text-left font-medium border-r">
+                      角色
+                    </th>
+                    {permissions?.slice(0, 10).map((permission) => (
+                      <th
+                        key={permission.id}
+                        className="px-2 py-3 text-center text-xs font-medium border-r min-w-20"
+                      >
+                        <div className="transform -rotate-45 origin-center">
+                          {permission.name.substring(0, 10)}...
+                        </div>
+                      </th>
+                    ))}
+                    <th className="px-4 py-3 text-center">更多...</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {permissionMatrix.map((roleMatrix) => (
+                    <tr
+                      key={roleMatrix.roleId}
+                      className="border-b hover:bg-gray-50"
+                    >
+                      <td className="px-4 py-3 font-medium border-r bg-gray-50">
+                        {roleMatrix.roleName}
+                      </td>
+                      {permissions?.slice(0, 10).map((permission) => {
+                        const permissionData =
+                          roleMatrix.permissions?.[permission.id];
+                        return (
+                          <td
+                            key={permission.id}
+                            className="px-2 py-3 text-center border-r"
+                          >
+                            {permissionData?.hasPermission ? (
+                              <div className="flex flex-col items-center">
+                                <CheckCircle2
+                                  className={`h-4 w-4 ${permissionData.assignmentType === "direct" ? "text-green-600" : "text-blue-600"}`}
+                                />
+                                <span className="text-xs text-gray-500">
+                                  {permissionData.assignmentType === "direct"
+                                    ? "直接"
+                                    : "继承"}
+                                </span>
+                              </div>
+                            ) : (
+                              <div className="h-4 w-4 rounded border border-gray-300"></div>
+                            )}
+                          </td>
+                        );
+                      })}
+                      <td className="px-4 py-3 text-center">
+                        <Button variant="ghost" size="sm">
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     );
   };
 
@@ -585,7 +627,7 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">所有角色</SelectItem>
-                {roles?.map(role => (
+                {roles?.map((role) => (
                   <SelectItem key={role.id} value={role.id}>
                     {role.name}
                   </SelectItem>
@@ -599,7 +641,7 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">所有分类</SelectItem>
-                {permissionCategories.map(category => (
+                {permissionCategories.map((category) => (
                   <SelectItem key={category} value={category}>
                     {category}
                   </SelectItem>
@@ -623,18 +665,25 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
         {/* 操作按钮 */}
         <div className="flex gap-2">
           {selectedAssignments.length > 0 && (
-            <Button variant="destructive" size="sm" onClick={handleBulkRevocation}>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleBulkRevocation}
+            >
               <Trash2 className="h-4 w-4 mr-2" />
               撤销选中 ({selectedAssignments.length})
             </Button>
           )}
 
-          <Button variant="outline" onClick={() => setActiveTab('matrix')}>
+          <Button variant="outline" onClick={() => setActiveTab("matrix")}>
             <GitBranch className="h-4 w-4 mr-2" />
             矩阵视图
           </Button>
 
-          <Dialog open={isBulkAssignDialogOpen} onOpenChange={setIsBulkAssignDialogOpen}>
+          <Dialog
+            open={isBulkAssignDialogOpen}
+            onOpenChange={setIsBulkAssignDialogOpen}
+          >
             <DialogTrigger asChild>
               <Button variant="outline">
                 <Copy className="h-4 w-4 mr-2" />
@@ -644,9 +693,7 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
             <DialogContent className="max-w-2xl">
               <DialogHeader>
                 <DialogTitle>批量分配权限</DialogTitle>
-                <DialogDescription>
-                  为多个角色批量分配权限
-                </DialogDescription>
+                <DialogDescription>为多个角色批量分配权限</DialogDescription>
               </DialogHeader>
 
               <div className="space-y-4">
@@ -654,26 +701,34 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                   <div className="space-y-2">
                     <Label>选择角色</Label>
                     <div className="border rounded-md p-3 max-h-40 overflow-y-auto">
-                      {roles?.map(role => (
-                        <div key={role.id} className="flex items-center space-x-2 py-1">
+                      {roles?.map((role) => (
+                        <div
+                          key={role.id}
+                          className="flex items-center space-x-2 py-1"
+                        >
                           <Checkbox
                             id={`role-${role.id}`}
                             checked={bulkAssignment.roleIds.includes(role.id)}
                             onCheckedChange={(checked) => {
                               if (checked) {
-                                setBulkAssignment(prev => ({
+                                setBulkAssignment((prev) => ({
                                   ...prev,
-                                  roleIds: [...prev.roleIds, role.id]
+                                  roleIds: [...prev.roleIds, role.id],
                                 }));
                               } else {
-                                setBulkAssignment(prev => ({
+                                setBulkAssignment((prev) => ({
                                   ...prev,
-                                  roleIds: prev.roleIds.filter(id => id !== role.id)
+                                  roleIds: prev.roleIds.filter(
+                                    (id) => id !== role.id,
+                                  ),
                                 }));
                               }
                             }}
                           />
-                          <Label htmlFor={`role-${role.id}`} className="text-sm">
+                          <Label
+                            htmlFor={`role-${role.id}`}
+                            className="text-sm"
+                          >
                             {role.name}
                           </Label>
                         </div>
@@ -687,29 +742,44 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                   <div className="space-y-2">
                     <Label>选择权限</Label>
                     <div className="border rounded-md p-3 max-h-40 overflow-y-auto">
-                      {permissions?.map(permission => (
-                        <div key={permission.id} className="flex items-center space-x-2 py-1">
+                      {permissions?.map((permission) => (
+                        <div
+                          key={permission.id}
+                          className="flex items-center space-x-2 py-1"
+                        >
                           <Checkbox
                             id={`perm-${permission.id}`}
-                            checked={bulkAssignment.permissionIds.includes(permission.id)}
+                            checked={bulkAssignment.permissionIds.includes(
+                              permission.id,
+                            )}
                             onCheckedChange={(checked) => {
                               if (checked) {
-                                setBulkAssignment(prev => ({
+                                setBulkAssignment((prev) => ({
                                   ...prev,
-                                  permissionIds: [...prev.permissionIds, permission.id]
+                                  permissionIds: [
+                                    ...prev.permissionIds,
+                                    permission.id,
+                                  ],
                                 }));
                               } else {
-                                setBulkAssignment(prev => ({
+                                setBulkAssignment((prev) => ({
                                   ...prev,
-                                  permissionIds: prev.permissionIds.filter(id => id !== permission.id)
+                                  permissionIds: prev.permissionIds.filter(
+                                    (id) => id !== permission.id,
+                                  ),
                                 }));
                               }
                             }}
                           />
-                          <Label htmlFor={`perm-${permission.id}`} className="text-sm">
+                          <Label
+                            htmlFor={`perm-${permission.id}`}
+                            className="text-sm"
+                          >
                             <div>
                               <div>{permission.name}</div>
-                              <div className="text-xs text-gray-500">{permission.category}</div>
+                              <div className="text-xs text-gray-500">
+                                {permission.category}
+                              </div>
                             </div>
                           </Label>
                         </div>
@@ -727,18 +797,24 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                     id="bulk-reason"
                     placeholder="描述批���分配的原因..."
                     value={bulkAssignment.reason}
-                    onChange={(e) => setBulkAssignment(prev => ({ ...prev, reason: e.target.value }))}
+                    onChange={(e) =>
+                      setBulkAssignment((prev) => ({
+                        ...prev,
+                        reason: e.target.value,
+                      }))
+                    }
                   />
                 </div>
               </div>
 
               <DialogFooter>
-                <Button variant="outline" onClick={() => setIsBulkAssignDialogOpen(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsBulkAssignDialogOpen(false)}
+                >
                   ���消
                 </Button>
-                <Button onClick={handleBulkAssignment}>
-                  批量分配
-                </Button>
+                <Button onClick={handleBulkAssignment}>批量分配</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -753,22 +829,23 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
             <DialogContent className="max-w-md">
               <DialogHeader>
                 <DialogTitle>添加角色权限分配</DialogTitle>
-                <DialogDescription>
-                  为角色分配新的权限
-                </DialogDescription>
+                <DialogDescription>为角色分配新的权限</DialogDescription>
               </DialogHeader>
 
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="role">选择角色</Label>
-                  <Select value={newAssignment.roleId} onValueChange={(value) => 
-                    setNewAssignment(prev => ({ ...prev, roleId: value }))
-                  }>
+                  <Select
+                    value={newAssignment.roleId}
+                    onValueChange={(value) =>
+                      setNewAssignment((prev) => ({ ...prev, roleId: value }))
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="选择角色" />
                     </SelectTrigger>
                     <SelectContent>
-                      {roles?.map(role => (
+                      {roles?.map((role) => (
                         <SelectItem key={role.id} value={role.id}>
                           <div className="flex items-center gap-2">
                             <Shield className="h-4 w-4" />
@@ -783,26 +860,39 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                 <div className="space-y-2">
                   <Label>选择权限</Label>
                   <div className="border rounded-md p-3 max-h-40 overflow-y-auto">
-                    {permissions?.map(permission => (
-                      <div key={permission.id} className="flex items-center space-x-2 py-1">
+                    {permissions?.map((permission) => (
+                      <div
+                        key={permission.id}
+                        className="flex items-center space-x-2 py-1"
+                      >
                         <Checkbox
                           id={`new-perm-${permission.id}`}
-                          checked={newAssignment.permissionIds.includes(permission.id)}
+                          checked={newAssignment.permissionIds.includes(
+                            permission.id,
+                          )}
                           onCheckedChange={(checked) => {
                             if (checked) {
-                              setNewAssignment(prev => ({
+                              setNewAssignment((prev) => ({
                                 ...prev,
-                                permissionIds: [...prev.permissionIds, permission.id]
+                                permissionIds: [
+                                  ...prev.permissionIds,
+                                  permission.id,
+                                ],
                               }));
                             } else {
-                              setNewAssignment(prev => ({
+                              setNewAssignment((prev) => ({
                                 ...prev,
-                                permissionIds: prev.permissionIds.filter(id => id !== permission.id)
+                                permissionIds: prev.permissionIds.filter(
+                                  (id) => id !== permission.id,
+                                ),
                               }));
                             }
                           }}
                         />
-                        <Label htmlFor={`new-perm-${permission.id}`} className="text-sm">
+                        <Label
+                          htmlFor={`new-perm-${permission.id}`}
+                          className="text-sm"
+                        >
                           <div>
                             <div className="flex items-center gap-2">
                               <Key className="h-3 w-3" />
@@ -827,18 +917,24 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                     id="reason"
                     placeholder="描述分配这些权限的原因..."
                     value={newAssignment.reason}
-                    onChange={(e) => setNewAssignment(prev => ({ ...prev, reason: e.target.value }))}
+                    onChange={(e) =>
+                      setNewAssignment((prev) => ({
+                        ...prev,
+                        reason: e.target.value,
+                      }))
+                    }
                   />
                 </div>
               </div>
 
               <DialogFooter>
-                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsAddDialogOpen(false)}
+                >
                   取消
                 </Button>
-                <Button onClick={handleAddAssignment}>
-                  添加分配
-                </Button>
+                <Button onClick={handleAddAssignment}>添加分配</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -848,9 +944,7 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
             <DialogContent className="max-w-md">
               <DialogHeader>
                 <DialogTitle>编辑角色权限分配</DialogTitle>
-                <DialogDescription>
-                  修改权限分配的详细信息
-                </DialogDescription>
+                <DialogDescription>修改权限分配的详细信息</DialogDescription>
               </DialogHeader>
 
               {editingAssignment && (
@@ -873,7 +967,8 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                         {editingAssignment.permissionName}
                       </div>
                       <div className="text-xs text-gray-500 mt-1">
-                        {editingAssignment.permissionCategory} • {editingAssignment.permissionScope}
+                        {editingAssignment.permissionCategory} •{" "}
+                        {editingAssignment.permissionScope}
                       </div>
                     </div>
                   </div>
@@ -883,9 +978,11 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                     <Input
                       id="edit-source"
                       value={editingAssignment.source}
-                      onChange={(e) => setEditingAssignment(prev =>
-                        prev ? { ...prev, source: e.target.value } : null
-                      )}
+                      onChange={(e) =>
+                        setEditingAssignment((prev) =>
+                          prev ? { ...prev, source: e.target.value } : null,
+                        )
+                      }
                     />
                   </div>
 
@@ -894,9 +991,11 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                     <Input
                       id="edit-assigned-by"
                       value={editingAssignment.assignedBy}
-                      onChange={(e) => setEditingAssignment(prev =>
-                        prev ? { ...prev, assignedBy: e.target.value } : null
-                      )}
+                      onChange={(e) =>
+                        setEditingAssignment((prev) =>
+                          prev ? { ...prev, assignedBy: e.target.value } : null,
+                        )
+                      }
                     />
                   </div>
 
@@ -904,9 +1003,13 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                     <Checkbox
                       id="edit-active"
                       checked={editingAssignment.isActive}
-                      onCheckedChange={(checked) => setEditingAssignment(prev =>
-                        prev ? { ...prev, isActive: checked as boolean } : null
-                      )}
+                      onCheckedChange={(checked) =>
+                        setEditingAssignment((prev) =>
+                          prev
+                            ? { ...prev, isActive: checked as boolean }
+                            : null,
+                        )
+                      }
                     />
                     <Label htmlFor="edit-active">激活状态</Label>
                   </div>
@@ -914,12 +1017,13 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
               )}
 
               <DialogFooter>
-                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsEditDialogOpen(false)}
+                >
                   取消
                 </Button>
-                <Button onClick={handleSaveEdit}>
-                  保存更改
-                </Button>
+                <Button onClick={handleSaveEdit}>保存更改</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -944,7 +1048,15 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                 <tr>
                   <th className="px-4 py-3">
                     <Checkbox
-                      checked={selectedAssignments.length === filteredAssignments.filter(a => a.assignmentType === 'direct').length && filteredAssignments.filter(a => a.assignmentType === 'direct').length > 0}
+                      checked={
+                        selectedAssignments.length ===
+                          filteredAssignments.filter(
+                            (a) => a.assignmentType === "direct",
+                          ).length &&
+                        filteredAssignments.filter(
+                          (a) => a.assignmentType === "direct",
+                        ).length > 0
+                      }
                       onCheckedChange={handleSelectAll}
                     />
                   </th>
@@ -960,16 +1072,24 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
               </thead>
               <tbody>
                 {filteredAssignments.map((assignment) => (
-                  <tr key={assignment.id} className="bg-white border-b hover:bg-gray-50">
+                  <tr
+                    key={assignment.id}
+                    className="bg-white border-b hover:bg-gray-50"
+                  >
                     <td className="px-4 py-4">
                       <Checkbox
                         checked={selectedAssignments.includes(assignment.id)}
-                        disabled={assignment.assignmentType === 'inherited'}
+                        disabled={assignment.assignmentType === "inherited"}
                         onCheckedChange={(checked) => {
                           if (checked) {
-                            setSelectedAssignments(prev => [...prev, assignment.id]);
+                            setSelectedAssignments((prev) => [
+                              ...prev,
+                              assignment.id,
+                            ]);
                           } else {
-                            setSelectedAssignments(prev => prev.filter(id => id !== assignment.id));
+                            setSelectedAssignments((prev) =>
+                              prev.filter((id) => id !== assignment.id),
+                            );
                           }
                         }}
                       />
@@ -977,7 +1097,9 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <Shield className="h-4 w-4 text-gray-400" />
-                        <span className="font-medium">{assignment.roleName}</span>
+                        <span className="font-medium">
+                          {assignment.roleName}
+                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -997,19 +1119,29 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                       </Badge>
                     </td>
                     <td className="px-6 py-4">
-                      <Badge variant={assignment.assignmentType === 'direct' ? 'default' : 'outline'}>
-                        {assignment.assignmentType === 'direct' ? '直接' : '继承'}
+                      <Badge
+                        variant={
+                          assignment.assignmentType === "direct"
+                            ? "default"
+                            : "outline"
+                        }
+                      >
+                        {assignment.assignmentType === "direct"
+                          ? "直接"
+                          : "继承"}
                       </Badge>
                     </td>
                     <td className="px-6 py-4 text-gray-500">
                       {assignment.source}
                     </td>
                     <td className="px-6 py-4">
-                      <Badge 
+                      <Badge
                         variant={
-                          assignment.risk === 'critical' ? 'destructive' :
-                          assignment.risk === 'high' ? 'outline' :
-                          'secondary'
+                          assignment.risk === "critical"
+                            ? "destructive"
+                            : assignment.risk === "high"
+                              ? "outline"
+                              : "secondary"
                         }
                       >
                         {assignment.risk}
@@ -1020,7 +1152,7 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                         <Button variant="ghost" size="sm">
                           <Eye className="h-4 w-4" />
                         </Button>
-                        {assignment.assignmentType === 'direct' && (
+                        {assignment.assignmentType === "direct" && (
                           <>
                             <Button
                               variant="ghost"
@@ -1032,7 +1164,9 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleDeleteAssignment(assignment.id)}
+                              onClick={() =>
+                                handleDeleteAssignment(assignment.id)
+                              }
                             >
                               <Trash2 className="h-4 w-4 text-red-500" />
                             </Button>
@@ -1080,7 +1214,10 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
               <div>
                 <p className="text-sm text-muted-foreground">直接���配</p>
                 <p className="text-2xl font-bold text-blue-600">
-                  {assignments.filter(a => a.assignmentType === 'direct').length}
+                  {
+                    assignments.filter((a) => a.assignmentType === "direct")
+                      .length
+                  }
                 </p>
               </div>
               <CheckCircle2 className="h-8 w-8 text-blue-500" />
@@ -1094,7 +1231,10 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
               <div>
                 <p className="text-sm text-muted-foreground">继承分配</p>
                 <p className="text-2xl font-bold text-green-600">
-                  {assignments.filter(a => a.assignmentType === 'inherited').length}
+                  {
+                    assignments.filter((a) => a.assignmentType === "inherited")
+                      .length
+                  }
                 </p>
               </div>
               <GitBranch className="h-8 w-8 text-green-500" />
@@ -1108,7 +1248,11 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
               <div>
                 <p className="text-sm text-muted-foreground">高风险权限</p>
                 <p className="text-2xl font-bold text-red-600">
-                  {assignments.filter(a => a.risk === 'high' || a.risk === 'critical').length}
+                  {
+                    assignments.filter(
+                      (a) => a.risk === "high" || a.risk === "critical",
+                    ).length
+                  }
                 </p>
               </div>
               <AlertCircle className="h-8 w-8 text-red-500" />
@@ -1124,13 +1268,9 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
           <TabsTrigger value="matrix">矩阵视图</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="list">
-          {renderListView()}
-        </TabsContent>
+        <TabsContent value="list">{renderListView()}</TabsContent>
 
-        <TabsContent value="matrix">
-          {renderMatrixView()}
-        </TabsContent>
+        <TabsContent value="matrix">{renderMatrixView()}</TabsContent>
       </Tabs>
     </div>
   );
