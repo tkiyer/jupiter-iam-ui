@@ -98,6 +98,22 @@ const Roles: React.FC = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  // Helper function for status colors
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "active":
+        return "bg-green-500 text-white";
+      case "inactive":
+        return "bg-gray-500 text-white";
+      case "deprecated":
+        return "bg-yellow-500 text-white";
+      case "draft":
+        return "bg-blue-500 text-white";
+      default:
+        return "bg-gray-500 text-white";
+    }
+  };
   const [activeTab, setActiveTab] = useState("roles");
 
   // Template management state
