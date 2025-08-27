@@ -1,6 +1,6 @@
 /**
  * Role-Permission关联管理组件
- * 提供角色与权限之间关联关系的完整管理功能
+ * 提供角色与权限之间关联关系���完整管理功能
  */
 
 import React, { useState, useEffect } from 'react';
@@ -424,10 +424,10 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                       const permissionData = roleMatrix.permissions[permission.id];
                       return (
                         <td key={permission.id} className="px-2 py-3 text-center border-r">
-                          {permissionData.hasPermission ? (
+                          {permissionData?.hasPermission ? (
                             <div className="flex flex-col items-center">
-                              <CheckCircle2 
-                                className={`h-4 w-4 ${permissionData.assignmentType === 'direct' ? 'text-green-600' : 'text-blue-600'}`} 
+                              <CheckCircle2
+                                className={`h-4 w-4 ${permissionData.assignmentType === 'direct' ? 'text-green-600' : 'text-blue-600'}`}
                               />
                               <span className="text-xs text-gray-500">
                                 {permissionData.assignmentType === 'direct' ? '直接' : '继承'}
@@ -612,7 +612,7 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                   <Label htmlFor="bulk-reason">批量分配原因</Label>
                   <Textarea
                     id="bulk-reason"
-                    placeholder="描述批量分配的原因..."
+                    placeholder="描述批���分配的原因..."
                     value={bulkAssignment.reason}
                     onChange={(e) => setBulkAssignment(prev => ({ ...prev, reason: e.target.value }))}
                   />
