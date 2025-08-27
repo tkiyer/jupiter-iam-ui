@@ -9,20 +9,21 @@ const originalUnhandledRejection = window.onunhandledrejection;
 
 // Enhanced error detection patterns
 const RESIZE_OBSERVER_PATTERNS = [
-  'ResizeObserver loop completed',
-  'ResizeObserver loop limit exceeded',
-  'Script error.',
+  "ResizeObserver loop completed",
+  "ResizeObserver loop limit exceeded",
+  "Script error.",
 ];
 
 const isResizeObserverError = (message: string | Event | Error) => {
-  const messageStr = typeof message === 'string'
-    ? message
-    : message instanceof Error
-    ? message.message
-    : String(message);
+  const messageStr =
+    typeof message === "string"
+      ? message
+      : message instanceof Error
+        ? message.message
+        : String(message);
 
-  return RESIZE_OBSERVER_PATTERNS.some(pattern =>
-    messageStr.includes(pattern)
+  return RESIZE_OBSERVER_PATTERNS.some((pattern) =>
+    messageStr.includes(pattern),
   );
 };
 
@@ -30,8 +31,8 @@ const isResizeObserverError = (message: string | Event | Error) => {
 window.onerror = (message, source, lineno, colno, error) => {
   // Suppress ResizeObserver loop errors
   if (isResizeObserverError(message)) {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('ResizeObserver error suppressed:', message);
+    if (process.env.NODE_ENV === "development") {
+      console.warn("ResizeObserver error suppressed:", message);
     }
     return true; // Prevent default error handling
   }
@@ -48,8 +49,8 @@ window.onunhandledrejection = (event) => {
   const reason = event.reason;
 
   if (reason && isResizeObserverError(reason)) {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('ResizeObserver promise rejection suppressed:', reason);
+    if (process.env.NODE_ENV === "development") {
+      console.warn("ResizeObserver promise rejection suppressed:", reason);
     }
     event.preventDefault();
     return;
@@ -64,10 +65,10 @@ window.onunhandledrejection = (event) => {
 // Additional console error suppression for ResizeObserver
 const originalConsoleError = console.error;
 console.error = (...args) => {
-  const message = args.join(' ');
+  const message = args.join(" ");
   if (isResizeObserverError(message)) {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('ResizeObserver console error suppressed:', message);
+    if (process.env.NODE_ENV === "development") {
+      console.warn("ResizeObserver console error suppressed:", message);
     }
     return;
   }
