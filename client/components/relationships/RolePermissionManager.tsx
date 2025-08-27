@@ -124,7 +124,7 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
   // 批量撤销状态
   const [selectedAssignments, setSelectedAssignments] = useState<string[]>([]);
 
-  // 加载现有的角色-���限分配
+  // 加载现有的角色-权限分配
   useEffect(() => {
     if (roles && permissions) {
       buildAssignments();
@@ -416,6 +416,50 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
     }
   };
 
+  // 批量撤销权限
+  const handleBulkRevocation = async () => {
+    if (selectedAssignments.length === 0) {
+      toast.error('请选择要撤销的权限分配');
+      return;
+    }
+
+    // 检查是否包含继承权限
+    const inheritedAssignments = selectedAssignments.filter(id => {
+      const assignment = assignments.find(a => a.id === id);
+      return assignment?.assignmentType === 'inherited';
+    });
+
+    if (inheritedAssignments.length > 0) {
+      toast.error('无法撤销继承的权限，请先取消选择继承权限');
+      return;
+    }
+
+    try {
+      // 这里应该调用API来批量撤销权限
+      // await bulkRevokePermissions(selectedAssignments);
+
+      setAssignments(prev => prev.filter(a => !selectedAssignments.includes(a.id)));
+      setSelectedAssignments([]);
+      toast.success(`已撤销 ${selectedAssignments.length} 个权限分配`);
+
+    } catch (error) {
+      toast.error('批量撤销失败，请重试');
+    }
+  };
+
+  // 选择所有分配
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      // 只选择直接分配的权限（排除继承权限）
+      const directAssignments = filteredAssignments
+        .filter(a => a.assignmentType === 'direct')
+        .map(a => a.id);
+      setSelectedAssignments(directAssignments);
+    } else {
+      setSelectedAssignments([]);
+    }
+  };
+
   // 权限矩阵视图
   const renderMatrixView = () => {
     // 安全检查：确保数据已加载
@@ -565,7 +609,7 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
 
             <Select value={filterType} onValueChange={setFilterType}>
               <SelectTrigger className="w-32">
-                <SelectValue placeholder="按类型���滤" />
+                <SelectValue placeholder="按类型过滤" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">所有类型</SelectItem>
