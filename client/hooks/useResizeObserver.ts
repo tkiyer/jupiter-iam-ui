@@ -1,12 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { DebouncedResizeObserver } from '@/utils/resizeObserver';
 
 export interface UseResizeObserverOptions {
-  /**
-   * Debounce delay in milliseconds
-   * @default 16
-   */
-  debounceMs?: number;
   /**
    * Whether to observe immediately when the element is available
    * @default true
@@ -22,10 +16,10 @@ export function useResizeObserver<T extends HTMLElement = HTMLElement>(
   callback: ResizeObserverCallback,
   options: UseResizeObserverOptions = {}
 ) {
-  const { debounceMs = 16, observeImmediately = true } = options;
-  
+  const { observeImmediately = true } = options;
+
   const elementRef = useRef<T | null>(null);
-  const observerRef = useRef<DebouncedResizeObserver | null>(null);
+  const observerRef = useRef<ResizeObserver | null>(null);
   const callbackRef = useRef(callback);
 
   // Update callback ref when callback changes
@@ -42,21 +36,20 @@ export function useResizeObserver<T extends HTMLElement = HTMLElement>(
     }
 
     try {
-      // Create new debounced observer
-      observerRef.current = new DebouncedResizeObserver(
+      // Create new observer
+      observerRef.current = new ResizeObserver(
         (entries, observer) => {
           try {
             callbackRef.current(entries, observer);
           } catch (error) {
-            if (error instanceof Error && 
+            if (error instanceof Error &&
                 error.message.includes('ResizeObserver loop completed')) {
               console.warn('ResizeObserver loop handled gracefully in useResizeObserver');
               return;
             }
             console.error('Error in ResizeObserver callback:', error);
           }
-        },
-        debounceMs
+        }
       );
 
       // Start observing
@@ -64,7 +57,7 @@ export function useResizeObserver<T extends HTMLElement = HTMLElement>(
     } catch (error) {
       console.warn('Failed to create ResizeObserver:', error);
     }
-  }, [debounceMs]);
+  }, []);
 
   const unobserve = useCallback(() => {
     if (observerRef.current && elementRef.current) {
