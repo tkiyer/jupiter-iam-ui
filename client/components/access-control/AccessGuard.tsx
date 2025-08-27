@@ -339,9 +339,9 @@ export function AccessIndicator({
 
   if (variant === 'icon') {
     return hasPermission ? (
-      <Eye className="h-4 w-4 text-green-600" title={reason} />
+      <Eye className="h-4 w-4 text-green-600" />
     ) : (
-      <EyeOff className="h-4 w-4 text-red-600" title={reason} />
+      <EyeOff className="h-4 w-4 text-red-600" />
     );
   }
 
