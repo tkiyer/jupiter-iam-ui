@@ -93,6 +93,8 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
   const [permissionMatrix, setPermissionMatrix] = useState<PermissionMatrix[]>([]);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isBulkAssignDialogOpen, setIsBulkAssignDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingAssignment, setEditingAssignment] = useState<RolePermissionAssignment | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterRole, setFilterRole] = useState<string>('all');
   const [filterCategory, setFilterCategory] = useState<string>('all');
