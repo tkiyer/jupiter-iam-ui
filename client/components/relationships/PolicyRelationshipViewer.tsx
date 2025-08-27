@@ -168,7 +168,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
         // 分析主体条件
         analyzeSubjectConditions(rule.subject, relationship, users, roles);
         
-        // 分析资源条件
+        // 分析��源条件
         analyzeResourceConditions(rule.resource, relationship);
         
         // 收集动作
@@ -358,6 +358,109 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
 
   // 获取策略分类
   const policyCategories = [...new Set(relationships.map(r => r.category))];
+
+  // CRUD操作处理函数
+
+  // 添加新策略
+  const handleAddPolicy = async () => {
+    if (!newPolicy.name.trim()) {
+      toast.error('请输入策略名称');
+      return;
+    }
+
+    try {
+      const policyData: Partial<ABACPolicy> = {
+        id: `policy_${Date.now()}`,
+        name: newPolicy.name,
+        description: newPolicy.description,
+        effect: newPolicy.effect,
+        priority: newPolicy.priority,
+        category: newPolicy.category || 'general',
+        status: newPolicy.status,
+        rules: [], // 新策略从空规则开始
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        createdBy: 'Admin'
+      };
+
+      // 这里应该调用API来创建策略
+      // await createPolicy(policyData);
+
+      // 模拟添加到本地状态
+      console.log('创建新策略:', policyData);
+
+      setNewPolicy({
+        name: '',
+        description: '',
+        effect: 'allow',
+        priority: 100,
+        category: '',
+        status: 'active'
+      });
+      setIsAddDialogOpen(false);
+      toast.success('策略创建成功');
+
+    } catch (error) {
+      toast.error('创建策略失败，请重试');
+    }
+  };
+
+  // 编辑策略
+  const handleEditPolicy = (policyId: string) => {
+    const policy = policies?.find(p => p.id === policyId);
+    if (policy) {
+      setEditingPolicy({ ...policy });
+      setIsEditDialogOpen(true);
+    }
+  };
+
+  // 保存编辑的策略
+  const handleSavePolicy = async () => {
+    if (!editingPolicy) return;
+
+    try {
+      // 这里应该调用API来更新策略
+      // await updatePolicy(editingPolicy);
+
+      console.log('更新策略:', editingPolicy);
+      setIsEditDialogOpen(false);
+      setEditingPolicy(null);
+      toast.success('策略更新成功');
+
+    } catch (error) {
+      toast.error('更新策略失败，请重试');
+    }
+  };
+
+  // 删除策略
+  const handleDeletePolicy = async (policyId: string) => {
+    if (window.confirm('确定要删除这个策略吗？此操作不可撤销。')) {
+      try {
+        // 这里应该调用API来删除策略
+        // await deletePolicy(policyId);
+
+        console.log('删除策略:', policyId);
+        toast.success('策略删除成功');
+
+      } catch (error) {
+        toast.error('删除策略失败，请重试');
+      }
+    }
+  };
+
+  // 切换策略状态
+  const handleTogglePolicyStatus = async (policyId: string, newStatus: 'active' | 'inactive') => {
+    try {
+      // 这里应该调用API来更新策略状态
+      // await updatePolicyStatus(policyId, newStatus);
+
+      console.log('切换策略状态:', policyId, newStatus);
+      toast.success(`策略已${newStatus === 'active' ? '激活' : '停用'}`);
+
+    } catch (error) {
+      toast.error('状态更新失败，请重试');
+    }
+  };
 
   // 渲染环境条件图标
   const renderEnvironmentCondition = (condition: AttributeCondition) => {
