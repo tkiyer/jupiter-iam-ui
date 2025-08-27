@@ -242,7 +242,7 @@ export default function UserRoleManager({ onAssignmentChange }: UserRoleManagerP
     setIsEditDialogOpen(true);
   };
 
-  // 保存编辑的分配
+  // 保存编辑的分���
   const handleSaveEdit = async () => {
     if (!editingAssignment) return;
 
@@ -795,6 +795,138 @@ export default function UserRoleManager({ onAssignmentChange }: UserRoleManagerP
             </Button>
             <Button onClick={handleSaveEdit}>
               保存更改
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* 批量分配对话框 */}
+      <Dialog open={isBulkAssignDialogOpen} onOpenChange={setIsBulkAssignDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>批量分配用户角色</DialogTitle>
+            <DialogDescription>
+              为多个用户批量分配角色权限
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>选择用户</Label>
+                <div className="border rounded-md p-3 max-h-40 overflow-y-auto">
+                  {users?.map(user => (
+                    <div key={user.id} className="flex items-center space-x-2 py-1">
+                      <Checkbox
+                        id={`user-${user.id}`}
+                        checked={bulkAssignment.userIds.includes(user.id)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setBulkAssignment(prev => ({
+                              ...prev,
+                              userIds: [...prev.userIds, user.id]
+                            }));
+                          } else {
+                            setBulkAssignment(prev => ({
+                              ...prev,
+                              userIds: prev.userIds.filter(id => id !== user.id)
+                            }));
+                          }
+                        }}
+                      />
+                      <Label htmlFor={`user-${user.id}`} className="text-sm">
+                        <div>
+                          <div className="font-medium">{user.firstName} {user.lastName}</div>
+                          <div className="text-xs text-gray-500">{user.email}</div>
+                        </div>
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  已选择 {bulkAssignment.userIds.length} 个用户
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label>选择角色</Label>
+                <div className="border rounded-md p-3 max-h-40 overflow-y-auto">
+                  {roles?.map(role => (
+                    <div key={role.id} className="flex items-center space-x-2 py-1">
+                      <Checkbox
+                        id={`role-${role.id}`}
+                        checked={bulkAssignment.roleIds.includes(role.id)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setBulkAssignment(prev => ({
+                              ...prev,
+                              roleIds: [...prev.roleIds, role.id]
+                            }));
+                          } else {
+                            setBulkAssignment(prev => ({
+                              ...prev,
+                              roleIds: prev.roleIds.filter(id => id !== role.id)
+                            }));
+                          }
+                        }}
+                      />
+                      <Label htmlFor={`role-${role.id}`} className="text-sm">
+                        <div className="flex items-center gap-2">
+                          <Shield className="h-4 w-4" />
+                          {role.name}
+                        </div>
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  已选择 {bulkAssignment.roleIds.length} 个角色
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="bulk-reason">批量分配原因</Label>
+              <Textarea
+                id="bulk-reason"
+                placeholder="描述批量分配的原因..."
+                value={bulkAssignment.reason}
+                onChange={(e) => setBulkAssignment(prev => ({ ...prev, reason: e.target.value }))}
+              />
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="bulk-temporary"
+                  checked={bulkAssignment.temporaryAccess}
+                  onCheckedChange={(checked) =>
+                    setBulkAssignment(prev => ({ ...prev, temporaryAccess: checked as boolean }))
+                  }
+                />
+                <Label htmlFor="bulk-temporary">临时访问权限</Label>
+              </div>
+
+              {bulkAssignment.temporaryAccess && (
+                <div className="space-y-2 ml-6">
+                  <Label htmlFor="bulk-expires">过期时间</Label>
+                  <Input
+                    id="bulk-expires"
+                    type="datetime-local"
+                    value={bulkAssignment.expiresAt}
+                    onChange={(e) => setBulkAssignment(prev => ({ ...prev, expiresAt: e.target.value }))}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsBulkAssignDialogOpen(false)}>
+              取消
+            </Button>
+            <Button onClick={handleBulkAssignment}>
+              批量分配
             </Button>
           </DialogFooter>
         </DialogContent>
