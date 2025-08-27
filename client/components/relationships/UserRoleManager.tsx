@@ -76,6 +76,7 @@ export default function UserRoleManager({ onAssignmentChange }: UserRoleManagerP
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingAssignment, setEditingAssignment] = useState<UserRoleAssignment | null>(null);
+  const [isBulkAssignDialogOpen, setIsBulkAssignDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterRole, setFilterRole] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
@@ -130,7 +131,7 @@ export default function UserRoleManager({ onAssignmentChange }: UserRoleManagerP
     onAssignmentChange?.(builtAssignments);
   };
 
-  // 过滤分配列表
+  // 过滤���配列表
   const filteredAssignments = assignments.filter(assignment => {
     const matchesSearch = 
       assignment.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
