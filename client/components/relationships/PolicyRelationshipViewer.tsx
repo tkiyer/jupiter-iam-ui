@@ -8,6 +8,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
@@ -332,7 +343,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
     setImpactAnalysis(analysis);
   };
 
-  // 过滤策略关联关系
+  // ���滤策略关联关系
   const filteredRelationships = relationships.filter(relationship => {
     const matchesSearch = 
       relationship.policyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -449,7 +460,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* ���用主体 */}
+                {/* 适用主体 */}
                 <div>
                   <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
                     <Users className="h-4 w-4" />
