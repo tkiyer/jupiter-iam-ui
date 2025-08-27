@@ -383,6 +383,36 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
     }
   };
 
+  // 编辑分配
+  const handleEditAssignment = (assignment: RolePermissionAssignment) => {
+    if (assignment.assignmentType === 'inherited') {
+      toast.error('无法编辑继承的权限');
+      return;
+    }
+    setEditingAssignment({ ...assignment });
+    setIsEditDialogOpen(true);
+  };
+
+  // 保存编辑的分配
+  const handleSaveEdit = async () => {
+    if (!editingAssignment) return;
+
+    try {
+      // 这里应该调用API来更新分配
+      // await updateRolePermissionAssignment(editingAssignment);
+
+      setAssignments(prev =>
+        prev.map(a => a.id === editingAssignment.id ? editingAssignment : a)
+      );
+      setIsEditDialogOpen(false);
+      setEditingAssignment(null);
+      toast.success('分配更新成功');
+
+    } catch (error) {
+      toast.error('更新失败，请重试');
+    }
+  };
+
   // 权限矩阵视图
   const renderMatrixView = () => {
     // 安全检查：确保数据已加载
@@ -650,7 +680,7 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
 
               <DialogFooter>
                 <Button variant="outline" onClick={() => setIsBulkAssignDialogOpen(false)}>
-                  取消
+                  ���消
                 </Button>
                 <Button onClick={handleBulkAssignment}>
                   批量分配
