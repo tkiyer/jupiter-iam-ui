@@ -129,6 +129,9 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
     status: 'active' as 'active' | 'inactive' | 'draft'
   });
 
+  // 批量操作状态
+  const [selectedPolicies, setSelectedPolicies] = useState<string[]>([]);
+
   const { policies, loading: policiesLoading } = usePolicies();
   const { users, loading: usersLoading } = useUsers();
   const { roles, loading: rolesLoading } = useRoles();
@@ -184,7 +187,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
       // 确定有效��围
       relationship.effectiveScope = determineEffectiveScope(relationship);
 
-      // 检测策略冲突
+      // 检测策略��突
       relationship.conflictsWith = detectPolicyConflicts(policy, policies);
 
       return relationship;
@@ -452,7 +455,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
   // 切换策略状态
   const handleTogglePolicyStatus = async (policyId: string, newStatus: 'active' | 'inactive') => {
     try {
-      // 这里应该调用API来更新策略状��
+      // 这里应该调用API来更新策略状态
       // await updatePolicyStatus(policyId, newStatus);
 
       console.log('切换策略状态:', policyId, newStatus);
