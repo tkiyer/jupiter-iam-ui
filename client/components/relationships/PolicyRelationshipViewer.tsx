@@ -218,7 +218,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
           }
         });
       } else if (condition.attribute === 'user_id' || condition.attribute === 'userId') {
-        // 基于用户的��件
+        // 基于用户的条件
         const userValue = condition.value;
         const user = users.find(u => u.id === userValue);
         if (user) {
@@ -526,7 +526,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
       toast.success(`已停用 ${selectedPolicies.length} 个策略`);
 
     } catch (error) {
-      toast.error('批量停用失败，请重试');
+      toast.error('批量停用���败，请重试');
     }
   };
 
@@ -632,6 +632,26 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
             </SelectContent>
           </Select>
         </div>
+      </div>
+
+      {/* 批量操作控制 */}
+      <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="select-all"
+            checked={selectedPolicies.length === filteredRelationships.length && filteredRelationships.length > 0}
+            onCheckedChange={handleSelectAll}
+          />
+          <Label htmlFor="select-all" className="text-sm">
+            全选 ({filteredRelationships.length} 个策略)
+          </Label>
+        </div>
+
+        {selectedPolicies.length > 0 && (
+          <Badge variant="secondary">
+            已选择 {selectedPolicies.length} 个策略
+          </Badge>
+        )}
       </div>
 
       <div className="grid gap-4">
@@ -1056,7 +1076,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="policy-category">策略分���</Label>
+              <Label htmlFor="policy-category">策略分类</Label>
               <Input
                 id="policy-category"
                 placeholder="例如：access, security, compliance"
