@@ -121,7 +121,10 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
     reason: ''
   });
 
-  // 加载现有的角色-权限分配
+  // 批量撤销状态
+  const [selectedAssignments, setSelectedAssignments] = useState<string[]>([]);
+
+  // 加载现有的角色-���限分配
   useEffect(() => {
     if (roles && permissions) {
       buildAssignments();
@@ -562,7 +565,7 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
 
             <Select value={filterType} onValueChange={setFilterType}>
               <SelectTrigger className="w-32">
-                <SelectValue placeholder="按类型过滤" />
+                <SelectValue placeholder="按类型���滤" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">所有类型</SelectItem>
