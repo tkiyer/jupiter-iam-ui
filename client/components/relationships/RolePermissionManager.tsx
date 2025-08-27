@@ -435,7 +435,7 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
     }
 
     try {
-      // 这里应该调用API来������撤销权限
+      // 这���应该调用API来批���撤销权限
       // await bulkRevokePermissions(selectedAssignments);
 
       setAssignments(prev => prev.filter(a => !selectedAssignments.includes(a.id)));
@@ -961,6 +961,19 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
               <tbody>
                 {filteredAssignments.map((assignment) => (
                   <tr key={assignment.id} className="bg-white border-b hover:bg-gray-50">
+                    <td className="px-4 py-4">
+                      <Checkbox
+                        checked={selectedAssignments.includes(assignment.id)}
+                        disabled={assignment.assignmentType === 'inherited'}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setSelectedAssignments(prev => [...prev, assignment.id]);
+                          } else {
+                            setSelectedAssignments(prev => prev.filter(id => id !== assignment.id));
+                          }
+                        }}
+                      />
+                    </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <Shield className="h-4 w-4 text-gray-400" />
