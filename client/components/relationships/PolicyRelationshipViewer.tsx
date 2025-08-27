@@ -314,7 +314,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
         });
       });
 
-      // 计算风险级别
+      // 计算风险���别
       let riskLevel: 'low' | 'medium' | 'high' | 'critical' = 'low';
       if (policy.effect === 'allow' && affectedUsers > 50) {
         riskLevel = 'high';
@@ -381,7 +381,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
         priority: newPolicy.priority,
         category: newPolicy.category || 'general',
         status: newPolicy.status,
-        rules: [], // 新策略从空规则开始
+        rules: [], // 新策略从空规���开始
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         createdBy: 'Admin'
@@ -659,20 +659,32 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
           <Card key={relationship.policyId} className="hover:shadow-md transition-shadow">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <FileText className="h-5 w-5" />
-                    {relationship.policyName}
-                  </CardTitle>
-                  <CardDescription className="flex items-center gap-4">
-                    <span>优先级: {relationship.priority}</span>
-                    <span>范围: {relationship.effectiveScope}</span>
-                    {relationship.conflictsWith.length > 0 && (
-                      <Badge variant="destructive" className="ml-2">
-                        {relationship.conflictsWith.length} 个冲突
-                      </Badge>
-                    )}
-                  </CardDescription>
+                <div className="flex items-center gap-3">
+                  <Checkbox
+                    checked={selectedPolicies.includes(relationship.policyId)}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setSelectedPolicies(prev => [...prev, relationship.policyId]);
+                      } else {
+                        setSelectedPolicies(prev => prev.filter(id => id !== relationship.policyId));
+                      }
+                    }}
+                  />
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <FileText className="h-5 w-5" />
+                      {relationship.policyName}
+                    </CardTitle>
+                    <CardDescription className="flex items-center gap-4">
+                      <span>优先级: {relationship.priority}</span>
+                      <span>范围: {relationship.effectiveScope}</span>
+                      {relationship.conflictsWith.length > 0 && (
+                        <Badge variant="destructive" className="ml-2">
+                          {relationship.conflictsWith.length} 个冲突
+                        </Badge>
+                      )}
+                    </CardDescription>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge variant={relationship.effect === 'allow' ? 'default' : 'destructive'}>
