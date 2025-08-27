@@ -45,6 +45,7 @@ import { User, Role } from '../../../shared/iam';
 import { useUsers } from '../../hooks/useUsers';
 import { useRoles } from '../../hooks/useRoles';
 import { toast } from 'sonner';
+import { RelationshipValidator, ValidationResult } from '../../../shared/relationship-validator';
 
 interface UserRoleAssignment {
   id: string;
@@ -202,7 +203,7 @@ export default function UserRoleManager({ onAssignmentChange }: UserRoleManagerP
     if (newAssignment.temporaryAccess && newAssignment.expiresAt) {
       assignment.conditions?.push({
         type: 'time_based',
-        description: '临时访问权限',
+        description: '临时访���权限',
         value: { expiresAt: newAssignment.expiresAt }
       });
     }
@@ -242,7 +243,7 @@ export default function UserRoleManager({ onAssignmentChange }: UserRoleManagerP
     setIsEditDialogOpen(true);
   };
 
-  // 保存编辑的分���
+  // 保存编辑的分配
   const handleSaveEdit = async () => {
     if (!editingAssignment) return;
 
