@@ -98,6 +98,22 @@ const Roles: React.FC = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  // Helper function for status colors
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "active":
+        return "bg-green-500 text-white";
+      case "inactive":
+        return "bg-gray-500 text-white";
+      case "deprecated":
+        return "bg-yellow-500 text-white";
+      case "draft":
+        return "bg-blue-500 text-white";
+      default:
+        return "bg-gray-500 text-white";
+    }
+  };
   const [activeTab, setActiveTab] = useState("roles");
 
   // Template management state
@@ -1525,6 +1541,21 @@ const RoleHierarchyView: React.FC<{ roles: Role[] }> = ({ roles }) => {
     if (level >= 3) return <Shield className="h-4 w-4 text-blue-600" />;
     if (level >= 2) return <Users className="h-4 w-4 text-green-600" />;
     return <User className="h-4 w-4 text-gray-600" />;
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "active":
+        return "bg-green-500 text-white";
+      case "inactive":
+        return "bg-gray-500 text-white";
+      case "deprecated":
+        return "bg-yellow-500 text-white";
+      case "draft":
+        return "bg-blue-500 text-white";
+      default:
+        return "bg-gray-500 text-white";
+    }
   };
 
   const buildHierarchy = (roles: Role[]) => {
