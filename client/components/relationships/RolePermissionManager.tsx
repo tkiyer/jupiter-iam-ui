@@ -788,6 +788,87 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
               </DialogFooter>
             </DialogContent>
           </Dialog>
+
+          {/* 编辑分配对话框 */}
+          <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>编辑角色权限分配</DialogTitle>
+                <DialogDescription>
+                  修改权限分配的详细信息
+                </DialogDescription>
+              </DialogHeader>
+
+              {editingAssignment && (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>角色</Label>
+                    <div className="p-2 bg-gray-50 rounded border">
+                      <div className="flex items-center gap-2">
+                        <Shield className="h-4 w-4" />
+                        {editingAssignment.roleName}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>权限</Label>
+                    <div className="p-2 bg-gray-50 rounded border">
+                      <div className="flex items-center gap-2">
+                        <Key className="h-4 w-4" />
+                        {editingAssignment.permissionName}
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">
+                        {editingAssignment.permissionCategory} • {editingAssignment.permissionScope}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-source">分配来源</Label>
+                    <Input
+                      id="edit-source"
+                      value={editingAssignment.source}
+                      onChange={(e) => setEditingAssignment(prev =>
+                        prev ? { ...prev, source: e.target.value } : null
+                      )}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-assigned-by">分配人</Label>
+                    <Input
+                      id="edit-assigned-by"
+                      value={editingAssignment.assignedBy}
+                      onChange={(e) => setEditingAssignment(prev =>
+                        prev ? { ...prev, assignedBy: e.target.value } : null
+                      )}
+                    />
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="edit-active"
+                      checked={editingAssignment.isActive}
+                      onCheckedChange={(checked) => setEditingAssignment(prev =>
+                        prev ? { ...prev, isActive: checked as boolean } : null
+                      )}
+                    />
+                    <Label htmlFor="edit-active">激活状态</Label>
+                  </div>
+                </div>
+              )}
+
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                  取消
+                </Button>
+                <Button onClick={handleSaveEdit}>
+                  保存更改
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
