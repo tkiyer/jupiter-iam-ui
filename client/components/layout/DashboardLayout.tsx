@@ -26,6 +26,7 @@ import {
   Menu,
   X,
   Building2,
+  Network,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -39,6 +40,7 @@ const navigationItems = [
   { path: "/roles", label: "Role Management", icon: Key },
   { path: "/permissions", label: "Permissions", icon: Settings },
   { path: "/policies", label: "ABAC Policies", icon: FileText },
+  { path: "/relationships", label: "Relationships", icon: Network },
   { path: "/access-control", label: "Access Control", icon: Shield },
   { path: "/business-scenarios", label: "Business Scenarios", icon: Building2 },
   { path: "/audit", label: "Audit Logs", icon: BarChart3 },
