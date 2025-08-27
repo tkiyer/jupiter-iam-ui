@@ -110,7 +110,7 @@ const mockWorkflowRequests: WorkflowRequest[] = [
         assignee: "张工程师",
         assigneeRole: "senior_engineer",
         dueDate: "2024-01-15T18:00:00Z",
-        rbacRequirements: ["员工角色", "基础提交权限"],
+        rbacRequirements: ["员工角色", "基���提交权限"],
         abacConditions: ["工作时间", "本部门申请"],
         completedAt: "2024-01-15T09:30:00Z",
         comments: "服务器性能已接近瓶颈，需要尽快升级",
@@ -294,7 +294,7 @@ const mockWorkflowRequests: WorkflowRequest[] = [
         assigneeRole: "system",
         dueDate: "2024-01-16T02:55:00Z",
         rbacRequirements: ["系统执行权限"],
-        abacConditions: ["时间限制(2小时)", "操作日志记录"],
+        abacConditions: ["时间限制(2小时)", "操��日志记录"],
         completedAt: "2024-01-16T02:35:00Z",
         comments: "临时权限已激活，2小时后自动收回",
       },
@@ -330,6 +330,25 @@ export default function BusinessWorkflowSystem() {
       case "medium":
         return "bg-blue-500 text-white";
       case "low":
+        return "bg-gray-500 text-white";
+      default:
+        return "bg-gray-500 text-white";
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "completed":
+        return "bg-green-500 text-white";
+      case "processing":
+        return "bg-blue-500 text-white";
+      case "in_review":
+        return "bg-yellow-500 text-white";
+      case "approved":
+        return "bg-green-500 text-white";
+      case "rejected":
+        return "bg-red-500 text-white";
+      case "pending":
         return "bg-gray-500 text-white";
       default:
         return "bg-gray-500 text-white";
@@ -992,7 +1011,7 @@ export default function BusinessWorkflowSystem() {
                     <SelectItem value="expense_approval">费用审批</SelectItem>
                     <SelectItem value="permission_request">权限申请</SelectItem>
                     <SelectItem value="system_access">系统访问</SelectItem>
-                    <SelectItem value="data_export">数据导出</SelectItem>
+                    <SelectItem value="data_export">数据���出</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -1066,7 +1085,7 @@ export default function BusinessWorkflowSystem() {
 
               <div className="flex gap-2">
                 <Button onClick={submitNewRequest} className="flex-1">
-                  提交申请
+                  ��交申请
                 </Button>
                 <Button
                   variant="outline"
