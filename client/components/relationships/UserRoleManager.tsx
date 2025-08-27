@@ -428,7 +428,16 @@ export default function UserRoleManager({ onAssignmentChange }: UserRoleManagerP
               删除选中 ({selectedAssignments.length})
             </Button>
           )}
-          
+
+          <Dialog open={isBulkAssignDialogOpen} onOpenChange={setIsBulkAssignDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline">
+                <Users className="h-4 w-4 mr-2" />
+                批量分配
+              </Button>
+            </DialogTrigger>
+          </Dialog>
+
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
               <Button>
