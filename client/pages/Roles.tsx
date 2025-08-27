@@ -101,12 +101,19 @@ const Roles: React.FC = () => {
   const [activeTab, setActiveTab] = useState("roles");
 
   // Template management state
-  const [isCreateTemplateDialogOpen, setIsCreateTemplateDialogOpen] = useState(false);
-  const [isEditTemplateDialogOpen, setIsEditTemplateDialogOpen] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<RoleTemplate | null>(null);
+  const [isCreateTemplateDialogOpen, setIsCreateTemplateDialogOpen] =
+    useState(false);
+  const [isEditTemplateDialogOpen, setIsEditTemplateDialogOpen] =
+    useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<RoleTemplate | null>(
+    null,
+  );
   const [templateSearchTerm, setTemplateSearchTerm] = useState("");
-  const [templateCategoryFilter, setTemplateCategoryFilter] = useState<string>("all");
-  const [filteredTemplates, setFilteredTemplates] = useState<RoleTemplate[]>([]);
+  const [templateCategoryFilter, setTemplateCategoryFilter] =
+    useState<string>("all");
+  const [filteredTemplates, setFilteredTemplates] = useState<RoleTemplate[]>(
+    [],
+  );
 
   // Pagination state
   const {
@@ -286,9 +293,15 @@ const Roles: React.FC = () => {
     if (templateSearchTerm) {
       filtered = filtered.filter(
         (template) =>
-          template.name.toLowerCase().includes(templateSearchTerm.toLowerCase()) ||
-          template.description.toLowerCase().includes(templateSearchTerm.toLowerCase()) ||
-          template.category.toLowerCase().includes(templateSearchTerm.toLowerCase()),
+          template.name
+            .toLowerCase()
+            .includes(templateSearchTerm.toLowerCase()) ||
+          template.description
+            .toLowerCase()
+            .includes(templateSearchTerm.toLowerCase()) ||
+          template.category
+            .toLowerCase()
+            .includes(templateSearchTerm.toLowerCase()),
       );
     }
 
@@ -342,7 +355,7 @@ const Roles: React.FC = () => {
       if (response.ok) {
         const updatedTemplate = await response.json();
         setRoleTemplates((prev) =>
-          prev.map((t) => (t.id === updatedTemplate.id ? updatedTemplate : t))
+          prev.map((t) => (t.id === updatedTemplate.id ? updatedTemplate : t)),
         );
         setIsEditTemplateDialogOpen(false);
         setSelectedTemplate(null);
@@ -686,7 +699,9 @@ const Roles: React.FC = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Categories</SelectItem>
-                      {Array.from(new Set(roleTemplates.map(t => t.category))).map(category => (
+                      {Array.from(
+                        new Set(roleTemplates.map((t) => t.category)),
+                      ).map((category) => (
                         <SelectItem key={category} value={category}>
                           {category}
                         </SelectItem>
@@ -729,12 +744,13 @@ const Roles: React.FC = () => {
               {filteredTemplates.length === 0 ? (
                 <div className="text-center py-12">
                   <Layers className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No templates found</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    No templates found
+                  </h3>
                   <p className="text-gray-500 mb-4">
                     {templateSearchTerm || templateCategoryFilter !== "all"
                       ? "Try adjusting your search or filters"
-                      : "Create your first role template to get started"
-                    }
+                      : "Create your first role template to get started"}
                   </p>
                   <Button onClick={() => setIsCreateTemplateDialogOpen(true)}>
                     <Plus className="mr-2 h-4 w-4" />
@@ -770,7 +786,9 @@ const Roles: React.FC = () => {
                               </SelectTrigger>
                               <SelectContent align="end">
                                 <SelectItem
-                                  onSelect={() => handleCreateFromTemplate(template)}
+                                  onSelect={() =>
+                                    handleCreateFromTemplate(template)
+                                  }
                                   className="cursor-pointer"
                                 >
                                   <div className="flex items-center">
@@ -791,7 +809,9 @@ const Roles: React.FC = () => {
                                   </div>
                                 </SelectItem>
                                 <SelectItem
-                                  onSelect={() => handleDuplicateTemplate(template)}
+                                  onSelect={() =>
+                                    handleDuplicateTemplate(template)
+                                  }
                                   className="cursor-pointer"
                                 >
                                   <div className="flex items-center">
@@ -800,7 +820,9 @@ const Roles: React.FC = () => {
                                   </div>
                                 </SelectItem>
                                 <SelectItem
-                                  onSelect={() => handleDeleteTemplate(template.id)}
+                                  onSelect={() =>
+                                    handleDeleteTemplate(template.id)
+                                  }
                                   className="cursor-pointer text-red-600"
                                   disabled={template.isBuiltIn}
                                 >
@@ -827,7 +849,9 @@ const Roles: React.FC = () => {
                         <div className="grid grid-cols-2 gap-2 text-sm">
                           <div className="flex items-center gap-1">
                             <Shield className="h-3 w-3 text-blue-500" />
-                            <span>{template.permissions.length} permissions</span>
+                            <span>
+                              {template.permissions.length} permissions
+                            </span>
                           </div>
                           <div className="flex items-center gap-1">
                             <TrendingUp className="h-3 w-3 text-green-500" />
@@ -1037,7 +1061,10 @@ const Roles: React.FC = () => {
       )}
 
       {/* Create Template Dialog */}
-      <Dialog open={isCreateTemplateDialogOpen} onOpenChange={setIsCreateTemplateDialogOpen}>
+      <Dialog
+        open={isCreateTemplateDialogOpen}
+        onOpenChange={setIsCreateTemplateDialogOpen}
+      >
         <CreateTemplateDialog
           onCreateTemplate={handleCreateTemplate}
           availablePermissions={availablePermissions}
@@ -1047,7 +1074,10 @@ const Roles: React.FC = () => {
 
       {/* Edit Template Dialog */}
       {selectedTemplate && (
-        <Dialog open={isEditTemplateDialogOpen} onOpenChange={setIsEditTemplateDialogOpen}>
+        <Dialog
+          open={isEditTemplateDialogOpen}
+          onOpenChange={setIsEditTemplateDialogOpen}
+        >
           <EditTemplateDialog
             template={selectedTemplate}
             onUpdateTemplate={handleUpdateTemplate}
@@ -1158,9 +1188,15 @@ const CreateRoleDialog: React.FC<{
 
           <TabsContent value="permissions" className="space-y-4">
             <div>
-              <Label className="text-lg font-semibold mb-4 block">Select Permissions</Label>
+              <Label className="text-lg font-semibold mb-4 block">
+                Select Permissions
+              </Label>
               <PermissionSelector
-                permissions={Array.isArray(availablePermissions) ? availablePermissions : []}
+                permissions={
+                  Array.isArray(availablePermissions)
+                    ? availablePermissions
+                    : []
+                }
                 selectedPermissions={formData.permissions}
                 onSelectionChange={(selectedIds) => {
                   setFormData((prev) => ({
@@ -1340,7 +1376,11 @@ const EditRoleDialog: React.FC<{
                 Assigned Permissions ({formData.permissions.length})
               </Label>
               <PermissionSelector
-                permissions={Array.isArray(availablePermissions) ? availablePermissions : []}
+                permissions={
+                  Array.isArray(availablePermissions)
+                    ? availablePermissions
+                    : []
+                }
                 selectedPermissions={formData.permissions}
                 onSelectionChange={(selectedIds) => {
                   setFormData((prev) => ({
@@ -1592,8 +1632,16 @@ const EditTemplateDialog: React.FC<{
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const categories = [
-    "Management", "Administrative", "Technical", "Sales", "Marketing",
-    "HR", "Finance", "Operations", "Security", "Customer Service"
+    "Management",
+    "Administrative",
+    "Technical",
+    "Sales",
+    "Marketing",
+    "HR",
+    "Finance",
+    "Operations",
+    "Security",
+    "Customer Service",
   ];
 
   const validateForm = () => {
@@ -1659,7 +1707,9 @@ const EditTemplateDialog: React.FC<{
                   }
                   className={errors.name ? "border-red-500" : ""}
                 />
-                {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+                {errors.name && (
+                  <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+                )}
               </div>
               <div>
                 <Label>Category</Label>
@@ -1669,7 +1719,9 @@ const EditTemplateDialog: React.FC<{
                     setFormData((prev) => ({ ...prev, category: value }))
                   }
                 >
-                  <SelectTrigger className={errors.category ? "border-red-500" : ""}>
+                  <SelectTrigger
+                    className={errors.category ? "border-red-500" : ""}
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -1680,7 +1732,9 @@ const EditTemplateDialog: React.FC<{
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.category && <p className="text-sm text-red-500 mt-1">{errors.category}</p>}
+                {errors.category && (
+                  <p className="text-sm text-red-500 mt-1">{errors.category}</p>
+                )}
               </div>
             </div>
 
@@ -1690,12 +1744,19 @@ const EditTemplateDialog: React.FC<{
                 id="editTemplateDescription"
                 value={formData.description}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, description: e.target.value }))
+                  setFormData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
                 }
                 className={errors.description ? "border-red-500" : ""}
                 rows={3}
               />
-              {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
+              {errors.description && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.description}
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -1704,7 +1765,10 @@ const EditTemplateDialog: React.FC<{
                 <Select
                   value={formData.organizationUnit || "any"}
                   onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, organizationUnit: value === "any" ? undefined : value }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      organizationUnit: value === "any" ? undefined : value,
+                    }))
                   }
                 >
                   <SelectTrigger>
@@ -1761,7 +1825,11 @@ const EditTemplateDialog: React.FC<{
                 Template Permissions ({formData.permissions.length})
               </Label>
               <PermissionSelector
-                permissions={Array.isArray(availablePermissions) ? availablePermissions : []}
+                permissions={
+                  Array.isArray(availablePermissions)
+                    ? availablePermissions
+                    : []
+                }
                 selectedPermissions={formData.permissions}
                 onSelectionChange={(selectedIds) => {
                   setFormData((prev) => ({
@@ -1770,7 +1838,11 @@ const EditTemplateDialog: React.FC<{
                   }));
                 }}
               />
-              {errors.permissions && <p className="text-sm text-red-500 mt-1">{errors.permissions}</p>}
+              {errors.permissions && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.permissions}
+                </p>
+              )}
             </div>
           </TabsContent>
 
@@ -1780,8 +1852,12 @@ const EditTemplateDialog: React.FC<{
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600">Usage Count</p>
-                      <p className="text-2xl font-bold text-gray-900">{formData.usageCount}</p>
+                      <p className="text-sm font-medium text-gray-600">
+                        Usage Count
+                      </p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {formData.usageCount}
+                      </p>
                     </div>
                     <Users className="h-8 w-8 text-blue-600" />
                   </div>
@@ -1791,8 +1867,12 @@ const EditTemplateDialog: React.FC<{
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600">Permissions</p>
-                      <p className="text-2xl font-bold text-gray-900">{formData.permissions.length}</p>
+                      <p className="text-sm font-medium text-gray-600">
+                        Permissions
+                      </p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {formData.permissions.length}
+                      </p>
                     </div>
                     <Shield className="h-8 w-8 text-green-600" />
                   </div>
@@ -1803,7 +1883,9 @@ const EditTemplateDialog: React.FC<{
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">Level</p>
-                      <p className="text-2xl font-bold text-gray-900">{formData.level}</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {formData.level}
+                      </p>
                     </div>
                     <Crown className="h-8 w-8 text-purple-600" />
                   </div>
@@ -1873,8 +1955,16 @@ const CreateTemplateDialog: React.FC<{
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const categories = [
-    "Management", "Administrative", "Technical", "Sales", "Marketing",
-    "HR", "Finance", "Operations", "Security", "Customer Service"
+    "Management",
+    "Administrative",
+    "Technical",
+    "Sales",
+    "Marketing",
+    "HR",
+    "Finance",
+    "Operations",
+    "Security",
+    "Customer Service",
   ];
 
   const validateForm = () => {
@@ -1906,7 +1996,9 @@ const CreateTemplateDialog: React.FC<{
       // If creating from existing role, get permissions from that role
       let permissions = formData.permissions;
       if (formData.sourceRoleId) {
-        const sourceRole = existingRoles.find(r => r.id === formData.sourceRoleId);
+        const sourceRole = existingRoles.find(
+          (r) => r.id === formData.sourceRoleId,
+        );
         if (sourceRole) {
           permissions = sourceRole.permissions;
         }
@@ -1914,7 +2006,10 @@ const CreateTemplateDialog: React.FC<{
 
       await onCreateTemplate({
         ...formData,
-        organizationUnit: formData.organizationUnit === "any" ? undefined : formData.organizationUnit,
+        organizationUnit:
+          formData.organizationUnit === "any"
+            ? undefined
+            : formData.organizationUnit,
         permissions,
         usageCount: 0,
       });
@@ -1939,9 +2034,9 @@ const CreateTemplateDialog: React.FC<{
   };
 
   const handleCreateFromRole = (roleId: string) => {
-    const role = existingRoles.find(r => r.id === roleId);
+    const role = existingRoles.find((r) => r.id === roleId);
     if (role) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         name: `${role.name} Template`,
         description: `Template based on ${role.name} role`,
@@ -1958,7 +2053,8 @@ const CreateTemplateDialog: React.FC<{
       <DialogHeader>
         <DialogTitle>Create Role Template</DialogTitle>
         <DialogDescription>
-          Create a reusable role template that can be used to quickly create new roles
+          Create a reusable role template that can be used to quickly create new
+          roles
         </DialogDescription>
       </DialogHeader>
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -1982,7 +2078,9 @@ const CreateTemplateDialog: React.FC<{
                   }
                   className={errors.name ? "border-red-500" : ""}
                 />
-                {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+                {errors.name && (
+                  <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+                )}
               </div>
               <div>
                 <Label>Category</Label>
@@ -1992,7 +2090,9 @@ const CreateTemplateDialog: React.FC<{
                     setFormData((prev) => ({ ...prev, category: value }))
                   }
                 >
-                  <SelectTrigger className={errors.category ? "border-red-500" : ""}>
+                  <SelectTrigger
+                    className={errors.category ? "border-red-500" : ""}
+                  >
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -2003,7 +2103,9 @@ const CreateTemplateDialog: React.FC<{
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.category && <p className="text-sm text-red-500 mt-1">{errors.category}</p>}
+                {errors.category && (
+                  <p className="text-sm text-red-500 mt-1">{errors.category}</p>
+                )}
               </div>
             </div>
 
@@ -2014,12 +2116,19 @@ const CreateTemplateDialog: React.FC<{
                 required
                 value={formData.description}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, description: e.target.value }))
+                  setFormData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
                 }
                 className={errors.description ? "border-red-500" : ""}
                 rows={3}
               />
-              {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
+              {errors.description && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.description}
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -2028,7 +2137,10 @@ const CreateTemplateDialog: React.FC<{
                 <Select
                   value={formData.organizationUnit || "any"}
                   onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, organizationUnit: value === "any" ? "" : value }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      organizationUnit: value === "any" ? "" : value,
+                    }))
                   }
                 >
                   <SelectTrigger>
@@ -2086,7 +2198,11 @@ const CreateTemplateDialog: React.FC<{
               </Label>
               {!formData.sourceRoleId && (
                 <PermissionSelector
-                  permissions={Array.isArray(availablePermissions) ? availablePermissions : []}
+                  permissions={
+                    Array.isArray(availablePermissions)
+                      ? availablePermissions
+                      : []
+                  }
                   selectedPermissions={formData.permissions}
                   onSelectionChange={(selectedIds) => {
                     setFormData((prev) => ({
@@ -2100,11 +2216,16 @@ const CreateTemplateDialog: React.FC<{
                 <Alert>
                   <CheckCircle className="h-4 w-4" />
                   <AlertDescription>
-                    Permissions will be inherited from the selected source role. Switch to the "From Existing Role" tab to modify the source.
+                    Permissions will be inherited from the selected source role.
+                    Switch to the "From Existing Role" tab to modify the source.
                   </AlertDescription>
                 </Alert>
               )}
-              {errors.permissions && <p className="text-sm text-red-500 mt-1">{errors.permissions}</p>}
+              {errors.permissions && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.permissions}
+                </p>
+              )}
             </div>
           </TabsContent>
 
@@ -2112,7 +2233,9 @@ const CreateTemplateDialog: React.FC<{
             <div>
               <Label>Create Template from Existing Role</Label>
               <p className="text-sm text-gray-500 mb-4">
-                Select an existing role to use as the basis for this template. The template will inherit all permissions from the selected role.
+                Select an existing role to use as the basis for this template.
+                The template will inherit all permissions from the selected
+                role.
               </p>
               <Select
                 value={formData.sourceRoleId}
@@ -2122,16 +2245,18 @@ const CreateTemplateDialog: React.FC<{
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
                 <SelectContent>
-                  {existingRoles.filter(role => role.status === 'active').map((role) => (
-                    <SelectItem key={role.id} value={role.id}>
-                      <div className="flex items-center justify-between w-full">
-                        <span>{role.name}</span>
-                        <Badge variant="secondary" className="ml-2">
-                          {role.permissions.length} permissions
-                        </Badge>
-                      </div>
-                    </SelectItem>
-                  ))}
+                  {existingRoles
+                    .filter((role) => role.status === "active")
+                    .map((role) => (
+                      <SelectItem key={role.id} value={role.id}>
+                        <div className="flex items-center justify-between w-full">
+                          <span>{role.name}</span>
+                          <Badge variant="secondary" className="ml-2">
+                            {role.permissions.length} permissions
+                          </Badge>
+                        </div>
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
 
@@ -2139,15 +2264,29 @@ const CreateTemplateDialog: React.FC<{
                 <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                   <h4 className="font-medium mb-2">Source Role Details:</h4>
                   {(() => {
-                    const sourceRole = existingRoles.find(r => r.id === formData.sourceRoleId);
+                    const sourceRole = existingRoles.find(
+                      (r) => r.id === formData.sourceRoleId,
+                    );
                     return sourceRole ? (
                       <div className="text-sm space-y-1">
-                        <p><strong>Name:</strong> {sourceRole.name}</p>
-                        <p><strong>Description:</strong> {sourceRole.description}</p>
-                        <p><strong>Level:</strong> {sourceRole.level}</p>
-                        <p><strong>Permissions:</strong> {sourceRole.permissions.length}</p>
+                        <p>
+                          <strong>Name:</strong> {sourceRole.name}
+                        </p>
+                        <p>
+                          <strong>Description:</strong> {sourceRole.description}
+                        </p>
+                        <p>
+                          <strong>Level:</strong> {sourceRole.level}
+                        </p>
+                        <p>
+                          <strong>Permissions:</strong>{" "}
+                          {sourceRole.permissions.length}
+                        </p>
                         {sourceRole.organizationUnit && (
-                          <p><strong>Organization Unit:</strong> {sourceRole.organizationUnit}</p>
+                          <p>
+                            <strong>Organization Unit:</strong>{" "}
+                            {sourceRole.organizationUnit}
+                          </p>
                         )}
                       </div>
                     ) : null;

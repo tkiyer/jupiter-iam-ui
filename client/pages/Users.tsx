@@ -157,7 +157,6 @@ const Users: React.FC = () => {
     setFilteredUsers(filtered);
   };
 
-
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "active":

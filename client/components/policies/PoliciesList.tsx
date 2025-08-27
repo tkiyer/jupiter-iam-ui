@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { getStatusColor, getPriorityBadge, getEffectColor } from "@/lib/statusUtils";
+import {
+  getStatusColor,
+  getPriorityBadge,
+  getEffectColor,
+} from "@/lib/statusUtils";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -105,7 +109,6 @@ export const PoliciesList: React.FC<PoliciesListProps> = ({
 
     setFilteredPolicies(filtered);
   };
-
 
   return (
     <>

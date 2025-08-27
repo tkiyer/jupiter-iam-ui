@@ -321,7 +321,6 @@ export default function BusinessWorkflowSystem() {
   const [showNewRequestForm, setShowNewRequestForm] = useState(false);
   const [actionComment, setActionComment] = useState("");
 
-
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "urgent":

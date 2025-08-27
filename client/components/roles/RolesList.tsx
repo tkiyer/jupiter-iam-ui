@@ -94,7 +94,6 @@ export const RolesList: React.FC<RolesListProps> = ({ roles, onEditRole }) => {
     setFilteredRoles(filtered);
   };
 
-
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "active":
