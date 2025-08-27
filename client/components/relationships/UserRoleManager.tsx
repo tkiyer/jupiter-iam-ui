@@ -298,6 +298,73 @@ export default function UserRoleManager({ onAssignmentChange }: UserRoleManagerP
     }
   };
 
+  // 批量分配用户角色
+  const handleBulkAssignment = async () => {
+    if (bulkAssignment.userIds.length === 0 || bulkAssignment.roleIds.length === 0) {
+      toast.error('请选择用户和角色');
+      return;
+    }
+
+    try {
+      const newAssignments: UserRoleAssignment[] = [];
+
+      bulkAssignment.userIds.forEach(userId => {
+        const user = users?.find(u => u.id === userId);
+        if (user) {
+          bulkAssignment.roleIds.forEach(roleId => {
+            const role = roles?.find(r => r.id === roleId);
+            if (role) {
+              // 检查是否已存在相同的分配
+              const existingAssignment = assignments.find(
+                a => a.userId === userId && a.roleId === roleId
+              );
+
+              if (!existingAssignment) {
+                newAssignments.push({
+                  id: `${userId}-${roleId}`,
+                  userId,
+                  userName: `${user.firstName} ${user.lastName}`,
+                  userEmail: user.email,
+                  roleId,
+                  roleName: role.name,
+                  assignedAt: new Date().toISOString(),
+                  assignedBy: 'Admin',
+                  isActive: true,
+                  expiresAt: bulkAssignment.expiresAt || undefined,
+                  reason: bulkAssignment.reason || undefined,
+                  conditions: bulkAssignment.temporaryAccess && bulkAssignment.expiresAt ? [{
+                    type: 'time_based' as const,
+                    description: '临时访问权限',
+                    value: { expiresAt: bulkAssignment.expiresAt }
+                  }] : []
+                });
+              }
+            }
+          });
+        }
+      });
+
+      if (newAssignments.length === 0) {
+        toast.error('所选用户已分配所选角色');
+        return;
+      }
+
+      setAssignments(prev => [...prev, ...newAssignments]);
+      setBulkAssignment({
+        userIds: [],
+        roleIds: [],
+        reason: '',
+        temporaryAccess: false,
+        expiresAt: ''
+      });
+      setIsBulkAssignDialogOpen(false);
+      toast.success(`批量分配 ${newAssignments.length} 个角色`);
+
+    } catch (error) {
+      toast.error('批量分配失败，请重试');
+    }
+  };
+
   if (usersLoading || rolesLoading) {
     return (
       <div className="flex items-center justify-center h-32">
