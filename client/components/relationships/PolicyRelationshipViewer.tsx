@@ -56,6 +56,7 @@ import { usePolicies } from '../../hooks/usePolicies';
 import { useUsers } from '../../hooks/useUsers';
 import { useRoles } from '../../hooks/useRoles';
 import { usePermissions } from '../../hooks/usePermissions';
+import { toast } from 'sonner';
 
 interface PolicyRelationship {
   policyId: string;
@@ -168,7 +169,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
         // 分析主体条件
         analyzeSubjectConditions(rule.subject, relationship, users, roles);
         
-        // 分析��源条件
+        // 分析资源条件
         analyzeResourceConditions(rule.resource, relationship);
         
         // 收集动作
