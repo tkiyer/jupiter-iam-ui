@@ -187,7 +187,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
       // 确定有效��围
       relationship.effectiveScope = determineEffectiveScope(relationship);
 
-      // 检测策略��突
+      // 检测策略冲突
       relationship.conflictsWith = detectPolicyConflicts(policy, policies);
 
       return relationship;
@@ -463,6 +463,79 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
 
     } catch (error) {
       toast.error('状态更新失败，请重试');
+    }
+  };
+
+  // 批量操作处理函数
+
+  // 批量删除策略
+  const handleBatchDelete = async () => {
+    if (selectedPolicies.length === 0) {
+      toast.error('请选择要删除的策略');
+      return;
+    }
+
+    if (window.confirm(`确定要删除 ${selectedPolicies.length} 个策略吗？此操作不可撤销。`)) {
+      try {
+        // 这里应该调用API来批量删除策略
+        // await batchDeletePolicies(selectedPolicies);
+
+        console.log('批量删除策略:', selectedPolicies);
+        setSelectedPolicies([]);
+        toast.success(`已删除 ${selectedPolicies.length} 个策略`);
+
+      } catch (error) {
+        toast.error('批量删除失败，请重试');
+      }
+    }
+  };
+
+  // 批量激活策略
+  const handleBatchActivate = async () => {
+    if (selectedPolicies.length === 0) {
+      toast.error('请选择要激活的策略');
+      return;
+    }
+
+    try {
+      // 这里应该调用API来批量激活策略
+      // await batchUpdatePolicyStatus(selectedPolicies, 'active');
+
+      console.log('批量激活策略:', selectedPolicies);
+      setSelectedPolicies([]);
+      toast.success(`已激活 ${selectedPolicies.length} 个策略`);
+
+    } catch (error) {
+      toast.error('批量激活失败，请重试');
+    }
+  };
+
+  // 批量停用策略
+  const handleBatchDeactivate = async () => {
+    if (selectedPolicies.length === 0) {
+      toast.error('请选择要停用的策略');
+      return;
+    }
+
+    try {
+      // 这里应该调用API来批量停用策略
+      // await batchUpdatePolicyStatus(selectedPolicies, 'inactive');
+
+      console.log('批量停用策略:', selectedPolicies);
+      setSelectedPolicies([]);
+      toast.success(`已停用 ${selectedPolicies.length} 个策略`);
+
+    } catch (error) {
+      toast.error('批量停用失败，请重试');
+    }
+  };
+
+  // 选择所有策略
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedPolicies(filteredRelationships.map(r => r.policyId));
+    } else {
+      setSelectedPolicies([]);
     }
   };
 
