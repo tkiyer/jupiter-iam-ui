@@ -447,7 +447,7 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
                       {roleMatrix.roleName}
                     </td>
                     {permissions?.slice(0, 10).map(permission => {
-                      const permissionData = roleMatrix.permissions[permission.id];
+                      const permissionData = roleMatrix.permissions?.[permission.id];
                       return (
                         <td key={permission.id} className="px-2 py-3 text-center border-r">
                           {permissionData?.hasPermission ? (
