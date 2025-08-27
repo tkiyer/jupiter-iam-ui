@@ -382,7 +382,33 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
   };
 
   // 权限矩阵视图
-  const renderMatrixView = () => (
+  const renderMatrixView = () => {
+    // 安全检查：确保数据已加载
+    if (!roles || !permissions || permissionMatrix.length === 0) {
+      return (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-medium">权限分配矩阵</h3>
+              <p className="text-sm text-muted-foreground">
+                查看所有角色和权限的分配关系矩阵
+              </p>
+            </div>
+            <Button variant="outline" onClick={() => setActiveTab('list')}>
+              <Eye className="h-4 w-4 mr-2" />
+              切换到列表视图
+            </Button>
+          </div>
+          <Card>
+            <CardContent className="flex items-center justify-center h-32">
+              <p className="text-sm text-muted-foreground">加载权限矩阵数据...</p>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+
+    return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
@@ -452,7 +478,8 @@ export default function RolePermissionManager({ onAssignmentChange }: RolePermis
         </CardContent>
       </Card>
     </div>
-  );
+    );
+  };
 
   // 列表视图
   const renderListView = () => (
