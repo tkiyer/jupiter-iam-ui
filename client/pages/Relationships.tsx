@@ -35,7 +35,7 @@ import RolePermissionManager from '../components/relationships/RolePermissionMan
 import PolicyRelationshipViewer from '../components/relationships/PolicyRelationshipViewer';
 import RelationshipGraph from '../components/relationships/RelationshipGraph';
 
-// 关联关系统计��口
+// 关联关系统计接口
 
 interface RelationshipStats {
   totalUsers: number;
@@ -225,7 +225,7 @@ export default function Relationships() {
               </Badge>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm">无权限角色</span>
+              <span className="text-sm">��权限角色</span>
               <Badge variant={relationshipStats?.orphanedEntities.roles ? "destructive" : "secondary"}>
                 {relationshipStats?.orphanedEntities.roles || 0}
               </Badge>
@@ -251,103 +251,99 @@ export default function Relationships() {
 
   if (isLoading) {
     return (
-      <DashboardLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
-            <p className="mt-2 text-sm text-gray-600">加载关联关系数据...</p>
-          </div>
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-2 text-sm text-gray-600">加载关联关系数据...</p>
         </div>
-      </DashboardLayout>
+      </div>
     );
   }
 
   return (
-    <DashboardLayout>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">关联关系管理</h1>
-          <p className="text-muted-foreground">
-            查看和管理User、Role、Permission和ABAC Policy之间的关联关系
-          </p>
-        </div>
-
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="overview" className="flex items-center gap-2">
-              <Network className="h-4 w-4" />
-              概览
-            </TabsTrigger>
-            <TabsTrigger value="user-role" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              用户-角色
-            </TabsTrigger>
-            <TabsTrigger value="role-permission" className="flex items-center gap-2">
-              <Shield className="h-4 w-4" />
-              角色-权限
-            </TabsTrigger>
-            <TabsTrigger value="policy-relation" className="flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              策略关联
-            </TabsTrigger>
-            <TabsTrigger value="graph" className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
-              关系图
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="overview">
-            {renderOverviewTab()}
-          </TabsContent>
-
-          <TabsContent value="user-role">
-            <UserRoleManager
-              onAssignmentChange={(assignments) => {
-                // 处理分配变更
-                console.log('User-Role assignments changed:', assignments);
-              }}
-            />
-          </TabsContent>
-
-          <TabsContent value="role-permission">
-            <RolePermissionManager
-              onAssignmentChange={(assignments) => {
-                // 处理分配变更
-                console.log('Role-Permission assignments changed:', assignments);
-              }}
-            />
-          </TabsContent>
-
-          <TabsContent value="policy-relation">
-            <PolicyRelationshipViewer
-              selectedPolicyId={selectedNodeId?.startsWith('policy_') ? selectedNodeId.replace('policy_', '') : undefined}
-              onPolicySelect={(policyId) => {
-                setSelectedNodeId(`policy_${policyId}`);
-                setActiveTab('graph'); // 切换到图形视图以查看选中的策略
-              }}
-            />
-          </TabsContent>
-
-          <TabsContent value="graph">
-            {users && roles && permissions && policies && (
-              <RelationshipGraph
-                users={users}
-                roles={roles}
-                permissions={permissions}
-                policies={policies}
-                selectedNodeId={selectedNodeId}
-                onNodeSelect={(nodeId, nodeData) => {
-                  setSelectedNodeId(nodeId);
-                  console.log('Selected node:', nodeId, nodeData);
-                }}
-                onNodeHover={(nodeId) => {
-                  setHoveredNode(nodeId);
-                }}
-              />
-            )}
-          </TabsContent>
-        </Tabs>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold">关联关系管理</h1>
+        <p className="text-muted-foreground">
+          查看和管理User、Role、Permission和ABAC Policy之间的关联关系
+        </p>
       </div>
-    </DashboardLayout>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="overview" className="flex items-center gap-2">
+            <Network className="h-4 w-4" />
+            概览
+          </TabsTrigger>
+          <TabsTrigger value="user-role" className="flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            用户-角色
+          </TabsTrigger>
+          <TabsTrigger value="role-permission" className="flex items-center gap-2">
+            <Shield className="h-4 w-4" />
+            角色-权限
+          </TabsTrigger>
+          <TabsTrigger value="policy-relation" className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            策略关联
+          </TabsTrigger>
+          <TabsTrigger value="graph" className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            关系图
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview">
+          {renderOverviewTab()}
+        </TabsContent>
+
+        <TabsContent value="user-role">
+          <UserRoleManager
+            onAssignmentChange={(assignments) => {
+              // 处理分配变更
+              console.log('User-Role assignments changed:', assignments);
+            }}
+          />
+        </TabsContent>
+
+        <TabsContent value="role-permission">
+          <RolePermissionManager
+            onAssignmentChange={(assignments) => {
+              // 处理分配变更
+              console.log('Role-Permission assignments changed:', assignments);
+            }}
+          />
+        </TabsContent>
+
+        <TabsContent value="policy-relation">
+          <PolicyRelationshipViewer
+            selectedPolicyId={selectedNodeId?.startsWith('policy_') ? selectedNodeId.replace('policy_', '') : undefined}
+            onPolicySelect={(policyId) => {
+              setSelectedNodeId(`policy_${policyId}`);
+              setActiveTab('graph'); // 切换到图形视图以查看选中的策略
+            }}
+          />
+        </TabsContent>
+
+        <TabsContent value="graph">
+          {users && roles && permissions && policies && (
+            <RelationshipGraph
+              users={users}
+              roles={roles}
+              permissions={permissions}
+              policies={policies}
+              selectedNodeId={selectedNodeId}
+              onNodeSelect={(nodeId, nodeData) => {
+                setSelectedNodeId(nodeId);
+                console.log('Selected node:', nodeId, nodeData);
+              }}
+              onNodeHover={(nodeId) => {
+                setHoveredNode(nodeId);
+              }}
+            />
+          )}
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 }
