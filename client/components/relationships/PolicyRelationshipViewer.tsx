@@ -452,7 +452,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
   // 切换策略状态
   const handleTogglePolicyStatus = async (policyId: string, newStatus: 'active' | 'inactive') => {
     try {
-      // 这里应该调用API来更新策略状态
+      // 这里应该调用API来更新策略状��
       // await updatePolicyStatus(policyId, newStatus);
 
       console.log('切换策略状态:', policyId, newStatus);
@@ -900,6 +900,211 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
           {renderImpactAnalysis()}
         </TabsContent>
       </Tabs>
+
+      {/* Add Policy Dialog */}
+      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>添加新策略</DialogTitle>
+            <DialogDescription>
+              创建新的ABAC策略
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="policy-name">策略名称</Label>
+              <Input
+                id="policy-name"
+                placeholder="输入策略名称"
+                value={newPolicy.name}
+                onChange={(e) => setNewPolicy(prev => ({ ...prev, name: e.target.value }))}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="policy-description">策略描述</Label>
+              <Textarea
+                id="policy-description"
+                placeholder="描述策略的用途和作用..."
+                value={newPolicy.description}
+                onChange={(e) => setNewPolicy(prev => ({ ...prev, description: e.target.value }))}
+                rows={3}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="policy-effect">策略效果</Label>
+                <Select value={newPolicy.effect} onValueChange={(value: 'allow' | 'deny') =>
+                  setNewPolicy(prev => ({ ...prev, effect: value }))
+                }>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="allow">允许</SelectItem>
+                    <SelectItem value="deny">拒绝</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="policy-priority">优先级</Label>
+                <Input
+                  id="policy-priority"
+                  type="number"
+                  min="1"
+                  max="1000"
+                  value={newPolicy.priority}
+                  onChange={(e) => setNewPolicy(prev => ({ ...prev, priority: parseInt(e.target.value) || 100 }))}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="policy-category">策略分类</Label>
+              <Input
+                id="policy-category"
+                placeholder="例如：access, security, compliance"
+                value={newPolicy.category}
+                onChange={(e) => setNewPolicy(prev => ({ ...prev, category: e.target.value }))}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="policy-status">状态</Label>
+              <Select value={newPolicy.status} onValueChange={(value: 'active' | 'inactive' | 'draft') =>
+                setNewPolicy(prev => ({ ...prev, status: value }))
+              }>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">激活</SelectItem>
+                  <SelectItem value="inactive">停用</SelectItem>
+                  <SelectItem value="draft">草稿</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+              取消
+            </Button>
+            <Button onClick={handleAddPolicy}>
+              创建策略
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Policy Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>编辑策略</DialogTitle>
+            <DialogDescription>
+              修改策略的基本信息
+            </DialogDescription>
+          </DialogHeader>
+
+          {editingPolicy && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-policy-name">策略名称</Label>
+                <Input
+                  id="edit-policy-name"
+                  value={editingPolicy.name}
+                  onChange={(e) => setEditingPolicy(prev =>
+                    prev ? { ...prev, name: e.target.value } : null
+                  )}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="edit-policy-description">策略描述</Label>
+                <Textarea
+                  id="edit-policy-description"
+                  value={editingPolicy.description || ''}
+                  onChange={(e) => setEditingPolicy(prev =>
+                    prev ? { ...prev, description: e.target.value } : null
+                  )}
+                  rows={3}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-policy-effect">策略效果</Label>
+                  <Select value={editingPolicy.effect} onValueChange={(value: 'allow' | 'deny') =>
+                    setEditingPolicy(prev => prev ? { ...prev, effect: value } : null)
+                  }>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="allow">允许</SelectItem>
+                      <SelectItem value="deny">拒绝</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-policy-priority">优先级</Label>
+                  <Input
+                    id="edit-policy-priority"
+                    type="number"
+                    min="1"
+                    max="1000"
+                    value={editingPolicy.priority}
+                    onChange={(e) => setEditingPolicy(prev =>
+                      prev ? { ...prev, priority: parseInt(e.target.value) || 100 } : null
+                    )}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="edit-policy-category">策略分类</Label>
+                <Input
+                  id="edit-policy-category"
+                  value={editingPolicy.category || ''}
+                  onChange={(e) => setEditingPolicy(prev =>
+                    prev ? { ...prev, category: e.target.value } : null
+                  )}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="edit-policy-status">状态</Label>
+                <Select value={editingPolicy.status} onValueChange={(value: 'active' | 'inactive' | 'draft') =>
+                  setEditingPolicy(prev => prev ? { ...prev, status: value } : null)
+                }>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">激活</SelectItem>
+                    <SelectItem value="inactive">停用</SelectItem>
+                    <SelectItem value="draft">草稿</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+              取消
+            </Button>
+            <Button onClick={handleSavePolicy}>
+              保存更改
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
