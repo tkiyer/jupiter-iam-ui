@@ -1,5 +1,5 @@
 /**
- * Policy关联关系展示组件
+ * Policy关联关���展示组件
  * 可视化展示ABAC策略与用户、角色、资源的关联关系
  */
 
@@ -33,7 +33,12 @@ import {
   Target,
   Clock,
   MapPin,
-  Smartphone
+  Smartphone,
+  Plus,
+  Edit,
+  Trash2,
+  Save,
+  X
 } from 'lucide-react';
 import { ABACPolicy, User, Role, Permission, PolicyRule, AttributeCondition } from '../../../shared/iam';
 import { usePolicies } from '../../hooks/usePolicies';
@@ -383,7 +388,7 @@ export default function PolicyRelationshipViewer({ selectedPolicyId, onPolicySel
 
           <Select value={filterCategory} onValueChange={setFilterCategory}>
             <SelectTrigger className="w-32">
-              <SelectValue placeholder="分类" />
+              <SelectValue placeholder="��类" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">所有分类</SelectItem>
