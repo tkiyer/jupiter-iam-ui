@@ -3,12 +3,17 @@
  * Protect UI elements and routes based on permissions and roles
  */
 
-import React from 'react';
-import { usePermission, useRole, usePermissions, useFieldAccess } from '../../hooks/useAccessControl';
-import { Alert, AlertDescription } from '../ui/alert';
-import { Badge } from '../ui/badge';
-import { Skeleton } from '../ui/skeleton';
-import { AlertTriangle, Lock, Eye, EyeOff } from 'lucide-react';
+import React from "react";
+import {
+  usePermission,
+  useRole,
+  usePermissions,
+  useFieldAccess,
+} from "../../hooks/useAccessControl";
+import { Alert, AlertDescription } from "../ui/alert";
+import { Badge } from "../ui/badge";
+import { Skeleton } from "../ui/skeleton";
+import { AlertTriangle, Lock, Eye, EyeOff } from "lucide-react";
 
 // Props for permission-based guards
 interface PermissionGuardProps {
@@ -32,8 +37,12 @@ interface RoleGuardProps {
 
 // Props for multiple permissions guard
 interface MultiPermissionGuardProps {
-  permissions: Array<{ resource: string; action: string; context?: Record<string, any> }>;
-  operator?: 'AND' | 'OR';
+  permissions: Array<{
+    resource: string;
+    action: string;
+    context?: Record<string, any>;
+  }>;
+  operator?: "AND" | "OR";
   children: React.ReactNode;
   fallback?: React.ReactNode;
   showReason?: boolean;
@@ -43,8 +52,10 @@ interface MultiPermissionGuardProps {
 // Props for field access guard
 interface FieldGuardProps {
   fieldName: string;
-  accessType?: 'read' | 'write';
-  children: React.ReactNode | ((value: any, applyMasking: (value: any) => any) => React.ReactNode);
+  accessType?: "read" | "write";
+  children:
+    | React.ReactNode
+    | ((value: any, applyMasking: (value: any) => any) => React.ReactNode);
   value?: any;
   fallback?: React.ReactNode;
   showMasking?: boolean;
@@ -60,9 +71,13 @@ export function PermissionGuard({
   children,
   fallback,
   showReason = false,
-  loading
+  loading,
 }: PermissionGuardProps) {
-  const { hasPermission, loading: isLoading, reason } = usePermission(resource, action, context);
+  const {
+    hasPermission,
+    loading: isLoading,
+    reason,
+  } = usePermission(resource, action, context);
 
   if (isLoading) {
     return loading || <Skeleton className="h-4 w-full" />;
@@ -77,9 +92,7 @@ export function PermissionGuard({
       return (
         <Alert variant="destructive" className="mb-4">
           <AlertTriangle className="h-4 w-4" />
-          <AlertDescription>
-            Access denied: {reason}
-          </AlertDescription>
+          <AlertDescription>Access denied: {reason}</AlertDescription>
         </Alert>
       );
     }
@@ -98,7 +111,7 @@ export function RoleGuard({
   children,
   fallback,
   showReason = false,
-  loading
+  loading,
 }: RoleGuardProps) {
   const { hasRole, loading: isLoading } = useRole(role);
 
@@ -133,22 +146,27 @@ export function RoleGuard({
  */
 export function MultiPermissionGuard({
   permissions,
-  operator = 'AND',
+  operator = "AND",
   children,
   fallback,
   showReason = false,
-  loading
+  loading,
 }: MultiPermissionGuardProps) {
-  const { results, loading: isLoading, hasPermission } = usePermissions(permissions);
+  const {
+    results,
+    loading: isLoading,
+    hasPermission,
+  } = usePermissions(permissions);
 
   if (isLoading) {
     return loading || <Skeleton className="h-4 w-full" />;
   }
 
   // Check permissions based on operator
-  const hasAccess = operator === 'AND'
-    ? permissions.every(perm => hasPermission(perm.resource, perm.action))
-    : permissions.some(perm => hasPermission(perm.resource, perm.action));
+  const hasAccess =
+    operator === "AND"
+      ? permissions.every((perm) => hasPermission(perm.resource, perm.action))
+      : permissions.some((perm) => hasPermission(perm.resource, perm.action));
 
   if (!hasAccess) {
     if (fallback) {
@@ -156,8 +174,8 @@ export function MultiPermissionGuard({
     }
 
     if (showReason) {
-      const failedPermissions = permissions.filter(perm => 
-        !hasPermission(perm.resource, perm.action)
+      const failedPermissions = permissions.filter(
+        (perm) => !hasPermission(perm.resource, perm.action),
       );
 
       return (
@@ -188,13 +206,16 @@ export function MultiPermissionGuard({
  */
 export function FieldGuard({
   fieldName,
-  accessType = 'read',
+  accessType = "read",
   children,
   value,
   fallback,
-  showMasking = true
+  showMasking = true,
 }: FieldGuardProps) {
-  const { allowed, masked, loading, applyMasking } = useFieldAccess(fieldName, accessType);
+  const { allowed, masked, loading, applyMasking } = useFieldAccess(
+    fieldName,
+    accessType,
+  );
 
   if (loading) {
     return <Skeleton className="h-4 w-20" />;
@@ -214,7 +235,7 @@ export function FieldGuard({
   }
 
   // If it's a function, call it with value and masking function
-  if (typeof children === 'function') {
+  if (typeof children === "function") {
     return children(value, applyMasking);
   }
 
@@ -242,11 +263,16 @@ export function withPermission<P extends object>(
   WrappedComponent: React.ComponentType<P>,
   resource: string,
   action: string,
-  context?: Record<string, any>
+  context?: Record<string, any>,
 ) {
   return function PermissionProtectedComponent(props: P) {
     return (
-      <PermissionGuard resource={resource} action={action} context={context} showReason>
+      <PermissionGuard
+        resource={resource}
+        action={action}
+        context={context}
+        showReason
+      >
         <WrappedComponent {...props} />
       </PermissionGuard>
     );
@@ -258,7 +284,7 @@ export function withPermission<P extends object>(
  */
 export function withRole<P extends object>(
   WrappedComponent: React.ComponentType<P>,
-  role: string
+  role: string,
 ) {
   return function RoleProtectedComponent(props: P) {
     return (
@@ -286,7 +312,7 @@ interface ConditionalRenderProps {
 export function ConditionalRender({
   when,
   children,
-  otherwise
+  otherwise,
 }: ConditionalRenderProps) {
   if (when.resource && when.action) {
     return (
@@ -321,7 +347,7 @@ interface AccessIndicatorProps {
   action: string;
   context?: Record<string, any>;
   showText?: boolean;
-  variant?: 'badge' | 'icon';
+  variant?: "badge" | "icon";
 }
 
 export function AccessIndicator({
@@ -329,28 +355,29 @@ export function AccessIndicator({
   action,
   context,
   showText = true,
-  variant = 'badge'
+  variant = "badge",
 }: AccessIndicatorProps) {
-  const { hasPermission, loading, reason } = usePermission(resource, action, context);
+  const { hasPermission, loading, reason } = usePermission(
+    resource,
+    action,
+    context,
+  );
 
   if (loading) {
     return <Skeleton className="h-5 w-16" />;
   }
 
-  if (variant === 'icon') {
+  if (variant === "icon") {
     return hasPermission ? (
-      <Eye className="h-4 w-4 text-green-600" title={reason} />
+      <Eye className="h-4 w-4 text-green-600" />
     ) : (
-      <EyeOff className="h-4 w-4 text-red-600" title={reason} />
+      <EyeOff className="h-4 w-4 text-red-600" />
     );
   }
 
   return (
-    <Badge 
-      variant={hasPermission ? 'default' : 'destructive'}
-      title={reason}
-    >
-      {hasPermission ? 'Allowed' : 'Denied'}
+    <Badge variant={hasPermission ? "default" : "destructive"} title={reason}>
+      {hasPermission ? "Allowed" : "Denied"}
       {showText && (
         <span className="ml-1 text-xs">
           ({resource}:{action})
@@ -370,9 +397,13 @@ interface AccessDebugProps {
 }
 
 export function AccessDebug({ resource, action, context }: AccessDebugProps) {
-  const { hasPermission, loading, reason } = usePermission(resource, action, context);
+  const { hasPermission, loading, reason } = usePermission(
+    resource,
+    action,
+    context,
+  );
 
-  if (process.env.NODE_ENV !== 'development') {
+  if (process.env.NODE_ENV !== "development") {
     return null;
   }
 

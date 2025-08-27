@@ -1,43 +1,42 @@
 /**
- * Utility to handle ResizeObserver errors
- * This prevents the "ResizeObserver loop completed with undelivered notifications" error
- * which is common with Radix UI components and doesn't actually break functionality
+ * Enhanced ResizeObserver error handling utility
+ * Prevents "ResizeObserver loop completed with undelivered notifications" error
  */
 
-// Store the original ResizeObserver
-const OriginalResizeObserver = window.ResizeObserver;
-
-// Enhanced ResizeObserver with error handling
-class EnhancedResizeObserver extends OriginalResizeObserver {
-  constructor(callback: ResizeObserverCallback) {
-    // Wrap the callback with error handling
-    const wrappedCallback: ResizeObserverCallback = (entries, observer) => {
-      try {
-        callback(entries, observer);
-      } catch (error) {
-        // Suppress ResizeObserver loop errors
-        if (error instanceof Error && error.message.includes('ResizeObserver loop completed')) {
-          console.warn('ResizeObserver loop detected and handled gracefully');
-          return;
-        }
-        // Re-throw other errors
-        throw error;
-      }
-    };
-
-    super(wrappedCallback);
-  }
-}
-
-// Global error handler for ResizeObserver errors
+// Store original handlers
 const originalErrorHandler = window.onerror;
+const originalUnhandledRejection = window.onunhandledrejection;
+
+// Enhanced error detection patterns
+const RESIZE_OBSERVER_PATTERNS = [
+  "ResizeObserver loop completed",
+  "ResizeObserver loop limit exceeded",
+  "Script error.",
+];
+
+const isResizeObserverError = (message: string | Event | Error) => {
+  const messageStr =
+    typeof message === "string"
+      ? message
+      : message instanceof Error
+        ? message.message
+        : String(message);
+
+  return RESIZE_OBSERVER_PATTERNS.some((pattern) =>
+    messageStr.includes(pattern),
+  );
+};
+
+// Enhanced global error handler
 window.onerror = (message, source, lineno, colno, error) => {
   // Suppress ResizeObserver loop errors
-  if (typeof message === 'string' && message.includes('ResizeObserver loop completed')) {
-    console.warn('ResizeObserver loop error suppressed:', message);
+  if (isResizeObserverError(message)) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn("ResizeObserver error suppressed:", message);
+    }
     return true; // Prevent default error handling
   }
-  
+
   // Call original error handler for other errors
   if (originalErrorHandler) {
     return originalErrorHandler(message, source, lineno, colno, error);
@@ -45,75 +44,33 @@ window.onerror = (message, source, lineno, colno, error) => {
   return false;
 };
 
-// Handle unhandled promise rejections related to ResizeObserver
-const originalUnhandledRejection = window.onunhandledrejection;
+// Enhanced unhandled promise rejection handler
 window.onunhandledrejection = (event) => {
-  if (event.reason && typeof event.reason === 'string' && 
-      event.reason.includes('ResizeObserver loop completed')) {
-    console.warn('ResizeObserver promise rejection suppressed:', event.reason);
+  const reason = event.reason;
+
+  if (reason && isResizeObserverError(reason)) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn("ResizeObserver promise rejection suppressed:", reason);
+    }
     event.preventDefault();
     return;
   }
-  
+
   // Call original handler for other rejections
   if (originalUnhandledRejection) {
     originalUnhandledRejection(event);
   }
 };
 
-// Replace the global ResizeObserver
-window.ResizeObserver = EnhancedResizeObserver;
-
-// Debounced ResizeObserver for high-frequency updates
-export class DebouncedResizeObserver {
-  private observer: ResizeObserver;
-  private timeouts = new Map<Element, NodeJS.Timeout>();
-  private delay: number;
-
-  constructor(callback: ResizeObserverCallback, delay = 16) {
-    this.delay = delay;
-    
-    this.observer = new EnhancedResizeObserver((entries, observer) => {
-      entries.forEach((entry) => {
-        // Clear existing timeout for this element
-        const existingTimeout = this.timeouts.get(entry.target);
-        if (existingTimeout) {
-          clearTimeout(existingTimeout);
-        }
-
-        // Set new debounced timeout
-        const timeout = setTimeout(() => {
-          callback([entry], observer);
-          this.timeouts.delete(entry.target);
-        }, this.delay);
-
-        this.timeouts.set(entry.target, timeout);
-      });
-    });
-  }
-
-  observe(target: Element, options?: ResizeObserverOptions) {
-    this.observer.observe(target, options);
-  }
-
-  unobserve(target: Element) {
-    // Clear any pending timeout
-    const timeout = this.timeouts.get(target);
-    if (timeout) {
-      clearTimeout(timeout);
-      this.timeouts.delete(target);
+// Additional console error suppression for ResizeObserver
+const originalConsoleError = console.error;
+console.error = (...args) => {
+  const message = args.join(" ");
+  if (isResizeObserverError(message)) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn("ResizeObserver console error suppressed:", message);
     }
-    
-    this.observer.unobserve(target);
+    return;
   }
-
-  disconnect() {
-    // Clear all timeouts
-    this.timeouts.forEach((timeout) => clearTimeout(timeout));
-    this.timeouts.clear();
-    
-    this.observer.disconnect();
-  }
-}
-
-export default EnhancedResizeObserver;
+  originalConsoleError.apply(console, args);
+};

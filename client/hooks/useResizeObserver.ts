@@ -1,12 +1,6 @@
-import { useEffect, useRef, useCallback } from 'react';
-import { DebouncedResizeObserver } from '@/utils/resizeObserver';
+import { useEffect, useRef, useCallback } from "react";
 
 export interface UseResizeObserverOptions {
-  /**
-   * Debounce delay in milliseconds
-   * @default 16
-   */
-  debounceMs?: number;
   /**
    * Whether to observe immediately when the element is available
    * @default true
@@ -20,12 +14,12 @@ export interface UseResizeObserverOptions {
  */
 export function useResizeObserver<T extends HTMLElement = HTMLElement>(
   callback: ResizeObserverCallback,
-  options: UseResizeObserverOptions = {}
+  options: UseResizeObserverOptions = {},
 ) {
-  const { debounceMs = 16, observeImmediately = true } = options;
-  
+  const { observeImmediately = true } = options;
+
   const elementRef = useRef<T | null>(null);
-  const observerRef = useRef<DebouncedResizeObserver | null>(null);
+  const observerRef = useRef<ResizeObserver | null>(null);
   const callbackRef = useRef(callback);
 
   // Update callback ref when callback changes
@@ -42,29 +36,30 @@ export function useResizeObserver<T extends HTMLElement = HTMLElement>(
     }
 
     try {
-      // Create new debounced observer
-      observerRef.current = new DebouncedResizeObserver(
-        (entries, observer) => {
-          try {
-            callbackRef.current(entries, observer);
-          } catch (error) {
-            if (error instanceof Error && 
-                error.message.includes('ResizeObserver loop completed')) {
-              console.warn('ResizeObserver loop handled gracefully in useResizeObserver');
-              return;
-            }
-            console.error('Error in ResizeObserver callback:', error);
+      // Create new observer
+      observerRef.current = new ResizeObserver((entries, observer) => {
+        try {
+          callbackRef.current(entries, observer);
+        } catch (error) {
+          if (
+            error instanceof Error &&
+            error.message.includes("ResizeObserver loop completed")
+          ) {
+            console.warn(
+              "ResizeObserver loop handled gracefully in useResizeObserver",
+            );
+            return;
           }
-        },
-        debounceMs
-      );
+          console.error("Error in ResizeObserver callback:", error);
+        }
+      });
 
       // Start observing
       observerRef.current.observe(element);
     } catch (error) {
-      console.warn('Failed to create ResizeObserver:', error);
+      console.warn("Failed to create ResizeObserver:", error);
     }
-  }, [debounceMs]);
+  }, []);
 
   const unobserve = useCallback(() => {
     if (observerRef.current && elementRef.current) {
@@ -80,13 +75,16 @@ export function useResizeObserver<T extends HTMLElement = HTMLElement>(
   }, []);
 
   // Ref callback for setting the element
-  const setRef = useCallback((element: T | null) => {
-    elementRef.current = element;
-    
-    if (observeImmediately && element) {
-      observe(element);
-    }
-  }, [observe, observeImmediately]);
+  const setRef = useCallback(
+    (element: T | null) => {
+      elementRef.current = element;
+
+      if (observeImmediately && element) {
+        observe(element);
+      }
+    },
+    [observe, observeImmediately],
+  );
 
   // Cleanup on unmount
   useEffect(() => {
@@ -100,7 +98,7 @@ export function useResizeObserver<T extends HTMLElement = HTMLElement>(
     observe,
     unobserve,
     disconnect,
-    element: elementRef.current
+    element: elementRef.current,
   };
 }
 
@@ -108,15 +106,18 @@ export function useResizeObserver<T extends HTMLElement = HTMLElement>(
  * Simplified hook for basic resize observation
  */
 export function useElementSize<T extends HTMLElement = HTMLElement>(
-  onResize?: (size: { width: number; height: number }) => void
+  onResize?: (size: { width: number; height: number }) => void,
 ) {
-  const callback = useCallback<ResizeObserverCallback>((entries) => {
-    if (entries.length > 0 && onResize) {
-      const entry = entries[0];
-      const { width, height } = entry.contentRect;
-      onResize({ width, height });
-    }
-  }, [onResize]);
+  const callback = useCallback<ResizeObserverCallback>(
+    (entries) => {
+      if (entries.length > 0 && onResize) {
+        const entry = entries[0];
+        const { width, height } = entry.contentRect;
+        onResize({ width, height });
+      }
+    },
+    [onResize],
+  );
 
   return useResizeObserver<T>(callback);
 }
