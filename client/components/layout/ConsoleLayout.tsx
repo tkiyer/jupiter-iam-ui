@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { NotificationsDropdown } from "@/components/ui/notifications-dropdown";
 import {
   Shield,
   Search,
@@ -62,9 +63,12 @@ const ConsoleLayout: React.FC<ConsoleLayoutProps> = ({ children }) => {
                   <Shield className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-gray-900">
-                    IAM Console
-                  </h1>
+                  <div className="flex items-center space-x-2">
+                    <h1 className="text-xl font-bold text-gray-900">
+                      IAM Console
+                    </h1>
+                    <Home className="h-5 w-5 text-gray-600 hover:text-blue-600 transition-colors" />
+                  </div>
                   <p className="text-xs text-gray-500">
                     Identity & Access Management
                   </p>
@@ -92,15 +96,7 @@ const ConsoleLayout: React.FC<ConsoleLayoutProps> = ({ children }) => {
               </Button>
 
               {/* Notifications */}
-              <Button variant="ghost" size="sm" className="p-2 relative">
-                <Bell className="h-5 w-5 text-gray-600" />
-                <Badge
-                  variant="destructive"
-                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-                >
-                  3
-                </Badge>
-              </Button>
+              <NotificationsDropdown />
 
               {/* User Menu */}
               <DropdownMenu>
