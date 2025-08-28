@@ -285,7 +285,11 @@ const Console: React.FC = () => {
           {quickAccessSystems.map((system) => {
             const Icon = system.icon;
             return (
-              <Card key={system.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+              <Card
+                key={system.id}
+                className="hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => handleSystemClick(system)}
+              >
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center space-x-3">
