@@ -96,15 +96,7 @@ const ConsoleLayout: React.FC<ConsoleLayoutProps> = ({ children }) => {
               </Button>
 
               {/* Notifications */}
-              <Button variant="ghost" size="sm" className="p-2 relative">
-                <Bell className="h-5 w-5 text-gray-600" />
-                <Badge
-                  variant="destructive"
-                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-                >
-                  3
-                </Badge>
-              </Button>
+              <NotificationsDropdown />
 
               {/* User Menu */}
               <DropdownMenu>
