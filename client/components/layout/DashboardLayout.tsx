@@ -34,7 +34,8 @@ interface DashboardLayoutProps {
 }
 
 const navigationItems = [
-  { path: "/dashboard", label: "Dashboard", icon: Home },
+  { path: "/console", label: "Console", icon: Home },
+  { path: "/dashboard", label: "Dashboard", icon: BarChart3 },
   { path: "/users", label: "User Management", icon: Users },
   { path: "/roles", label: "Role Management", icon: Key },
   { path: "/permissions", label: "Permissions", icon: Settings },
