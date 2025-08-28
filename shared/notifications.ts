@@ -2,7 +2,7 @@ export interface Notification {
   id: string;
   title: string;
   message: string;
-  type: 'info' | 'success' | 'warning' | 'error' | 'security';
+  type: "info" | "success" | "warning" | "error" | "security";
   isRead: boolean;
   createdAt: Date;
   actionUrl?: string;
@@ -26,7 +26,7 @@ export interface MarkAllAsReadResponse {
 export interface CreateNotificationRequest {
   title: string;
   message: string;
-  type: Notification['type'];
+  type: Notification["type"];
   actionUrl?: string;
   actionText?: string;
   userId?: string; // If targeting specific user

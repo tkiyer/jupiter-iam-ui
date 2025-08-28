@@ -1,31 +1,31 @@
-import React from 'react';
-import { formatDistanceToNow } from 'date-fns';
-import { zhCN } from 'date-fns/locale';
-import { 
-  Bell, 
-  Check, 
-  CheckCheck, 
-  Trash2, 
-  AlertCircle, 
-  Info, 
-  CheckCircle, 
+import React from "react";
+import { formatDistanceToNow } from "date-fns";
+import { zhCN } from "date-fns/locale";
+import {
+  Bell,
+  Check,
+  CheckCheck,
+  Trash2,
+  AlertCircle,
+  Info,
+  CheckCircle,
   AlertTriangle,
   Shield,
   ExternalLink,
-  X
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
+  X,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
-import { Notification } from '@shared/notifications';
-import { useNotifications } from '@/hooks/useNotifications';
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+import { Notification } from "@shared/notifications";
+import { useNotifications } from "@/hooks/useNotifications";
 
 interface NotificationItemProps {
   notification: Notification;
@@ -38,15 +38,15 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   onMarkAsRead,
   onDelete,
 }) => {
-  const getIcon = (type: Notification['type']) => {
+  const getIcon = (type: Notification["type"]) => {
     switch (type) {
-      case 'success':
+      case "success":
         return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'warning':
+      case "warning":
         return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
-      case 'error':
+      case "error":
         return <AlertCircle className="h-4 w-4 text-red-500" />;
-      case 'security':
+      case "security":
         return <Shield className="h-4 w-4 text-blue-500" />;
       default:
         return <Info className="h-4 w-4 text-blue-500" />;
@@ -63,42 +63,42 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   };
 
   return (
-    <div 
+    <div
       className={cn(
         "flex items-start space-x-3 p-3 hover:bg-gray-50 transition-colors cursor-pointer",
-        !notification.isRead && "bg-blue-50/50"
+        !notification.isRead && "bg-blue-50/50",
       )}
       onClick={handleAction}
     >
-      <div className="flex-shrink-0 mt-0.5">
-        {getIcon(notification.type)}
-      </div>
-      
+      <div className="flex-shrink-0 mt-0.5">{getIcon(notification.type)}</div>
+
       <div className="flex-1 min-w-0 space-y-1">
         <div className="flex items-start justify-between">
-          <p className={cn(
-            "text-sm font-medium text-gray-900 leading-5",
-            !notification.isRead && "font-semibold"
-          )}>
+          <p
+            className={cn(
+              "text-sm font-medium text-gray-900 leading-5",
+              !notification.isRead && "font-semibold",
+            )}
+          >
             {notification.title}
           </p>
           {!notification.isRead && (
             <div className="h-2 w-2 bg-blue-500 rounded-full flex-shrink-0 mt-1" />
           )}
         </div>
-        
+
         <p className="text-sm text-gray-600 leading-5">
           {notification.message}
         </p>
-        
+
         <div className="flex items-center justify-between">
           <span className="text-xs text-gray-500">
             {formatDistanceToNow(new Date(notification.createdAt), {
               addSuffix: true,
-              locale: zhCN
+              locale: zhCN,
             })}
           </span>
-          
+
           {notification.actionText && notification.actionUrl && (
             <div className="flex items-center text-xs text-blue-600">
               <span>{notification.actionText}</span>
@@ -107,7 +107,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           )}
         </div>
       </div>
-      
+
       <div className="flex flex-col space-y-1">
         {!notification.isRead && (
           <Button
@@ -123,7 +123,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
             <Check className="h-3 w-3" />
           </Button>
         )}
-        
+
         <Button
           variant="ghost"
           size="sm"
@@ -161,19 +161,23 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className={cn("p-2 relative", className)}>
+        <Button
+          variant="ghost"
+          size="sm"
+          className={cn("p-2 relative", className)}
+        >
           <Bell className="h-5 w-5 text-gray-600" />
           {unreadCount > 0 && (
             <Badge
               variant="destructive"
               className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
             >
-              {unreadCount > 99 ? '99+' : unreadCount}
+              {unreadCount > 99 ? "99+" : unreadCount}
             </Badge>
           )}
         </Button>
       </DropdownMenuTrigger>
-      
+
       <DropdownMenuContent align="end" className="w-80 p-0">
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="text-sm font-semibold text-gray-900">通知</h3>
@@ -231,7 +235,10 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
           <>
             <Separator />
             <div className="p-2">
-              <Button variant="ghost" className="w-full text-sm text-blue-600 hover:text-blue-700">
+              <Button
+                variant="ghost"
+                className="w-full text-sm text-blue-600 hover:text-blue-700"
+              >
                 查看所有通知
               </Button>
             </div>

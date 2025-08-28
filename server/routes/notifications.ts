@@ -1,10 +1,10 @@
 import { RequestHandler } from "express";
-import { 
-  Notification, 
-  NotificationResponse, 
-  MarkAsReadRequest, 
+import {
+  Notification,
+  NotificationResponse,
+  MarkAsReadRequest,
   MarkAllAsReadResponse,
-  CreateNotificationRequest 
+  CreateNotificationRequest,
 } from "@shared/notifications";
 
 // Mock data - in a real app this would come from a database
@@ -17,10 +17,10 @@ let mockNotifications: Notification[] = [
     isRead: false,
     createdAt: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
     actionUrl: "/audit",
-    actionText: "查看详情"
+    actionText: "查看详情",
   },
   {
-    id: "2", 
+    id: "2",
     title: "系统更新",
     message: "IAM系统已成功更新到版本2.1.0，新增了多项安全功能",
     type: "success",
@@ -35,7 +35,7 @@ let mockNotifications: Notification[] = [
     isRead: true,
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
     actionUrl: "/policies",
-    actionText: "处理冲突"
+    actionText: "处理冲突",
   },
   {
     id: "4",
@@ -53,8 +53,8 @@ let mockNotifications: Notification[] = [
     isRead: false,
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3), // 3 days ago
     actionUrl: "/users",
-    actionText: "管理权限"
-  }
+    actionText: "管理权限",
+  },
 ];
 
 // Get all notifications
@@ -62,21 +62,22 @@ export const getNotifications: RequestHandler = (req, res) => {
   try {
     // Sort by creation date (newest first)
     const sortedNotifications = [...mockNotifications].sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
 
-    const unreadCount = mockNotifications.filter(n => !n.isRead).length;
+    const unreadCount = mockNotifications.filter((n) => !n.isRead).length;
 
     const response: NotificationResponse = {
       notifications: sortedNotifications,
       unreadCount,
-      total: mockNotifications.length
+      total: mockNotifications.length,
     };
 
     res.json(response);
   } catch (error) {
-    console.error('Error fetching notifications:', error);
-    res.status(500).json({ error: 'Failed to fetch notifications' });
+    console.error("Error fetching notifications:", error);
+    res.status(500).json({ error: "Failed to fetch notifications" });
   }
 };
 
@@ -86,35 +87,35 @@ export const markAsRead: RequestHandler = (req, res) => {
     const { notificationIds }: MarkAsReadRequest = req.body;
 
     if (!Array.isArray(notificationIds)) {
-      return res.status(400).json({ error: 'Invalid notification IDs' });
+      return res.status(400).json({ error: "Invalid notification IDs" });
     }
 
-    mockNotifications = mockNotifications.map(notification => 
+    mockNotifications = mockNotifications.map((notification) =>
       notificationIds.includes(notification.id)
         ? { ...notification, isRead: true }
-        : notification
+        : notification,
     );
 
     res.json({ success: true });
   } catch (error) {
-    console.error('Error marking notifications as read:', error);
-    res.status(500).json({ error: 'Failed to mark notifications as read' });
+    console.error("Error marking notifications as read:", error);
+    res.status(500).json({ error: "Failed to mark notifications as read" });
   }
 };
 
 // Mark all notifications as read
 export const markAllAsRead: RequestHandler = (req, res) => {
   try {
-    mockNotifications = mockNotifications.map(notification => ({
+    mockNotifications = mockNotifications.map((notification) => ({
       ...notification,
-      isRead: true
+      isRead: true,
     }));
 
     const response: MarkAllAsReadResponse = { success: true };
     res.json(response);
   } catch (error) {
-    console.error('Error marking all notifications as read:', error);
-    res.status(500).json({ error: 'Failed to mark all notifications as read' });
+    console.error("Error marking all notifications as read:", error);
+    res.status(500).json({ error: "Failed to mark all notifications as read" });
   }
 };
 
@@ -123,16 +124,16 @@ export const deleteNotification: RequestHandler = (req, res) => {
   try {
     const { id } = req.params;
 
-    const notificationExists = mockNotifications.some(n => n.id === id);
+    const notificationExists = mockNotifications.some((n) => n.id === id);
     if (!notificationExists) {
-      return res.status(404).json({ error: 'Notification not found' });
+      return res.status(404).json({ error: "Notification not found" });
     }
 
-    mockNotifications = mockNotifications.filter(n => n.id !== id);
+    mockNotifications = mockNotifications.filter((n) => n.id !== id);
     res.json({ success: true });
   } catch (error) {
-    console.error('Error deleting notification:', error);
-    res.status(500).json({ error: 'Failed to delete notification' });
+    console.error("Error deleting notification:", error);
+    res.status(500).json({ error: "Failed to delete notification" });
   }
 };
 
@@ -142,8 +143,8 @@ export const clearAllNotifications: RequestHandler = (req, res) => {
     mockNotifications = [];
     res.json({ success: true });
   } catch (error) {
-    console.error('Error clearing all notifications:', error);
-    res.status(500).json({ error: 'Failed to clear all notifications' });
+    console.error("Error clearing all notifications:", error);
+    res.status(500).json({ error: "Failed to clear all notifications" });
   }
 };
 
@@ -156,11 +157,13 @@ export const createNotification: RequestHandler = (req, res) => {
       type,
       actionUrl,
       actionText,
-      userId
+      userId,
     }: CreateNotificationRequest = req.body;
 
     if (!title || !message || !type) {
-      return res.status(400).json({ error: 'Title, message, and type are required' });
+      return res
+        .status(400)
+        .json({ error: "Title, message, and type are required" });
     }
 
     const newNotification: Notification = {
@@ -171,14 +174,14 @@ export const createNotification: RequestHandler = (req, res) => {
       isRead: false,
       createdAt: new Date(),
       actionUrl,
-      actionText
+      actionText,
     };
 
     mockNotifications.unshift(newNotification); // Add to beginning of array
 
     res.status(201).json(newNotification);
   } catch (error) {
-    console.error('Error creating notification:', error);
-    res.status(500).json({ error: 'Failed to create notification' });
+    console.error("Error creating notification:", error);
+    res.status(500).json({ error: "Failed to create notification" });
   }
 };
