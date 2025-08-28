@@ -18,6 +18,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import ConsoleLayout from "@/components/layout/ConsoleLayout";
+import RootRedirect from "@/components/RootRedirect";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Console from "./pages/Console";
