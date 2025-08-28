@@ -15,7 +15,7 @@ const Login: React.FC = () => {
   const [error, setError] = useState('');
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/console" replace />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
