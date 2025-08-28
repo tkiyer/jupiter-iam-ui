@@ -82,6 +82,14 @@ import {
   handleGetBusinessTemplates,
   handleIntegrationAnalysis,
 } from "./routes/business-policies";
+import {
+  getNotifications,
+  markAsRead,
+  markAllAsRead,
+  deleteNotification,
+  clearAllNotifications,
+  createNotification,
+} from "./routes/notifications";
 
 export function createServer() {
   const app = express();
@@ -186,6 +194,14 @@ export function createServer() {
     "/api/business-policies/integration-analysis",
     handleIntegrationAnalysis,
   );
+
+  // Notifications routes
+  app.get("/api/notifications", getNotifications);
+  app.post("/api/notifications", createNotification);
+  app.post("/api/notifications/mark-read", markAsRead);
+  app.post("/api/notifications/mark-all-read", markAllAsRead);
+  app.delete("/api/notifications/:id", deleteNotification);
+  app.delete("/api/notifications", clearAllNotifications);
 
   // Access Control routes
   const accessControlRoutes = require("./routes/access-control").default;
