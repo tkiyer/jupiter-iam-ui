@@ -1,18 +1,27 @@
-import React, { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { Navigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Shield, Lock, User } from 'lucide-react';
+import React, { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Navigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Shield, Lock, User } from "lucide-react";
 
 const Login: React.FC = () => {
   const { login, isAuthenticated } = useAuth();
-  const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [credentials, setCredentials] = useState({
+    username: "",
+    password: "",
+  });
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   if (isAuthenticated) {
     return <Navigate to="/console" replace />;
@@ -20,21 +29,21 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setIsLoading(true);
 
     const success = await login(credentials);
-    
+
     if (!success) {
-      setError('Invalid username or password. Please try again.');
+      setError("Invalid username or password. Please try again.");
     }
-    
+
     setIsLoading(false);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setCredentials(prev => ({ ...prev, [name]: value }));
+    setCredentials((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -46,13 +55,17 @@ const Login: React.FC = () => {
             <Shield className="h-8 w-8 text-white" />
           </div>
           <h2 className="text-3xl font-bold text-gray-900">IAM System</h2>
-          <p className="mt-2 text-gray-600">Identity & Access Management Platform</p>
+          <p className="mt-2 text-gray-600">
+            Identity & Access Management Platform
+          </p>
         </div>
 
         {/* Login Card */}
         <Card className="border-0 shadow-xl">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-semibold text-center">Sign in to your account</CardTitle>
+            <CardTitle className="text-2xl font-semibold text-center">
+              Sign in to your account
+            </CardTitle>
             <CardDescription className="text-center">
               Enter your credentials to access the IAM dashboard
             </CardDescription>
@@ -64,7 +77,7 @@ const Login: React.FC = () => {
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
-              
+
               <div className="space-y-2">
                 <Label htmlFor="username">Username</Label>
                 <div className="relative">
@@ -99,22 +112,30 @@ const Login: React.FC = () => {
                 </div>
               </div>
 
-              <Button 
-                type="submit" 
-                className="w-full bg-blue-600 hover:bg-blue-700" 
+              <Button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700"
                 disabled={isLoading}
               >
-                {isLoading ? 'Signing in...' : 'Sign in'}
+                {isLoading ? "Signing in..." : "Sign in"}
               </Button>
             </form>
 
             {/* Demo Credentials */}
             <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-              <h4 className="text-sm font-medium text-gray-700 mb-2">Demo Credentials:</h4>
+              <h4 className="text-sm font-medium text-gray-700 mb-2">
+                Demo Credentials:
+              </h4>
               <div className="text-xs text-gray-600 space-y-1">
-                <div><strong>Admin:</strong> admin / admin123</div>
-                <div><strong>Manager:</strong> manager / manager123</div>
-                <div><strong>User:</strong> user / user123</div>
+                <div>
+                  <strong>Admin:</strong> admin / admin123
+                </div>
+                <div>
+                  <strong>Manager:</strong> manager / manager123
+                </div>
+                <div>
+                  <strong>User:</strong> user / user123
+                </div>
               </div>
             </div>
           </CardContent>

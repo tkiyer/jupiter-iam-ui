@@ -62,8 +62,12 @@ const ConsoleLayout: React.FC<ConsoleLayoutProps> = ({ children }) => {
                   <Shield className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-gray-900">IAM Console</h1>
-                  <p className="text-xs text-gray-500">Identity & Access Management</p>
+                  <h1 className="text-xl font-bold text-gray-900">
+                    IAM Console
+                  </h1>
+                  <p className="text-xs text-gray-500">
+                    Identity & Access Management
+                  </p>
                 </div>
               </Link>
             </div>
@@ -90,8 +94,8 @@ const ConsoleLayout: React.FC<ConsoleLayoutProps> = ({ children }) => {
               {/* Notifications */}
               <Button variant="ghost" size="sm" className="p-2 relative">
                 <Bell className="h-5 w-5 text-gray-600" />
-                <Badge 
-                  variant="destructive" 
+                <Badge
+                  variant="destructive"
                   className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
                 >
                   3
@@ -101,7 +105,10 @@ const ConsoleLayout: React.FC<ConsoleLayoutProps> = ({ children }) => {
               {/* User Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center space-x-2 pl-2 pr-3">
+                  <Button
+                    variant="ghost"
+                    className="flex items-center space-x-2 pl-2 pr-3"
+                  >
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className="bg-blue-100 text-blue-700 text-sm">
                         {user
