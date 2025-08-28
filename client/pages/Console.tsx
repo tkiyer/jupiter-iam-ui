@@ -59,6 +59,7 @@ interface SystemAlert {
 
 const Console: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [accessHistory, setAccessHistory] = useState<AccessEvent[]>([]);
   const [systemAlerts, setSystemAlerts] = useState<SystemAlert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
