@@ -62,9 +62,12 @@ const ConsoleLayout: React.FC<ConsoleLayoutProps> = ({ children }) => {
                   <Shield className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-gray-900">
-                    IAM Console
-                  </h1>
+                  <div className="flex items-center space-x-2">
+                    <h1 className="text-xl font-bold text-gray-900">
+                      IAM Console
+                    </h1>
+                    <Home className="h-5 w-5 text-gray-600 hover:text-blue-600 transition-colors" />
+                  </div>
                   <p className="text-xs text-gray-500">
                     Identity & Access Management
                   </p>
