@@ -118,7 +118,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Login />} />
+              <Route path="/" element={<RootRedirect />} />
               <Route path="/login" element={<Login />} />
               <Route
                 path="/console"
