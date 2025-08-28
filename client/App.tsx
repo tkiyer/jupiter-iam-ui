@@ -120,6 +120,14 @@ const App = () => (
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login />} />
               <Route
+                path="/console"
+                element={
+                  <ConsoleLayout>
+                    <Console />
+                  </ConsoleLayout>
+                }
+              />
+              <Route
                 path="/dashboard"
                 element={
                   <DashboardLayout>
