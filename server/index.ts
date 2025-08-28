@@ -195,6 +195,14 @@ export function createServer() {
     handleIntegrationAnalysis,
   );
 
+  // Notifications routes
+  app.get("/api/notifications", getNotifications);
+  app.post("/api/notifications", createNotification);
+  app.post("/api/notifications/mark-read", markAsRead);
+  app.post("/api/notifications/mark-all-read", markAllAsRead);
+  app.delete("/api/notifications/:id", deleteNotification);
+  app.delete("/api/notifications", clearAllNotifications);
+
   // Access Control routes
   const accessControlRoutes = require("./routes/access-control").default;
   app.use("/api/access-control", accessControlRoutes);
