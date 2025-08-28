@@ -125,9 +125,11 @@ const ConsoleLayout: React.FC<ConsoleLayoutProps> = ({ children }) => {
                     <User className="mr-2 h-4 w-4" />
                     Profile Settings
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Home className="mr-2 h-4 w-4" />
-                    Dashboard View
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard">
+                      <Home className="mr-2 h-4 w-4" />
+                      Dashboard View
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
