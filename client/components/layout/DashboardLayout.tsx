@@ -88,6 +88,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             <span className="text-xl font-semibold text-gray-900">
               IAM System
             </span>
+            <Link
+              to="/console"
+              className="p-1 rounded hover:bg-gray-100 transition-colors"
+              title="返回主页"
+            >
+              <Home className="h-4 w-4 text-gray-600 hover:text-blue-600" />
+            </Link>
           </div>
           <Button
             variant="ghost"
