@@ -237,6 +237,12 @@ const Console: React.FC = () => {
     }
   };
 
+  const handleSystemClick = (system: SystemAccess) => {
+    if (system.status === 'online' && system.url !== '#') {
+      navigate(system.url);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="space-y-6">
