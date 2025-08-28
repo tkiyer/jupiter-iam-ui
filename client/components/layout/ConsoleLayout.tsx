@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { NotificationsDropdown } from "@/components/ui/notifications-dropdown";
 import {
   Shield,
   Search,
