@@ -82,6 +82,14 @@ import {
   handleGetBusinessTemplates,
   handleIntegrationAnalysis,
 } from "./routes/business-policies";
+import {
+  getNotifications,
+  markAsRead,
+  markAllAsRead,
+  deleteNotification,
+  clearAllNotifications,
+  createNotification,
+} from "./routes/notifications";
 
 export function createServer() {
   const app = express();
