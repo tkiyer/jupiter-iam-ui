@@ -17,8 +17,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import ConsoleLayout from "@/components/layout/ConsoleLayout";
+import RootRedirect from "@/components/RootRedirect";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Console from "./pages/Console";
 import Users from "./pages/Users";
 import Roles from "./pages/Roles";
 import Permissions from "./pages/Permissions";
@@ -115,8 +118,16 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Login />} />
+              <Route path="/" element={<RootRedirect />} />
               <Route path="/login" element={<Login />} />
+              <Route
+                path="/console"
+                element={
+                  <ConsoleLayout>
+                    <Console />
+                  </ConsoleLayout>
+                }
+              />
               <Route
                 path="/dashboard"
                 element={
