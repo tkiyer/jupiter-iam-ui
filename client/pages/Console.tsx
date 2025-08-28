@@ -261,19 +261,19 @@ const Console: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg p-8 text-white">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold mb-2">
+            <h1 className="text-2xl font-bold mb-1">
               Welcome back, {user?.firstName}!
             </h1>
-            <p className="text-blue-100 text-lg">
+            <p className="text-blue-100 text-sm">
               Monitor and manage your integrated systems from this central console
             </p>
           </div>
           <div className="text-right">
-            <p className="text-blue-100 text-sm">Last login</p>
-            <p className="text-white font-medium">Today at 10:30 AM</p>
+            <p className="text-blue-100 text-xs">Last login</p>
+            <p className="text-white text-sm font-medium">Today at 10:30 AM</p>
           </div>
         </div>
       </div>
