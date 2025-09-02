@@ -50,11 +50,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       )}
 
       {/* Body area below navbar */}
-      <div className="pt-16 flex h-[calc(100vh-4rem)] overflow-hidden">
+      <div className="pt-16 flex min-h-[calc(100vh-4rem)] min-h-0 w-full">
         {/* Sidebar */}
         <div
           className={cn(
-            "fixed top-16 bottom-0 left-0 z-40 w-64 bg-white shadow-lg overflow-y-auto transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static",
+            "fixed top-16 bottom-0 left-0 z-40 w-64 bg-white shadow-lg overflow-y-auto transform transition-transform duration-300 ease-in-out shrink-0 lg:translate-x-0 lg:static",
             sidebarOpen ? "translate-x-0" : "-translate-x-full",
           )}
         >
@@ -108,9 +108,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col min-h-0">
           {/* Page Content */}
-          <main className="flex-1 overflow-auto bg-gray-50 p-6">{children}</main>
+          <main className="flex-1 overflow-auto bg-gray-50 p-6 min-h-0">{children}</main>
         </div>
       </div>
     </div>
