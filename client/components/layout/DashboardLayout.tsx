@@ -46,7 +46,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 overflow-hidden">
       {/* Fixed top navbar */}
       <ConsoleNavbar
         fixed
@@ -63,11 +63,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       )}
 
       {/* Body area below navbar */}
-      <div className="pt-16 flex min-h-[calc(100vh-4rem)] min-h-0 w-full">
+      <div className="pt-16 flex h-[calc(100vh-4rem)] w-full">
         {/* Sidebar */}
         <div
           className={cn(
-            "fixed top-16 bottom-0 left-0 z-40 w-64 bg-white shadow-lg overflow-y-auto transform transition-transform duration-300 ease-in-out shrink-0 lg:translate-x-0 lg:static",
+            "fixed top-16 bottom-0 left-0 z-40 w-64 bg-white shadow-lg overflow-y-auto transform transition-transform duration-300 ease-in-out shrink-0 lg:translate-x-0",
             sidebarOpen ? "translate-x-0" : "-translate-x-full",
           )}
         >
@@ -126,9 +126,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col min-h-0">
+        <div className="flex-1 flex flex-col min-h-0 lg:ml-64">
           {/* Page Content */}
-          <main className="flex-1 overflow-auto bg-gray-50 p-6 min-h-0">
+          <main className="flex-1 overflow-y-auto bg-gray-50 p-6 min-h-0">
             {children}
           </main>
         </div>
