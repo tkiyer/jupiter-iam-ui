@@ -521,21 +521,22 @@ const Console: React.FC = () => {
               {accessHistory.map((event) => (
                 <div
                   key={event.id}
-                  className="grid grid-cols-[auto_1fr_auto] items-center gap-3 p-3 border rounded-md hover:bg-gray-50"
+                  className="grid items-center gap-3 p-3 border rounded-md hover:bg-gray-50 grid-cols-1 sm:grid-cols-[auto_minmax(0,1.2fr)_minmax(0,1fr)_auto_auto]"
                 >
-                  <div className="flex items-center gap-2 text-gray-500">
+                  <div className="flex items-center justify-center text-gray-500">
                     {getStatusIcon(event.status)}
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-sm text-gray-900 truncate">
-                      {event.action} • {event.resource}
-                    </p>
+                  <div className="text-sm text-gray-900 truncate">
+                    {event.resource}
                   </div>
-                  <div className="text-right">
-                    <p className="text-xs text-gray-900">
-                      {formatTimestamp(event.timestamp)}
-                    </p>
-                    <p className="text-[11px] text-gray-500">{event.ip}</p>
+                  <div className="text-sm text-gray-700 truncate">
+                    {event.action}
+                  </div>
+                  <div className="text-xs text-gray-900 whitespace-nowrap">
+                    {formatTimestamp(event.timestamp)}
+                  </div>
+                  <div className="text-[11px] text-gray-500 whitespace-nowrap">
+                    {event.ip}
                   </div>
                 </div>
               ))}
