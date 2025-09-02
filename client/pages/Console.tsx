@@ -521,14 +521,12 @@ const Console: React.FC = () => {
               {accessHistory.map((event) => (
                 <div
                   key={event.id}
-                  className="grid items-center gap-3 p-3 border rounded-md hover:bg-gray-50 grid-cols-1 sm:grid-cols-[auto_minmax(0,1.2fr)_minmax(0,1fr)_auto_auto]"
+                  className="grid justify-items-start items-center gap-3 p-3 border rounded-md hover:bg-gray-50 grid-cols-1 sm:grid-cols-[auto_minmax(0,1.2fr)_minmax(0,1fr)_auto_auto]"
                 >
-                  <div className="flex items-center justify-center text-gray-500">
+                  <div className="flex items-center justify-start text-gray-500">
                     {getStatusIcon(event.status)}
                   </div>
-                  <div className="text-sm text-gray-900 truncate">
-                    {event.resource}
-                  </div>
+                  <SystemLink resource={event.resource} />
                   <div className="text-sm text-gray-700 truncate">
                     {event.action}
                   </div>
