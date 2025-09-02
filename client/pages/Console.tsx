@@ -673,13 +673,13 @@ const Console: React.FC = () => {
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center">
-                <MessageSquare className="mr-2 h-5 w-5" />
-                Notification Messages
+                <MessageSquare className="mr-2 h-5 w-5 text-blue-600" />
+                通知消息
               </div>
               <div className="flex items-center space-x-2">
                 {unreadCount > 0 && (
-                  <Badge variant="destructive" className="text-xs">
-                    {unreadCount} new
+                  <Badge variant="destructive" className="text-xs animate-pulse">
+                    {unreadCount} 条新消息
                   </Badge>
                 )}
                 <Button
@@ -687,14 +687,15 @@ const Console: React.FC = () => {
                   size="sm"
                   onClick={markAllAsRead}
                   disabled={unreadCount === 0}
-                  className="text-xs"
+                  className="text-xs hover:bg-blue-50"
                 >
-                  Mark all read
+                  <Check className="mr-1 h-3 w-3" />
+                  全部已读
                 </Button>
               </div>
             </CardTitle>
             <CardDescription>
-              Latest system notifications and important messages
+              最新的系统通知和重要消息提醒
             </CardDescription>
           </CardHeader>
           <CardContent>
