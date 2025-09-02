@@ -568,25 +568,24 @@ const Console: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="rounded-md border divide-y">
+            <div className="space-y-2">
               {accessHistory.map((event) => (
-                <div
-                  key={event.id}
-                  className="grid justify-items-start items-start gap-2 p-2.5 hover:bg-gray-50 grid-cols-1 sm:grid-cols-[auto_12rem_minmax(0,1fr)_10rem_10rem_8rem]"
-                >
-                  <div className="flex items-start justify-start text-gray-500 self-start">
-                    {getStatusIcon(event.status)}
-                  </div>
-                  <ModuleLink module={event.module} />
-                  <SystemLink resource={event.resource} />
-                  <div className="text-[13px] text-gray-700 truncate leading-tight self-start">
-                    {event.action}
-                  </div>
-                  <div className="text-xs text-gray-900 whitespace-nowrap leading-tight self-start">
-                    {formatTimestamp(event.timestamp)}
-                  </div>
-                  <div className="text-[11px] text-gray-500 whitespace-nowrap leading-tight self-start">
-                    {event.ip}
+                <div key={event.id} className="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow">
+                  <div className="grid justify-items-start items-start gap-2 p-2.5 grid-cols-1 sm:grid-cols-[auto_12rem_minmax(0,1fr)_10rem_10rem_8rem]">
+                    <div className="flex items-start justify-start text-gray-500 self-start">
+                      {getStatusIcon(event.status)}
+                    </div>
+                    <ModuleLink module={event.module} />
+                    <SystemLink resource={event.resource} />
+                    <div className="text-[13px] text-gray-700 truncate leading-tight self-start">
+                      {event.action}
+                    </div>
+                    <div className="text-xs text-gray-900 whitespace-nowrap leading-tight self-start">
+                      {formatTimestamp(event.timestamp)}
+                    </div>
+                    <div className="text-[11px] text-gray-500 whitespace-nowrap leading-tight self-start">
+                      {event.ip}
+                    </div>
                   </div>
                 </div>
               ))}
