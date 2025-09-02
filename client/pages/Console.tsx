@@ -323,33 +323,33 @@ const Console: React.FC = () => {
             return (
               <Card
                 key={system.id}
-                className="hover:shadow-lg transition-shadow cursor-pointer"
+                className="hover:shadow-md transition-shadow cursor-pointer"
                 onClick={() => handleSystemClick(system)}
               >
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-3 bg-blue-50 rounded-lg">
-                        <Icon className="h-6 w-6 text-blue-600" />
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-center space-x-3 min-w-0">
+                      <div className="p-2 bg-blue-50 rounded-md">
+                        <Icon className="h-5 w-5 text-blue-600" />
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900">
+                      <div className="min-w-0">
+                        <h3 className="font-medium text-gray-900 truncate">
                           {system.name}
                         </h3>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-xs text-gray-500 truncate">
                           {system.description}
                         </p>
                       </div>
                     </div>
-                    <ExternalLink className="h-4 w-4 text-gray-400" />
+                    <ExternalLink className="h-4 w-4 text-gray-400 flex-shrink-0" />
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <Badge className={getSystemStatusColor(system.status)}>
+                    <Badge className={`${getSystemStatusColor(system.status)} text-xs px-2 py-0.5`}>
                       {system.status}
                     </Badge>
                     {system.lastAccessed && (
-                      <span className="text-xs text-gray-500">
+                      <span className="text-[11px] text-gray-500">
                         Last: {system.lastAccessed}
                       </span>
                     )}
