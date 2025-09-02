@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import ConsoleNavbar from "@/components/layout/ConsoleNavbar";
+import SiteFooter from "@/components/layout/SiteFooter";
 import {
   Shield,
   Users,
@@ -128,8 +129,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         {/* Main Content */}
         <div className="flex-1 flex flex-col min-h-0 lg:ml-64">
           {/* Page Content */}
-          <main className="flex-1 overflow-y-auto bg-gray-50 p-6 pb-24 min-h-0">
-            {children}
+          <main className="flex-1 overflow-y-auto bg-gray-50 p-6 min-h-0 flex flex-col">
+            <div className="flex-1">{children}</div>
+            <SiteFooter />
           </main>
         </div>
       </div>
