@@ -442,7 +442,7 @@ const CreateUserDialog: React.FC<{
   };
 
   return (
-    <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+    <DialogContent className="max-w-5xl w-full max-h-[90vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>Create New User</DialogTitle>
         <DialogDescription>
@@ -1551,15 +1551,15 @@ const EnhancedRolesSelector: React.FC<{
         </Card>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Category Sidebar */}
         <div className="lg:col-span-1">
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm">Categories</CardTitle>
             </CardHeader>
-            <CardContent className="p-0">
-              <div className="space-y-1">
+            <CardContent className="p-2">
+              <div className="space-y-2">
                 {categories.map((category) => {
                   const Icon = category.icon;
                   const isSelected = selectedCategory === category.id;
@@ -1572,7 +1572,7 @@ const EnhancedRolesSelector: React.FC<{
                         setCurrentPage(1);
                       }}
                       className={cn(
-                        "w-full flex items-center justify-between p-3 text-left hover:bg-gray-50 transition-colors cursor-pointer",
+                        "w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors cursor-pointer",
                         isSelected &&
                           "bg-blue-50 text-blue-700 border-r-2 border-blue-600",
                       )}
@@ -1604,7 +1604,7 @@ const EnhancedRolesSelector: React.FC<{
         </div>
 
         {/* Main Content */}
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-4">
           {/* Search and Bulk Actions */}
           <Card className="mb-4">
             <CardContent className="p-4">
