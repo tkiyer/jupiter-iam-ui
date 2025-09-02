@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -67,6 +67,28 @@ interface SystemAlert {
   message: string;
   timestamp: string;
 }
+
+const getSystemPath = (resource: string): string | null => {
+  const r = resource.toLowerCase();
+  if (r.includes("iam")) return "/console";
+  if (r.includes("policy")) return "/policies";
+  if (r.includes("api")) return "/permissions";
+  if (r.includes("user") || r.includes("@")) return "/users";
+  if (r.includes("access")) return "/access-control";
+  return null;
+};
+
+const SystemLink: React.FC<{ resource: string }> = ({ resource }) => {
+  const path = getSystemPath(resource);
+  if (path) {
+    return (
+      <Link to={path} className="text-sm text-blue-600 hover:underline truncate">
+        {resource}
+      </Link>
+    );
+  }
+  return <span className="text-sm text-gray-900 truncate">{resource}</span>;
+};
 
 const Console: React.FC = () => {
   const { user } = useAuth();
