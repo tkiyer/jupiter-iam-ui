@@ -723,7 +723,7 @@ const Console: React.FC = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => window.location.reload()}
+                  onClick={refreshNotifications}
                 >
                   Retry
                 </Button>
