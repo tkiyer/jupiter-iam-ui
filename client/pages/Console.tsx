@@ -358,6 +358,82 @@ const Console: React.FC = () => {
               </Card>
             );
           })}
+          <Dialog open={addOpen} onOpenChange={setAddOpen}>
+            <DialogTrigger asChild>
+              <Card
+                className="hover:shadow-md transition-shadow cursor-pointer border-dashed border-2 flex items-center justify-center min-h-[88px]"
+                onClick={() => setAddOpen(true)}
+              >
+                <CardContent className="p-4 w-full h-full flex flex-col items-center justify-center text-gray-600">
+                  <Plus className="h-6 w-6 mb-1" />
+                  <span className="text-sm font-medium">Add Shortcut</span>
+                </CardContent>
+              </Card>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add System Shortcut</DialogTitle>
+                <DialogDescription>Quickly add a system to your console shortcuts.</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="grid grid-cols-4 items-center gap-2">
+                  <Label htmlFor="name" className="col-span-1">Name</Label>
+                  <Input id="name" className="col-span-3" value={newName} onChange={(e) => setNewName(e.target.value)} />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-2">
+                  <Label htmlFor="desc" className="col-span-1">Description</Label>
+                  <Input id="desc" className="col-span-3" value={newDesc} onChange={(e) => setNewDesc(e.target.value)} />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-2">
+                  <Label htmlFor="url" className="col-span-1">URL</Label>
+                  <Input id="url" className="col-span-3" placeholder="/path-or-https://..." value={newUrl} onChange={(e) => setNewUrl(e.target.value)} />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-2">
+                  <Label className="col-span-1">Icon</Label>
+                  <div className="col-span-3">
+                    <Select value={newIcon} onValueChange={setNewIcon}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select an icon" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Users">Users</SelectItem>
+                        <SelectItem value="Shield">Shield</SelectItem>
+                        <SelectItem value="Database">Database</SelectItem>
+                        <SelectItem value="Cloud">Cloud</SelectItem>
+                        <SelectItem value="Monitor">Monitor</SelectItem>
+                        <SelectItem value="Globe">Globe</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button
+                  onClick={() => {
+                    if (!newName.trim() || !newUrl.trim()) return;
+                    const IconComp = iconMap[newIcon as keyof typeof iconMap] || Globe;
+                    const item: SystemAccess = {
+                      id: String(Date.now()),
+                      name: newName.trim(),
+                      description: newDesc.trim(),
+                      icon: IconComp,
+                      status: "online",
+                      url: newUrl.trim(),
+                      lastAccessed: "just now",
+                    };
+                    setQuickAccess((prev) => [...prev, item]);
+                    setAddOpen(false);
+                    setNewName("");
+                    setNewDesc("");
+                    setNewUrl("");
+                    setNewIcon("Globe");
+                  }}
+                >
+                  Add
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
