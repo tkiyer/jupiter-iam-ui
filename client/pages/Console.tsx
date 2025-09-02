@@ -911,7 +911,7 @@ const Console: React.FC = () => {
               Important system status notifications
             </CardDescription>
           </CardHeader>
-          <CardContent className="pt-0">
+          <CardContent>
             {systemAlerts.length > 0 ? (
               <>
                 <div className="space-y-3">
