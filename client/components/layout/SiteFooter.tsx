@@ -8,8 +8,6 @@ const SiteFooter: React.FC = () => {
         <p className="leading-none">© {year} Fusion Starter. All rights reserved.</p>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
           <span className="whitespace-nowrap">Built with React · Vite · Tailwind</span>
-          <span className="hidden h-4 w-px bg-border sm:block" />
-          <span className="whitespace-nowrap">Contact: support@example.com</span>
         </div>
       </div>
     </footer>
