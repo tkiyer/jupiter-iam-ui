@@ -317,7 +317,7 @@ const Console: React.FC = () => {
         <h2 className="text-2xl font-bold text-gray-900 mb-6">
           Quick System Access
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {quickAccessSystems.map((system) => {
             const Icon = system.icon;
             return (
