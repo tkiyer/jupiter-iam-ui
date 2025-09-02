@@ -969,12 +969,12 @@ const Console: React.FC = () => {
                               {/* Priority indicator */}
                               {alert.type === "error" && (
                                 <div className="ml-2 px-2 py-1 bg-red-100 rounded-full">
-                                  <span className="text-xs font-medium text-red-700">高</span>
+                                  <span className="text-xs font-medium text-red-700">High</span>
                                 </div>
                               )}
                               {alert.type === "warning" && (
                                 <div className="ml-2 px-2 py-1 bg-yellow-100 rounded-full">
-                                  <span className="text-xs font-medium text-yellow-700">中</span>
+                                  <span className="text-xs font-medium text-yellow-700">Medium</span>
                                 </div>
                               )}
                             </div>
