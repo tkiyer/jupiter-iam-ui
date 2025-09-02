@@ -745,13 +745,13 @@ const Console: React.FC = () => {
                     return "border-l-gray-300 bg-white";
                   };
 
-                  // 生成功能链接
+                  // Generate action links
                   const getActionLinks = (notification: any) => {
                     const links = [];
 
                     if (notification.type === "error" || notification.type === "warning") {
                       links.push({
-                        text: "查看详情",
+                        text: "View Details",
                         action: () => navigate("/audit"),
                         color: "text-blue-600 hover:text-blue-800"
                       });
@@ -759,7 +759,7 @@ const Console: React.FC = () => {
 
                     if (notification.type === "security") {
                       links.push({
-                        text: "处理冲突",
+                        text: "Resolve",
                         action: () => navigate("/policies"),
                         color: "text-purple-600 hover:text-purple-800"
                       });
