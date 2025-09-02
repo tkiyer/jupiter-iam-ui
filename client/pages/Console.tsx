@@ -996,7 +996,7 @@ const Console: React.FC = () => {
                                     className="text-xs text-red-600 hover:text-red-800 font-medium hover:underline"
                                     onClick={() => navigate("/audit")}
                                   >
-                                    立即处理
+                                    Handle Now
                                   </button>
                                 )}
                                 {alert.type === "warning" && (
@@ -1004,11 +1004,11 @@ const Console: React.FC = () => {
                                     className="text-xs text-yellow-600 hover:text-yellow-800 font-medium hover:underline"
                                     onClick={() => navigate("/policies")}
                                   >
-                                    查看详情
+                                    View Details
                                   </button>
                                 )}
                                 <button className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
-                                  忽略
+                                  Dismiss
                                 </button>
                               </div>
                             </div>
