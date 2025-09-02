@@ -1027,11 +1027,11 @@ const Console: React.FC = () => {
                       className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors flex items-center"
                     >
                       <Clock className="mr-2 h-4 w-4" />
-                      查看全部警报
+                      View All Alerts
                       <ArrowRight className="ml-1 h-4 w-4" />
                     </button>
                     <button className="text-xs text-gray-500 hover:text-gray-700 transition-colors">
-                      标记全部已读
+                      Mark All Read
                     </button>
                   </div>
                 </div>
@@ -1042,10 +1042,10 @@ const Console: React.FC = () => {
                   <CheckCircle className="h-6 w-6 text-green-600" />
                 </div>
                 <h3 className="text-sm font-medium text-gray-700 mb-1">
-                  系统运行正常
+                  System Running Normally
                 </h3>
                 <p className="text-xs text-gray-500">
-                  暂无系统警报和异常状态
+                  No system alerts or anomalies detected
                 </p>
               </div>
             )}
