@@ -254,6 +254,22 @@ const Console: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    setQuickAccess(quickAccessSystems);
+  }, []);
+
+  const iconMap = useMemo(
+    () => ({
+      Users,
+      Shield,
+      Database,
+      Cloud,
+      Monitor,
+      Globe,
+    }),
+    [],
+  );
+
   const handleSystemClick = (system: SystemAccess) => {
     if (system.status === "online" && system.url !== "#") {
       navigate(system.url);
