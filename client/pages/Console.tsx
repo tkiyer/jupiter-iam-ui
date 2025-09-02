@@ -866,10 +866,10 @@ const Console: React.FC = () => {
                   <BellRing className="h-6 w-6 text-gray-400" />
                 </div>
                 <h3 className="text-sm font-medium text-gray-700 mb-1">
-                  暂无通知消息
+                  No notifications
                 </h3>
                 <p className="text-xs text-gray-500">
-                  新的系统消息将会在这里显示
+                  New system messages will appear here
                 </p>
               </div>
             )}
@@ -887,7 +887,7 @@ const Console: React.FC = () => {
                 </button>
                 {notifications.length > 0 && (
                   <span className="text-xs text-gray-500">
-                    显示最新 {Math.min(5, notifications.length)} 条，共 {notifications.length} 条消息
+                    Showing latest {Math.min(5, notifications.length)} of {notifications.length} messages
                   </span>
                 )}
               </div>
