@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -8,6 +8,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -33,6 +51,7 @@ import {
   Settings,
   Lock,
   Globe,
+  Plus,
 } from "lucide-react";
 
 interface AccessEvent {
@@ -40,6 +59,7 @@ interface AccessEvent {
   timestamp: string;
   action: string;
   resource: string;
+  module: string;
   status: "success" | "failure" | "warning";
   ip: string;
   userAgent: string;
@@ -63,12 +83,69 @@ interface SystemAlert {
   timestamp: string;
 }
 
+const getSystemPath = (resource: string): string | null => {
+  const r = resource.toLowerCase();
+  if (r.includes("iam")) return "/console";
+  if (r.includes("policy")) return "/policies";
+  if (r.includes("api")) return "/permissions";
+  if (r.includes("user") || r.includes("@")) return "/users";
+  if (r.includes("access")) return "/access-control";
+  return null;
+};
+
+const SystemLink: React.FC<{ resource: string }> = ({ resource }) => {
+  const path = getSystemPath(resource);
+  if (path) {
+    return (
+      <Link
+        to={path}
+        className="text-sm text-blue-600 hover:underline truncate"
+      >
+        {resource}
+      </Link>
+    );
+  }
+  return <span className="text-sm text-gray-900 truncate">{resource}</span>;
+};
+
+const getModulePath = (module: string): string | null => {
+  const m = module.toLowerCase();
+  if (m.includes("auth") || m.includes("login")) return "/console";
+  if (m.includes("policy")) return "/policies";
+  if (m.includes("user")) return "/users";
+  if (m.includes("api") || m.includes("permission")) return "/permissions";
+  if (m.includes("access")) return "/access-control";
+  if (m.includes("audit") || m.includes("security")) return "/audit";
+  return null;
+};
+
+const ModuleLink: React.FC<{ module: string }> = ({ module }) => {
+  const path = getModulePath(module);
+  if (path) {
+    return (
+      <Link
+        to={path}
+        className="text-sm text-blue-600 hover:underline truncate"
+      >
+        {module}
+      </Link>
+    );
+  }
+  return <span className="text-sm text-gray-900 truncate">{module}</span>;
+};
+
 const Console: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [accessHistory, setAccessHistory] = useState<AccessEvent[]>([]);
   const [systemAlerts, setSystemAlerts] = useState<SystemAlert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [quickAccess, setQuickAccess] = useState<SystemAccess[]>([]);
+  const [addOpen, setAddOpen] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newDesc, setNewDesc] = useState("");
+  const [newUrl, setNewUrl] = useState("");
+  const [newIcon, setNewIcon] = useState("Globe");
 
   useEffect(() => {
     fetchConsoleData();
@@ -84,6 +161,7 @@ const Console: React.FC = () => {
           timestamp: "2024-01-15T10:30:00Z",
           action: "Login",
           resource: "IAM Console",
+          module: "Authentication",
           status: "success",
           ip: "192.168.1.100",
           userAgent: "Chrome/120.0.0.0",
@@ -93,6 +171,7 @@ const Console: React.FC = () => {
           timestamp: "2024-01-15T10:25:00Z",
           action: "Policy Update",
           resource: "user-access-policy",
+          module: "Policies",
           status: "success",
           ip: "192.168.1.100",
           userAgent: "Chrome/120.0.0.0",
@@ -102,6 +181,7 @@ const Console: React.FC = () => {
           timestamp: "2024-01-15T10:20:00Z",
           action: "Role Assignment",
           resource: "john.doe@company.com",
+          module: "Users",
           status: "success",
           ip: "192.168.1.100",
           userAgent: "Chrome/120.0.0.0",
@@ -111,6 +191,7 @@ const Console: React.FC = () => {
           timestamp: "2024-01-15T10:15:00Z",
           action: "Failed Login",
           resource: "IAM Console",
+          module: "Authentication",
           status: "failure",
           ip: "203.0.113.1",
           userAgent: "Unknown",
@@ -120,6 +201,7 @@ const Console: React.FC = () => {
           timestamp: "2024-01-15T10:10:00Z",
           action: "Permission Grant",
           resource: "api-access",
+          module: "API",
           status: "warning",
           ip: "192.168.1.100",
           userAgent: "Chrome/120.0.0.0",
@@ -243,6 +325,22 @@ const Console: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    setQuickAccess(quickAccessSystems);
+  }, []);
+
+  const iconMap = useMemo(
+    () => ({
+      Users,
+      Shield,
+      Database,
+      Cloud,
+      Monitor,
+      Globe,
+    }),
+    [],
+  );
+
   const handleSystemClick = (system: SystemAccess) => {
     if (system.status === "online" && system.url !== "#") {
       navigate(system.url);
@@ -290,39 +388,41 @@ const Console: React.FC = () => {
         <h2 className="text-2xl font-bold text-gray-900 mb-6">
           Quick System Access
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {quickAccessSystems.map((system) => {
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          {quickAccess.map((system) => {
             const Icon = system.icon;
             return (
               <Card
                 key={system.id}
-                className="hover:shadow-lg transition-shadow cursor-pointer"
+                className="hover:shadow-md transition-shadow cursor-pointer"
                 onClick={() => handleSystemClick(system)}
               >
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-3 bg-blue-50 rounded-lg">
-                        <Icon className="h-6 w-6 text-blue-600" />
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-center space-x-3 min-w-0">
+                      <div className="p-2 bg-blue-50 rounded-md">
+                        <Icon className="h-5 w-5 text-blue-600" />
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900">
+                      <div className="min-w-0">
+                        <h3 className="font-medium text-gray-900 truncate">
                           {system.name}
                         </h3>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-xs text-gray-500 truncate">
                           {system.description}
                         </p>
                       </div>
                     </div>
-                    <ExternalLink className="h-4 w-4 text-gray-400" />
+                    <ExternalLink className="h-4 w-4 text-gray-400 flex-shrink-0" />
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <Badge className={getSystemStatusColor(system.status)}>
+                    <Badge
+                      className={`${getSystemStatusColor(system.status)} text-xs px-2 py-0.5`}
+                    >
                       {system.status}
                     </Badge>
                     {system.lastAccessed && (
-                      <span className="text-xs text-gray-500">
+                      <span className="text-[11px] text-gray-500">
                         Last: {system.lastAccessed}
                       </span>
                     )}
@@ -331,6 +431,107 @@ const Console: React.FC = () => {
               </Card>
             );
           })}
+          <Dialog open={addOpen} onOpenChange={setAddOpen}>
+            <DialogTrigger asChild>
+              <Card
+                className="hover:shadow-md transition-shadow cursor-pointer border-dashed border-2 flex items-center justify-center min-h-[88px]"
+                onClick={() => setAddOpen(true)}
+              >
+                <CardContent className="p-4 w-full h-full flex flex-col items-center justify-center text-gray-600">
+                  <Plus className="h-6 w-6 mb-1" />
+                  <span className="text-sm font-medium">Add Shortcut</span>
+                </CardContent>
+              </Card>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add System Shortcut</DialogTitle>
+                <DialogDescription>
+                  Quickly add a system to your console shortcuts.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="grid grid-cols-4 items-center gap-2">
+                  <Label htmlFor="name" className="col-span-1">
+                    Name
+                  </Label>
+                  <Input
+                    id="name"
+                    className="col-span-3"
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-2">
+                  <Label htmlFor="desc" className="col-span-1">
+                    Description
+                  </Label>
+                  <Input
+                    id="desc"
+                    className="col-span-3"
+                    value={newDesc}
+                    onChange={(e) => setNewDesc(e.target.value)}
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-2">
+                  <Label htmlFor="url" className="col-span-1">
+                    URL
+                  </Label>
+                  <Input
+                    id="url"
+                    className="col-span-3"
+                    placeholder="/path-or-https://..."
+                    value={newUrl}
+                    onChange={(e) => setNewUrl(e.target.value)}
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-2">
+                  <Label className="col-span-1">Icon</Label>
+                  <div className="col-span-3">
+                    <Select value={newIcon} onValueChange={setNewIcon}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select an icon" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Users">Users</SelectItem>
+                        <SelectItem value="Shield">Shield</SelectItem>
+                        <SelectItem value="Database">Database</SelectItem>
+                        <SelectItem value="Cloud">Cloud</SelectItem>
+                        <SelectItem value="Monitor">Monitor</SelectItem>
+                        <SelectItem value="Globe">Globe</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button
+                  onClick={() => {
+                    if (!newName.trim() || !newUrl.trim()) return;
+                    const IconComp =
+                      iconMap[newIcon as keyof typeof iconMap] || Globe;
+                    const item: SystemAccess = {
+                      id: String(Date.now()),
+                      name: newName.trim(),
+                      description: newDesc.trim(),
+                      icon: IconComp,
+                      status: "online",
+                      url: newUrl.trim(),
+                      lastAccessed: "just now",
+                    };
+                    setQuickAccess((prev) => [...prev, item]);
+                    setAddOpen(false);
+                    setNewName("");
+                    setNewDesc("");
+                    setNewUrl("");
+                    setNewIcon("Globe");
+                  }}
+                >
+                  Add
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
@@ -414,26 +615,27 @@ const Console: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-2">
               {accessHistory.map((event) => (
                 <div
                   key={event.id}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                  className="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <div className="flex items-center space-x-3">
-                    {getStatusIcon(event.status)}
-                    <div>
-                      <p className="font-medium text-gray-900">
-                        {event.action}
-                      </p>
-                      <p className="text-sm text-gray-500">{event.resource}</p>
+                  <div className="grid justify-items-start items-start gap-2 p-2.5 grid-cols-1 sm:grid-cols-[auto_12rem_minmax(0,1fr)_10rem_10rem_8rem]">
+                    <div className="flex items-start justify-start text-gray-500 self-start">
+                      {getStatusIcon(event.status)}
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm text-gray-900">
+                    <ModuleLink module={event.module} />
+                    <SystemLink resource={event.resource} />
+                    <div className="text-[13px] text-gray-700 truncate leading-tight self-start">
+                      {event.action}
+                    </div>
+                    <div className="text-xs text-gray-900 whitespace-nowrap leading-tight self-start">
                       {formatTimestamp(event.timestamp)}
-                    </p>
-                    <p className="text-xs text-gray-500">{event.ip}</p>
+                    </div>
+                    <div className="text-[11px] text-gray-500 whitespace-nowrap leading-tight self-start">
+                      {event.ip}
+                    </div>
                   </div>
                 </div>
               ))}
