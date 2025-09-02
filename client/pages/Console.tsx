@@ -708,8 +708,8 @@ const Console: React.FC = () => {
                 ))}
               </div>
             ) : notifications.length > 0 ? (
-              <div className="space-y-2">
-                {notifications.slice(0, 5).map((notification) => {
+              <div className="divide-y divide-gray-100">
+                {notifications.slice(0, 5).map((notification, index) => {
                   const getNotificationIcon = () => {
                     switch (notification.type) {
                       case "error":
@@ -729,18 +729,18 @@ const Console: React.FC = () => {
                     if (!notification.isRead) {
                       switch (notification.type) {
                         case "error":
-                          return "border-l-red-400";
+                          return "border-l-red-400 bg-red-50/30";
                         case "warning":
-                          return "border-l-yellow-400";
+                          return "border-l-yellow-400 bg-yellow-50/30";
                         case "success":
-                          return "border-l-green-400";
+                          return "border-l-green-400 bg-green-50/30";
                         case "security":
-                          return "border-l-purple-400";
+                          return "border-l-purple-400 bg-purple-50/30";
                         default:
-                          return "border-l-blue-400";
+                          return "border-l-blue-400 bg-blue-50/30";
                       }
                     }
-                    return "border-l-gray-300";
+                    return "border-l-gray-300 bg-white";
                   };
 
                   // 生成功能链接
@@ -779,9 +779,9 @@ const Console: React.FC = () => {
                   return (
                     <div
                       key={notification.id}
-                      className={`border-l-3 bg-white hover:bg-gray-50 transition-colors ${getNotificationBorder()}`}
+                      className={`border-l-3 hover:bg-gray-50/80 transition-all duration-150 ${getNotificationBorder()}`}
                     >
-                      <div className="flex items-center justify-between py-3 px-4">
+                      <div className="flex items-center justify-between py-4 px-4">
                         {/* Left side - Icon and content */}
                         <div className="flex items-center space-x-3 flex-1 min-w-0">
                           <div className="flex-shrink-0">
@@ -795,10 +795,10 @@ const Console: React.FC = () => {
                                 {notification.title}
                               </h4>
                               {!notification.isRead && (
-                                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full flex-shrink-0"></div>
+                                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full flex-shrink-0 animate-pulse"></div>
                               )}
                             </div>
-                            <p className={`text-xs mt-0.5 truncate ${
+                            <p className={`text-xs mt-1 truncate ${
                               !notification.isRead ? "text-gray-700" : "text-gray-500"
                             }`}>
                               {notification.message}
@@ -810,7 +810,7 @@ const Console: React.FC = () => {
                         <div className="flex items-center space-x-4 flex-shrink-0">
                           {/* Action links */}
                           {actionLinks.length > 0 && (
-                            <div className="flex items-center space-x-3">
+                            <div className="hidden sm:flex items-center space-x-3">
                               {actionLinks.map((link, index) => (
                                 <button
                                   key={index}
@@ -839,18 +839,18 @@ const Console: React.FC = () => {
                           {!notification.isRead && (
                             <button
                               onClick={() => markAsRead(notification.id)}
-                              className="p-1 hover:bg-green-100 rounded transition-colors"
+                              className="p-1.5 hover:bg-green-100 rounded-md transition-colors"
                               title="标记为已读"
                             >
-                              <Check className="h-3 w-3 text-green-600" />
+                              <Check className="h-3.5 w-3.5 text-green-600" />
                             </button>
                           )}
                           <button
                             onClick={() => deleteNotification(notification.id)}
-                            className="p-1 hover:bg-red-100 rounded transition-colors"
+                            className="p-1.5 hover:bg-red-100 rounded-md transition-colors"
                             title="删除通知"
                           >
-                            <X className="h-3 w-3 text-gray-400 hover:text-red-500" />
+                            <X className="h-3.5 w-3.5 text-gray-400 hover:text-red-500" />
                           </button>
                         </div>
                       </div>
