@@ -673,13 +673,8 @@ const Console: React.FC = () => {
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center">
-                <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                  <MessageSquare className="h-5 w-5 text-blue-700" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Notification Messages</h3>
-                  <p className="text-sm text-gray-500 mt-0.5">Latest system notifications and important alerts</p>
-                </div>
+                <MessageSquare className="mr-2 h-5 w-5" />
+                Notification Messages
               </div>
               <div className="flex items-center space-x-2">
                 {unreadCount > 0 && (
@@ -699,6 +694,9 @@ const Console: React.FC = () => {
                 </Button>
               </div>
             </CardTitle>
+            <CardDescription>
+              Latest system notifications and important alerts
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {notificationsLoading ? (
