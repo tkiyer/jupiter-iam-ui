@@ -517,26 +517,25 @@ const Console: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-2">
               {accessHistory.map((event) => (
                 <div
                   key={event.id}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                  className="grid grid-cols-[auto_1fr_auto] items-center gap-3 p-3 border rounded-md hover:bg-gray-50"
                 >
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center gap-2 text-gray-500">
                     {getStatusIcon(event.status)}
-                    <div>
-                      <p className="font-medium text-gray-900">
-                        {event.action}
-                      </p>
-                      <p className="text-sm text-gray-500">{event.resource}</p>
-                    </div>
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm text-gray-900 truncate">
+                      {event.action} • {event.resource}
+                    </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-gray-900">
+                    <p className="text-xs text-gray-900">
                       {formatTimestamp(event.timestamp)}
                     </p>
-                    <p className="text-xs text-gray-500">{event.ip}</p>
+                    <p className="text-[11px] text-gray-500">{event.ip}</p>
                   </div>
                 </div>
               ))}
