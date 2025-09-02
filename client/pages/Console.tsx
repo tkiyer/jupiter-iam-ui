@@ -568,11 +568,11 @@ const Console: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
+            <div className="rounded-md border divide-y">
               {accessHistory.map((event) => (
                 <div
                   key={event.id}
-                  className="grid justify-items-start items-center gap-3 p-3 border rounded-md hover:bg-gray-50 grid-cols-1 sm:grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.9fr)_auto_auto]"
+                  className="grid justify-items-start items-center gap-2 p-2.5 hover:bg-gray-50 grid-cols-1 sm:grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.9fr)_auto_auto]"
                 >
                   <div className="flex items-center justify-start text-gray-500">
                     {getStatusIcon(event.status)}
