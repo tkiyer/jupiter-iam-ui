@@ -859,27 +859,37 @@ const Console: React.FC = () => {
                 })}
               </div>
             ) : (
-              <div className="text-center py-12">
-                <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                  <BellRing className="h-8 w-8 text-gray-400" />
+              <div className="text-center py-8">
+                <div className="bg-gray-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                  <BellRing className="h-6 w-6 text-gray-400" />
                 </div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">
+                <h3 className="text-sm font-medium text-gray-700 mb-1">
                   暂无通知消息
                 </h3>
-                <p className="text-xs text-gray-500 max-w-sm mx-auto">
-                  您已查看了所有通知！新的系统消息和重要通知将会在这里显示。
+                <p className="text-xs text-gray-500">
+                  新的系统消息将会在这里显示
                 </p>
               </div>
             )}
-            {notifications.length > 5 && (
-              <div className="mt-4 pt-3 border-t border-gray-100">
-                <Button variant="outline" className="w-full hover:bg-blue-50 hover:border-blue-200">
-                  <Bell className="mr-2 h-4 w-4" />
-                  查看全部通知 ({notifications.length})
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+
+            {/* View All Messages Button */}
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <div className="flex items-center justify-between">
+                <button
+                  onClick={() => navigate("/notifications")}
+                  className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors flex items-center"
+                >
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  View All Messages
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                </button>
+                {notifications.length > 0 && (
+                  <span className="text-xs text-gray-500">
+                    显示最新 {Math.min(5, notifications.length)} 条，共 {notifications.length} 条消息
+                  </span>
+                )}
               </div>
-            )}
+            </div>
           </CardContent>
         </Card>
 
