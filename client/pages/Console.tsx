@@ -60,6 +60,8 @@ import {
   Trash2,
   Info,
   X,
+  Check,
+  ArrowRight,
 } from "lucide-react";
 import { useNotifications } from "@/hooks/useNotifications";
 
