@@ -52,7 +52,18 @@ import {
   Lock,
   Globe,
   Plus,
+  Bell,
+  BellRing,
+  MessageSquare,
+  Eye,
+  EyeOff,
+  Trash2,
+  Info,
+  X,
+  Check,
+  ArrowRight,
 } from "lucide-react";
+import { useNotifications } from "@/hooks/useNotifications";
 
 interface AccessEvent {
   id: string;
@@ -137,6 +148,16 @@ const ModuleLink: React.FC<{ module: string }> = ({ module }) => {
 const Console: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const {
+    notifications,
+    unreadCount,
+    loading: notificationsLoading,
+    error: notificationsError,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification,
+    refreshNotifications,
+  } = useNotifications();
   const [accessHistory, setAccessHistory] = useState<AccessEvent[]>([]);
   const [systemAlerts, setSystemAlerts] = useState<SystemAlert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -649,57 +670,269 @@ const Console: React.FC = () => {
 
       {/* System Monitoring & Alerts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* System Health */}
+        {/* Notification Messages */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center">
-              <Activity className="mr-2 h-5 w-5" />
-              System Health
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center">
+                <MessageSquare className="mr-2 h-5 w-5" />
+                Notification Messages
+              </div>
+              <div className="flex items-center space-x-2">
+                {unreadCount > 0 && (
+                  <Badge
+                    variant="destructive"
+                    className="text-xs animate-pulse"
+                  >
+                    {unreadCount} new
+                  </Badge>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={markAllAsRead}
+                  disabled={unreadCount === 0}
+                  className="text-xs hover:bg-blue-50"
+                >
+                  <Check className="mr-1 h-3 w-3" />
+                  Mark all read
+                </Button>
+              </div>
             </CardTitle>
             <CardDescription>
-              Real-time system performance metrics
+              Latest system notifications and important alerts
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="flex items-center">
-                  <Server className="mr-2 h-4 w-4" />
-                  Server Performance
-                </span>
-                <span className="font-medium">98%</span>
+          <CardContent>
+            {notificationsLoading ? (
+              <div className="space-y-3">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="h-16 bg-gray-200 rounded-lg"></div>
+                  </div>
+                ))}
               </div>
-              <Progress value={98} className="h-2" />
-            </div>
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="flex items-center">
-                  <Shield className="mr-2 h-4 w-4" />
-                  Security Score
-                </span>
-                <span className="font-medium">94%</span>
+            ) : notificationsError ? (
+              <div className="text-center py-8">
+                <div className="bg-red-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                  <X className="h-6 w-6 text-red-600" />
+                </div>
+                <h3 className="text-sm font-medium text-gray-700 mb-1">
+                  Failed to load notifications
+                </h3>
+                <p className="text-xs text-gray-500 mb-3">
+                  {notificationsError}
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={refreshNotifications}
+                >
+                  Retry
+                </Button>
               </div>
-              <Progress value={94} className="h-2" />
-            </div>
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="flex items-center">
-                  <Zap className="mr-2 h-4 w-4" />
-                  Response Time
-                </span>
-                <span className="font-medium">87%</span>
+            ) : notifications.length > 0 ? (
+              <div className="divide-y divide-gray-100">
+                {notifications.slice(0, 5).map((notification, index) => {
+                  const getNotificationIcon = () => {
+                    switch (notification.type) {
+                      case "error":
+                        return (
+                          <AlertTriangle className="h-4 w-4 text-red-500" />
+                        );
+                      case "warning":
+                        return (
+                          <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                        );
+                      case "success":
+                        return (
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                        );
+                      case "security":
+                        return <Shield className="h-4 w-4 text-purple-500" />;
+                      default:
+                        return <Info className="h-4 w-4 text-blue-500" />;
+                    }
+                  };
+
+                  const getNotificationBorder = () => {
+                    if (!notification.isRead) {
+                      switch (notification.type) {
+                        case "error":
+                          return "border-l-red-400 bg-red-50/30";
+                        case "warning":
+                          return "border-l-yellow-400 bg-yellow-50/30";
+                        case "success":
+                          return "border-l-green-400 bg-green-50/30";
+                        case "security":
+                          return "border-l-purple-400 bg-purple-50/30";
+                        default:
+                          return "border-l-blue-400 bg-blue-50/30";
+                      }
+                    }
+                    return "border-l-gray-300 bg-white";
+                  };
+
+                  // Generate action links
+                  const getActionLinks = (notification: any) => {
+                    const links = [];
+
+                    if (
+                      notification.type === "error" ||
+                      notification.type === "warning"
+                    ) {
+                      links.push({
+                        text: "View Details",
+                        action: () => navigate("/audit"),
+                        color: "text-blue-600 hover:text-blue-800",
+                      });
+                    }
+
+                    if (notification.type === "security") {
+                      links.push({
+                        text: "Resolve",
+                        action: () => navigate("/policies"),
+                        color: "text-purple-600 hover:text-purple-800",
+                      });
+                    }
+
+                    if (notification.actionUrl && notification.actionText) {
+                      links.push({
+                        text: notification.actionText,
+                        action: () => navigate(notification.actionUrl!),
+                        color: "text-green-600 hover:text-green-800",
+                      });
+                    }
+
+                    return links;
+                  };
+
+                  const actionLinks = getActionLinks(notification);
+
+                  return (
+                    <div
+                      key={notification.id}
+                      className={`border-l-3 hover:bg-gray-50/80 transition-all duration-150 ${getNotificationBorder()}`}
+                    >
+                      <div className="flex items-center justify-between py-4 px-4">
+                        {/* Left side - Icon and content */}
+                        <div className="flex items-center space-x-3 flex-1 min-w-0">
+                          <div className="flex-shrink-0">
+                            {getNotificationIcon()}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center space-x-2">
+                              <h4
+                                className={`text-sm font-medium truncate ${
+                                  !notification.isRead
+                                    ? "text-gray-900"
+                                    : "text-gray-600"
+                                }`}
+                              >
+                                {notification.title}
+                              </h4>
+                              {!notification.isRead && (
+                                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full flex-shrink-0 animate-pulse"></div>
+                              )}
+                            </div>
+                            <p
+                              className={`text-xs mt-1 truncate ${
+                                !notification.isRead
+                                  ? "text-gray-700"
+                                  : "text-gray-500"
+                              }`}
+                            >
+                              {notification.message}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Middle - Time and actions */}
+                        <div className="flex items-center space-x-4 flex-shrink-0">
+                          {/* Action links */}
+                          {actionLinks.length > 0 && (
+                            <div className="hidden sm:flex items-center space-x-3">
+                              {actionLinks.map((link, index) => (
+                                <button
+                                  key={index}
+                                  onClick={link.action}
+                                  className={`text-xs font-medium underline-offset-2 hover:underline transition-colors ${link.color}`}
+                                >
+                                  {link.text}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Time */}
+                          <span className="text-xs text-gray-400 whitespace-nowrap">
+                            {new Date(
+                              notification.createdAt,
+                            ).toLocaleDateString("en-US", {
+                              month: "numeric",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </span>
+                        </div>
+
+                        {/* Right side - Quick actions */}
+                        <div className="flex items-center space-x-1 ml-4 flex-shrink-0">
+                          {!notification.isRead && (
+                            <button
+                              onClick={() => markAsRead(notification.id)}
+                              className="p-1.5 hover:bg-green-100 rounded-md transition-colors"
+                              title="Mark as read"
+                            >
+                              <Check className="h-3.5 w-3.5 text-green-600" />
+                            </button>
+                          )}
+                          <button
+                            onClick={() => deleteNotification(notification.id)}
+                            className="p-1.5 hover:bg-red-100 rounded-md transition-colors"
+                            title="Delete notification"
+                          >
+                            <X className="h-3.5 w-3.5 text-gray-400 hover:text-red-500" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-              <Progress value={87} className="h-2" />
-            </div>
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="flex items-center">
-                  <Lock className="mr-2 h-4 w-4" />
-                  Authentication Rate
-                </span>
-                <span className="font-medium">99%</span>
+            ) : (
+              <div className="text-center py-8">
+                <div className="bg-gray-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                  <BellRing className="h-6 w-6 text-gray-400" />
+                </div>
+                <h3 className="text-sm font-medium text-gray-700 mb-1">
+                  No notifications
+                </h3>
+                <p className="text-xs text-gray-500">
+                  New system messages will appear here
+                </p>
               </div>
-              <Progress value={99} className="h-2" />
+            )}
+
+            {/* View All Messages Button */}
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <div className="flex items-center justify-between">
+                <button
+                  onClick={() => navigate("/notifications")}
+                  className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors flex items-center"
+                >
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  View All Messages
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                </button>
+                {notifications.length > 0 && (
+                  <span className="text-xs text-gray-500">
+                    Showing latest {Math.min(5, notifications.length)} of{" "}
+                    {notifications.length} messages
+                  </span>
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -707,65 +940,167 @@ const Console: React.FC = () => {
         {/* System Alerts */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center">
-              <AlertTriangle className="mr-2 h-5 w-5" />
-              System Alerts
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center">
+                <AlertTriangle className="mr-2 h-5 w-5" />
+                System Alerts
+              </div>
+              {systemAlerts.length > 0 && (
+                <Badge
+                  variant="secondary"
+                  className="bg-orange-100 text-orange-700"
+                >
+                  {systemAlerts.length} alerts
+                </Badge>
+              )}
             </CardTitle>
             <CardDescription>
-              Important notifications and warnings
+              Important system status notifications
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {systemAlerts.map((alert) => (
-                <div
-                  key={alert.id}
-                  className={`p-4 rounded-lg border-l-4 ${
-                    alert.type === "error"
-                      ? "bg-red-50 border-red-400"
-                      : alert.type === "warning"
-                        ? "bg-yellow-50 border-yellow-400"
-                        : "bg-blue-50 border-blue-400"
-                  }`}
-                >
-                  <div className="flex items-start">
-                    <div
-                      className={`p-1 rounded-full mr-3 ${
-                        alert.type === "error"
-                          ? "bg-red-100"
-                          : alert.type === "warning"
-                            ? "bg-yellow-100"
-                            : "bg-blue-100"
-                      }`}
+            {systemAlerts.length > 0 ? (
+              <>
+                <div className="space-y-3">
+                  {systemAlerts.map((alert, index) => {
+                    const getAlertStyles = () => {
+                      switch (alert.type) {
+                        case "error":
+                          return {
+                            bg: "bg-red-50 hover:bg-red-100/50",
+                            icon: "text-red-500",
+                            dot: "bg-red-500",
+                          };
+                        case "warning":
+                          return {
+                            bg: "bg-yellow-50 hover:bg-yellow-100/50",
+                            icon: "text-yellow-500",
+                            dot: "bg-yellow-500",
+                          };
+                        default:
+                          return {
+                            bg: "bg-blue-50 hover:bg-blue-100/50",
+                            icon: "text-blue-500",
+                            dot: "bg-blue-500",
+                          };
+                      }
+                    };
+
+                    const styles = getAlertStyles();
+
+                    return (
+                      <div
+                        key={alert.id}
+                        className={`relative rounded-lg border transition-all duration-200 ${styles.bg}`}
+                      >
+                        <div className="flex items-start p-4">
+                          {/* Status dot */}
+                          <div
+                            className={`w-2 h-2 rounded-full mt-2 mr-3 ${styles.dot} animate-pulse`}
+                          ></div>
+
+                          {/* Content */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1 min-w-0">
+                                <h4 className="text-sm font-medium text-gray-900 mb-1">
+                                  {alert.title}
+                                </h4>
+                                <p className="text-xs text-gray-600 leading-relaxed">
+                                  {alert.message}
+                                </p>
+                              </div>
+
+                              {/* Priority indicator */}
+                              {alert.type === "error" && (
+                                <div className="ml-2 px-2 py-1 bg-red-100 rounded-full">
+                                  <span className="text-xs font-medium text-red-700">
+                                    High
+                                  </span>
+                                </div>
+                              )}
+                              {alert.type === "warning" && (
+                                <div className="ml-2 px-2 py-1 bg-yellow-100 rounded-full">
+                                  <span className="text-xs font-medium text-yellow-700">
+                                    Medium
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Footer with time and actions */}
+                            <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-200/50">
+                              <span className="text-xs text-gray-400">
+                                {new Date(alert.timestamp).toLocaleDateString(
+                                  "en-US",
+                                  {
+                                    month: "short",
+                                    day: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  },
+                                )}
+                              </span>
+
+                              <div className="flex items-center space-x-2">
+                                {alert.type === "error" && (
+                                  <button
+                                    className="text-xs text-red-600 hover:text-red-800 font-medium hover:underline"
+                                    onClick={() => navigate("/audit")}
+                                  >
+                                    Handle Now
+                                  </button>
+                                )}
+                                {alert.type === "warning" && (
+                                  <button
+                                    className="text-xs text-yellow-600 hover:text-yellow-800 font-medium hover:underline"
+                                    onClick={() => navigate("/policies")}
+                                  >
+                                    View Details
+                                  </button>
+                                )}
+                                <button className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
+                                  Dismiss
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Footer actions */}
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <button
+                      onClick={() => navigate("/alerts")}
+                      className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors flex items-center"
                     >
-                      <AlertTriangle
-                        className={`h-4 w-4 ${
-                          alert.type === "error"
-                            ? "text-red-600"
-                            : alert.type === "warning"
-                              ? "text-yellow-600"
-                              : "text-blue-600"
-                        }`}
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-900">
-                        {alert.title}
-                      </h4>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {alert.message}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-2">
-                        {formatTimestamp(alert.timestamp)}
-                      </p>
-                    </div>
+                      <Clock className="mr-2 h-4 w-4" />
+                      View All Alerts
+                      <ArrowRight className="ml-1 h-4 w-4" />
+                    </button>
+                    <button className="text-xs text-gray-500 hover:text-gray-700 transition-colors">
+                      Mark All Read
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
-            <Button variant="outline" className="w-full mt-4">
-              View All Alerts
-            </Button>
+              </>
+            ) : (
+              <div className="text-center py-8">
+                <div className="bg-green-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                  <CheckCircle className="h-6 w-6 text-green-600" />
+                </div>
+                <h3 className="text-sm font-medium text-gray-700 mb-1">
+                  System Running Normally
+                </h3>
+                <p className="text-xs text-gray-500">
+                  No system alerts or anomalies detected
+                </p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
