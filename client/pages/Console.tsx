@@ -895,66 +895,158 @@ const Console: React.FC = () => {
 
         {/* System Alerts */}
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <AlertTriangle className="mr-2 h-5 w-5" />
-              System Alerts
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="p-2 bg-orange-100 rounded-lg mr-3">
+                  <AlertTriangle className="h-5 w-5 text-orange-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">系统警报</h3>
+                  <p className="text-sm text-gray-500 mt-0.5">重要的系统状态提醒</p>
+                </div>
+              </div>
+              {systemAlerts.length > 0 && (
+                <Badge variant="secondary" className="bg-orange-100 text-orange-700">
+                  {systemAlerts.length} 条
+                </Badge>
+              )}
             </CardTitle>
-            <CardDescription>
-              Important notifications and warnings
-            </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {systemAlerts.map((alert) => (
-                <div
-                  key={alert.id}
-                  className={`p-4 rounded-lg border-l-4 ${
-                    alert.type === "error"
-                      ? "bg-red-50 border-red-400"
-                      : alert.type === "warning"
-                        ? "bg-yellow-50 border-yellow-400"
-                        : "bg-blue-50 border-blue-400"
-                  }`}
-                >
-                  <div className="flex items-start">
-                    <div
-                      className={`p-1 rounded-full mr-3 ${
-                        alert.type === "error"
-                          ? "bg-red-100"
-                          : alert.type === "warning"
-                            ? "bg-yellow-100"
-                            : "bg-blue-100"
-                      }`}
+          <CardContent className="pt-0">
+            {systemAlerts.length > 0 ? (
+              <>
+                <div className="space-y-3">
+                  {systemAlerts.map((alert, index) => {
+                    const getAlertStyles = () => {
+                      switch (alert.type) {
+                        case "error":
+                          return {
+                            bg: "bg-red-50 hover:bg-red-100/50",
+                            icon: "text-red-500",
+                            dot: "bg-red-500"
+                          };
+                        case "warning":
+                          return {
+                            bg: "bg-yellow-50 hover:bg-yellow-100/50",
+                            icon: "text-yellow-500",
+                            dot: "bg-yellow-500"
+                          };
+                        default:
+                          return {
+                            bg: "bg-blue-50 hover:bg-blue-100/50",
+                            icon: "text-blue-500",
+                            dot: "bg-blue-500"
+                          };
+                      }
+                    };
+
+                    const styles = getAlertStyles();
+
+                    return (
+                      <div
+                        key={alert.id}
+                        className={`relative rounded-lg border transition-all duration-200 ${styles.bg}`}
+                      >
+                        <div className="flex items-start p-4">
+                          {/* Status dot */}
+                          <div className={`w-2 h-2 rounded-full mt-2 mr-3 ${styles.dot} animate-pulse`}></div>
+
+                          {/* Content */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1 min-w-0">
+                                <h4 className="text-sm font-medium text-gray-900 mb-1">
+                                  {alert.title}
+                                </h4>
+                                <p className="text-xs text-gray-600 leading-relaxed">
+                                  {alert.message}
+                                </p>
+                              </div>
+
+                              {/* Priority indicator */}
+                              {alert.type === "error" && (
+                                <div className="ml-2 px-2 py-1 bg-red-100 rounded-full">
+                                  <span className="text-xs font-medium text-red-700">高</span>
+                                </div>
+                              )}
+                              {alert.type === "warning" && (
+                                <div className="ml-2 px-2 py-1 bg-yellow-100 rounded-full">
+                                  <span className="text-xs font-medium text-yellow-700">中</span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Footer with time and actions */}
+                            <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-200/50">
+                              <span className="text-xs text-gray-400">
+                                {new Date(alert.timestamp).toLocaleDateString('zh-CN', {
+                                  month: 'short',
+                                  day: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </span>
+
+                              <div className="flex items-center space-x-2">
+                                {alert.type === "error" && (
+                                  <button
+                                    className="text-xs text-red-600 hover:text-red-800 font-medium hover:underline"
+                                    onClick={() => navigate("/audit")}
+                                  >
+                                    立即处理
+                                  </button>
+                                )}
+                                {alert.type === "warning" && (
+                                  <button
+                                    className="text-xs text-yellow-600 hover:text-yellow-800 font-medium hover:underline"
+                                    onClick={() => navigate("/policies")}
+                                  >
+                                    查看详情
+                                  </button>
+                                )}
+                                <button className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
+                                  忽略
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Footer actions */}
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <button
+                      onClick={() => navigate("/alerts")}
+                      className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors flex items-center"
                     >
-                      <AlertTriangle
-                        className={`h-4 w-4 ${
-                          alert.type === "error"
-                            ? "text-red-600"
-                            : alert.type === "warning"
-                              ? "text-yellow-600"
-                              : "text-blue-600"
-                        }`}
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-900">
-                        {alert.title}
-                      </h4>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {alert.message}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-2">
-                        {formatTimestamp(alert.timestamp)}
-                      </p>
-                    </div>
+                      <Clock className="mr-2 h-4 w-4" />
+                      查看全部警报
+                      <ArrowRight className="ml-1 h-4 w-4" />
+                    </button>
+                    <button className="text-xs text-gray-500 hover:text-gray-700 transition-colors">
+                      标记全部已读
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
-            <Button variant="outline" className="w-full mt-4">
-              View All Alerts
-            </Button>
+              </>
+            ) : (
+              <div className="text-center py-8">
+                <div className="bg-green-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                  <CheckCircle className="h-6 w-6 text-green-600" />
+                </div>
+                <h3 className="text-sm font-medium text-gray-700 mb-1">
+                  系统运行正常
+                </h3>
+                <p className="text-xs text-gray-500">
+                  暂无系统警报和异常状态
+                </p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
