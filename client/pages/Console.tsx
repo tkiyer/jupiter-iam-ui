@@ -825,7 +825,7 @@ const Console: React.FC = () => {
 
                           {/* Time */}
                           <span className="text-xs text-gray-400 whitespace-nowrap">
-                            {new Date(notification.createdAt).toLocaleDateString('zh-CN', {
+                            {new Date(notification.createdAt).toLocaleDateString('en-US', {
                               month: 'numeric',
                               day: 'numeric',
                               hour: '2-digit',
