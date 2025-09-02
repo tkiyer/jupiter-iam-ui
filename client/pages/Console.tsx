@@ -708,6 +708,25 @@ const Console: React.FC = () => {
                   </div>
                 ))}
               </div>
+            ) : notificationsError ? (
+              <div className="text-center py-8">
+                <div className="bg-red-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                  <X className="h-6 w-6 text-red-600" />
+                </div>
+                <h3 className="text-sm font-medium text-gray-700 mb-1">
+                  Failed to load notifications
+                </h3>
+                <p className="text-xs text-gray-500 mb-3">
+                  {notificationsError}
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.location.reload()}
+                >
+                  Retry
+                </Button>
+              </div>
             ) : notifications.length > 0 ? (
               <div className="divide-y divide-gray-100">
                 {notifications.slice(0, 5).map((notification, index) => {
