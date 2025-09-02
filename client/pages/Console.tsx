@@ -152,6 +152,7 @@ const Console: React.FC = () => {
     notifications,
     unreadCount,
     loading: notificationsLoading,
+    error: notificationsError,
     markAsRead,
     markAllAsRead,
     deleteNotification,
