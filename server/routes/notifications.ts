@@ -11,49 +11,49 @@ import {
 let mockNotifications: Notification[] = [
   {
     id: "1",
-    title: "安全警报",
-    message: "检测到来自未知设备的登录尝试",
+    title: "Security Alert",
+    message: "Detected login attempt from unknown device",
     type: "security",
     isRead: false,
     createdAt: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
     actionUrl: "/audit",
-    actionText: "查看详情",
+    actionText: "View Details",
   },
   {
     id: "2",
-    title: "系统更新",
-    message: "IAM系统已成功更新到版本2.1.0，新增了多项安全功能",
+    title: "System Update",
+    message: "IAM system successfully updated to version 2.1.0 with new security features",
     type: "success",
     isRead: false,
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
   },
   {
     id: "3",
-    title: "策略冲突检测",
-    message: "发现用户权限策略存在潜在冲突，建议立即处理",
+    title: "Policy Conflict Detection",
+    message: "Potential conflicts found in user permission policies, immediate attention required",
     type: "warning",
     isRead: true,
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
     actionUrl: "/policies",
-    actionText: "处理冲突",
+    actionText: "Resolve Conflicts",
   },
   {
     id: "4",
-    title: "备份完成",
-    message: "系统数据备份已成功完成，所有数据安全无虞",
+    title: "Backup Complete",
+    message: "System data backup completed successfully, all data is secure",
     type: "info",
     isRead: true,
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
   },
   {
     id: "5",
-    title: "用户权限审核",
-    message: "用户张三的管理员权限即将于7天后到期，请及时续期",
+    title: "User Permission Review",
+    message: "Administrator permissions for John Smith will expire in 7 days, renewal required",
     type: "warning",
     isRead: false,
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3), // 3 days ago
     actionUrl: "/users",
-    actionText: "管理权限",
+    actionText: "Manage Permissions",
   },
 ];
 
