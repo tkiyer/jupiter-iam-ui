@@ -666,58 +666,172 @@ const Console: React.FC = () => {
 
       {/* System Monitoring & Alerts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* System Health */}
+        {/* Notification Messages */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center">
-              <Activity className="mr-2 h-5 w-5" />
-              System Health
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center">
+                <MessageSquare className="mr-2 h-5 w-5" />
+                Notification Messages
+              </div>
+              <div className="flex items-center space-x-2">
+                {unreadCount > 0 && (
+                  <Badge variant="destructive" className="text-xs">
+                    {unreadCount} new
+                  </Badge>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={markAllAsRead}
+                  disabled={unreadCount === 0}
+                  className="text-xs"
+                >
+                  Mark all read
+                </Button>
+              </div>
             </CardTitle>
             <CardDescription>
-              Real-time system performance metrics
+              Latest system notifications and important messages
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="flex items-center">
-                  <Server className="mr-2 h-4 w-4" />
-                  Server Performance
-                </span>
-                <span className="font-medium">98%</span>
+          <CardContent>
+            {notificationsLoading ? (
+              <div className="space-y-3">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="h-16 bg-gray-200 rounded-lg"></div>
+                  </div>
+                ))}
               </div>
-              <Progress value={98} className="h-2" />
-            </div>
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="flex items-center">
-                  <Shield className="mr-2 h-4 w-4" />
-                  Security Score
-                </span>
-                <span className="font-medium">94%</span>
+            ) : notifications.length > 0 ? (
+              <div className="space-y-3 max-h-80 overflow-y-auto">
+                {notifications.slice(0, 5).map((notification) => {
+                  const getNotificationIcon = () => {
+                    switch (notification.type) {
+                      case "error":
+                        return <AlertTriangle className="h-4 w-4 text-red-500" />;
+                      case "warning":
+                        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+                      case "success":
+                        return <CheckCircle className="h-4 w-4 text-green-500" />;
+                      case "security":
+                        return <Shield className="h-4 w-4 text-purple-500" />;
+                      default:
+                        return <Info className="h-4 w-4 text-blue-500" />;
+                    }
+                  };
+
+                  const getNotificationBg = () => {
+                    if (!notification.isRead) {
+                      switch (notification.type) {
+                        case "error":
+                          return "bg-red-50 border-l-red-400";
+                        case "warning":
+                          return "bg-yellow-50 border-l-yellow-400";
+                        case "success":
+                          return "bg-green-50 border-l-green-400";
+                        case "security":
+                          return "bg-purple-50 border-l-purple-400";
+                        default:
+                          return "bg-blue-50 border-l-blue-400";
+                      }
+                    }
+                    return "bg-gray-50 border-l-gray-300";
+                  };
+
+                  return (
+                    <div
+                      key={notification.id}
+                      className={`p-3 rounded-lg border-l-4 transition-all hover:shadow-sm ${getNotificationBg()}`}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start space-x-3 flex-1">
+                          <div className="mt-0.5">
+                            {getNotificationIcon()}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center space-x-2">
+                              <h4 className={`text-sm font-medium truncate ${
+                                !notification.isRead ? "text-gray-900" : "text-gray-600"
+                              }`}>
+                                {notification.title}
+                              </h4>
+                              {!notification.isRead && (
+                                <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                              )}
+                            </div>
+                            <p className={`text-xs mt-1 ${
+                              !notification.isRead ? "text-gray-700" : "text-gray-500"
+                            }`}>
+                              {notification.message}
+                            </p>
+                            <div className="flex items-center justify-between mt-2">
+                              <span className="text-xs text-gray-400">
+                                {new Date(notification.createdAt).toLocaleDateString('zh-CN', {
+                                  month: 'short',
+                                  day: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </span>
+                              {notification.actionUrl && notification.actionText && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="text-xs h-6 px-2"
+                                  onClick={() => navigate(notification.actionUrl!)}
+                                >
+                                  {notification.actionText}
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-1 ml-2">
+                          {!notification.isRead && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0"
+                              onClick={() => markAsRead(notification.id)}
+                              title="Mark as read"
+                            >
+                              <Eye className="h-3 w-3" />
+                            </Button>
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 w-6 p-0 text-gray-400 hover:text-red-500"
+                            onClick={() => deleteNotification(notification.id)}
+                            title="Delete notification"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-              <Progress value={94} className="h-2" />
-            </div>
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="flex items-center">
-                  <Zap className="mr-2 h-4 w-4" />
-                  Response Time
-                </span>
-                <span className="font-medium">87%</span>
+            ) : (
+              <div className="text-center py-8">
+                <BellRing className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-sm font-medium text-gray-600 mb-2">
+                  No notifications
+                </h3>
+                <p className="text-xs text-gray-500">
+                  You're all caught up! New notifications will appear here.
+                </p>
               </div>
-              <Progress value={87} className="h-2" />
-            </div>
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="flex items-center">
-                  <Lock className="mr-2 h-4 w-4" />
-                  Authentication Rate
-                </span>
-                <span className="font-medium">99%</span>
-              </div>
-              <Progress value={99} className="h-2" />
-            </div>
+            )}
+            {notifications.length > 5 && (
+              <Button variant="outline" className="w-full mt-4">
+                <Bell className="mr-2 h-4 w-4" />
+                View All Notifications ({notifications.length})
+              </Button>
+            )}
           </CardContent>
         </Card>
 
