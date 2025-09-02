@@ -8,20 +8,40 @@ export const useNotifications = () => {
   const [error, setError] = useState<string | null>(null);
 
   // Fetch notifications from API
-  const fetchNotifications = async () => {
+  const fetchNotifications = async (retryCount = 0) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/notifications");
+      const response = await fetch("/api/notifications", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
       if (!response.ok) {
-        throw new Error("Failed to fetch notifications");
+        throw new Error(
+          `Server error: ${response.status} ${response.statusText}`,
+        );
       }
+
       const data: NotificationResponse = await response.json();
       setNotifications(data.notifications);
       setUnreadCount(data.unreadCount);
+      setError(null); // Clear any previous errors
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      const errorMessage =
+        err instanceof Error ? err.message : "An error occurred";
       console.error("Error fetching notifications:", err);
+
+      // Retry once after a short delay
+      if (retryCount < 1) {
+        setTimeout(() => {
+          fetchNotifications(retryCount + 1);
+        }, 1000);
+        return;
+      }
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -123,7 +143,12 @@ export const useNotifications = () => {
 
   // Load notifications on component mount
   useEffect(() => {
-    fetchNotifications();
+    // Add a small delay to ensure server is ready
+    const timer = setTimeout(() => {
+      fetchNotifications();
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return {
@@ -136,5 +161,6 @@ export const useNotifications = () => {
     markAllAsRead,
     deleteNotification,
     clearAll,
+    refreshNotifications: () => fetchNotifications(),
   };
 };
