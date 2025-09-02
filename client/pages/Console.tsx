@@ -900,17 +900,17 @@ const Console: React.FC = () => {
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center">
-                <div className="p-2 bg-orange-100 rounded-lg mr-3">
-                  <AlertTriangle className="h-5 w-5 text-orange-600" />
+                <div className="h-10 w-10 bg-orange-100 rounded-full flex items-center justify-center mr-3">
+                  <AlertTriangle className="h-5 w-5 text-orange-700" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">系统警报</h3>
-                  <p className="text-sm text-gray-500 mt-0.5">重要的系统状态提醒</p>
+                  <h3 className="text-lg font-semibold text-gray-900">System Alerts</h3>
+                  <p className="text-sm text-gray-500 mt-0.5">Important system status notifications</p>
                 </div>
               </div>
               {systemAlerts.length > 0 && (
                 <Badge variant="secondary" className="bg-orange-100 text-orange-700">
-                  {systemAlerts.length} 条
+                  {systemAlerts.length} alerts
                 </Badge>
               )}
             </CardTitle>
