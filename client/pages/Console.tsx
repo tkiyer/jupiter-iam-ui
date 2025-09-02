@@ -842,7 +842,7 @@ const Console: React.FC = () => {
                             <button
                               onClick={() => markAsRead(notification.id)}
                               className="p-1.5 hover:bg-green-100 rounded-md transition-colors"
-                              title="标记为已读"
+                              title="Mark as read"
                             >
                               <Check className="h-3.5 w-3.5 text-green-600" />
                             </button>
@@ -850,7 +850,7 @@ const Console: React.FC = () => {
                           <button
                             onClick={() => deleteNotification(notification.id)}
                             className="p-1.5 hover:bg-red-100 rounded-md transition-colors"
-                            title="删除通知"
+                            title="Delete notification"
                           >
                             <X className="h-3.5 w-3.5 text-gray-400 hover:text-red-500" />
                           </button>
