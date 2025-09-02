@@ -708,7 +708,7 @@ const Console: React.FC = () => {
                 ))}
               </div>
             ) : notifications.length > 0 ? (
-              <div className="space-y-3 max-h-80 overflow-y-auto">
+              <div className="space-y-2">
                 {notifications.slice(0, 5).map((notification) => {
                   const getNotificationIcon = () => {
                     switch (notification.type) {
@@ -725,138 +725,135 @@ const Console: React.FC = () => {
                     }
                   };
 
-                  const getNotificationBg = () => {
+                  const getNotificationBorder = () => {
                     if (!notification.isRead) {
                       switch (notification.type) {
                         case "error":
-                          return "bg-red-50 border-l-red-400 shadow-sm";
+                          return "border-l-red-400";
                         case "warning":
-                          return "bg-yellow-50 border-l-yellow-400 shadow-sm";
+                          return "border-l-yellow-400";
                         case "success":
-                          return "bg-green-50 border-l-green-400 shadow-sm";
+                          return "border-l-green-400";
                         case "security":
-                          return "bg-purple-50 border-l-purple-400 shadow-sm";
+                          return "border-l-purple-400";
                         default:
-                          return "bg-blue-50 border-l-blue-400 shadow-sm";
+                          return "border-l-blue-400";
                       }
                     }
-                    return "bg-gray-50 border-l-gray-300";
+                    return "border-l-gray-300";
                   };
 
-                  // 模拟一些示例的功能按钮
-                  const getActionButtons = (notification: any) => {
-                    const buttons = [];
+                  // 生成功能链接
+                  const getActionLinks = (notification: any) => {
+                    const links = [];
 
-                    // 根据消息类型添加不同的功能按钮
                     if (notification.type === "error" || notification.type === "warning") {
-                      buttons.push({
+                      links.push({
                         text: "查看详情",
                         action: () => navigate("/audit"),
-                        variant: "outline" as const
+                        color: "text-blue-600 hover:text-blue-800"
                       });
                     }
 
                     if (notification.type === "security") {
-                      buttons.push({
+                      links.push({
                         text: "处理冲突",
                         action: () => navigate("/policies"),
-                        variant: "outline" as const
+                        color: "text-purple-600 hover:text-purple-800"
                       });
                     }
 
                     if (notification.actionUrl && notification.actionText) {
-                      buttons.push({
+                      links.push({
                         text: notification.actionText,
                         action: () => navigate(notification.actionUrl!),
-                        variant: "default" as const
+                        color: "text-green-600 hover:text-green-800"
                       });
                     }
 
-                    return buttons;
+                    return links;
                   };
 
-                  const actionButtons = getActionButtons(notification);
+                  const actionLinks = getActionLinks(notification);
 
                   return (
                     <div
                       key={notification.id}
-                      className={`relative p-4 rounded-lg border-l-4 transition-all hover:shadow-md ${getNotificationBg()}`}
+                      className={`border-l-3 bg-white hover:bg-gray-50 transition-colors ${getNotificationBorder()}`}
                     >
-                      {/* Main content area */}
-                      <div className="flex items-start space-x-3 pb-8">
-                        <div className="mt-0.5">
-                          {getNotificationIcon()}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center space-x-2 mb-1">
-                            <h4 className={`text-sm font-medium truncate ${
-                              !notification.isRead ? "text-gray-900" : "text-gray-600"
-                            }`}>
-                              {notification.title}
-                            </h4>
-                            {!notification.isRead && (
-                              <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 animate-pulse"></div>
-                            )}
+                      <div className="flex items-center justify-between py-3 px-4">
+                        {/* Left side - Icon and content */}
+                        <div className="flex items-center space-x-3 flex-1 min-w-0">
+                          <div className="flex-shrink-0">
+                            {getNotificationIcon()}
                           </div>
-                          <p className={`text-xs leading-relaxed ${
-                            !notification.isRead ? "text-gray-700" : "text-gray-500"
-                          }`}>
-                            {notification.message}
-                          </p>
-                          <div className="flex items-center mt-2">
-                            <span className="text-xs text-gray-400">
-                              {new Date(notification.createdAt).toLocaleDateString('zh-CN', {
-                                month: 'short',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
-                            </span>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center space-x-2">
+                              <h4 className={`text-sm font-medium truncate ${
+                                !notification.isRead ? "text-gray-900" : "text-gray-600"
+                              }`}>
+                                {notification.title}
+                              </h4>
+                              {!notification.isRead && (
+                                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full flex-shrink-0"></div>
+                              )}
+                            </div>
+                            <p className={`text-xs mt-0.5 truncate ${
+                              !notification.isRead ? "text-gray-700" : "text-gray-500"
+                            }`}>
+                              {notification.message}
+                            </p>
                           </div>
                         </div>
 
-                        {/* Top right quick actions */}
-                        <div className="flex items-center space-x-1">
+                        {/* Middle - Time and actions */}
+                        <div className="flex items-center space-x-4 flex-shrink-0">
+                          {/* Action links */}
+                          {actionLinks.length > 0 && (
+                            <div className="flex items-center space-x-3">
+                              {actionLinks.map((link, index) => (
+                                <button
+                                  key={index}
+                                  onClick={link.action}
+                                  className={`text-xs font-medium underline-offset-2 hover:underline transition-colors ${link.color}`}
+                                >
+                                  {link.text}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Time */}
+                          <span className="text-xs text-gray-400 whitespace-nowrap">
+                            {new Date(notification.createdAt).toLocaleDateString('zh-CN', {
+                              month: 'numeric',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </span>
+                        </div>
+
+                        {/* Right side - Quick actions */}
+                        <div className="flex items-center space-x-1 ml-4 flex-shrink-0">
                           {!notification.isRead && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 w-7 p-0 hover:bg-green-100"
+                            <button
                               onClick={() => markAsRead(notification.id)}
+                              className="p-1 hover:bg-green-100 rounded transition-colors"
                               title="标记为已读"
                             >
-                              <Check className="h-3.5 w-3.5 text-green-600" />
-                            </Button>
+                              <Check className="h-3 w-3 text-green-600" />
+                            </button>
                           )}
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-7 w-7 p-0 text-gray-400 hover:text-red-500 hover:bg-red-50"
+                          <button
                             onClick={() => deleteNotification(notification.id)}
+                            className="p-1 hover:bg-red-100 rounded transition-colors"
                             title="删除通知"
                           >
-                            <X className="h-3.5 w-3.5" />
-                          </Button>
+                            <X className="h-3 w-3 text-gray-400 hover:text-red-500" />
+                          </button>
                         </div>
                       </div>
-
-                      {/* Bottom right action buttons */}
-                      {actionButtons.length > 0 && (
-                        <div className="absolute bottom-3 right-3 flex items-center space-x-2">
-                          {actionButtons.map((button, index) => (
-                            <Button
-                              key={index}
-                              variant={button.variant}
-                              size="sm"
-                              className="text-xs h-7 px-3 font-medium"
-                              onClick={button.action}
-                            >
-                              {button.text}
-                              <ArrowRight className="ml-1 h-3 w-3" />
-                            </Button>
-                          ))}
-                        </div>
-                      )}
                     </div>
                   );
                 })}
