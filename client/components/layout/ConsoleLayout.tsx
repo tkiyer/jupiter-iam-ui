@@ -18,8 +18,9 @@ const ConsoleLayout: React.FC<ConsoleLayoutProps> = ({ children }) => {
   return (
     <div className="h-screen overflow-hidden bg-gray-50 pt-16">
       <ConsoleNavbar fixed />
-      <main className="w-full px-4 sm:px-6 lg:px-8 py-8 h-[100vh] overflow-y-auto">
-        {children}
+      <main className="w-full px-4 sm:px-6 lg:px-8 py-8 overflow-y-auto min-h-[calc(100vh-4rem)] flex flex-col">
+        <div className="flex-1">{children}</div>
+        <SiteFooter />
       </main>
     </div>
   );
