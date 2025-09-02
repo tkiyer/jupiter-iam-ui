@@ -2,6 +2,7 @@ import React, { ReactNode } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import ConsoleNavbar from "@/components/layout/ConsoleNavbar";
+import SiteFooter from "@/components/layout/SiteFooter";
 
 interface ConsoleLayoutProps {
   children: ReactNode;
