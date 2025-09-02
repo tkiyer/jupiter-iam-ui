@@ -52,7 +52,16 @@ import {
   Lock,
   Globe,
   Plus,
+  Bell,
+  BellRing,
+  MessageSquare,
+  Eye,
+  EyeOff,
+  Trash2,
+  Info,
+  X,
 } from "lucide-react";
+import { useNotifications } from "@/hooks/useNotifications";
 
 interface AccessEvent {
   id: string;
