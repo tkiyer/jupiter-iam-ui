@@ -12,13 +12,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { NotificationsDropdown } from "@/components/ui/notifications-dropdown";
-import { Shield, Search, Settings, User, LogOut, ChevronDown, Home } from "lucide-react";
+import { Shield, Search, Settings, User, LogOut, ChevronDown, Home, Menu } from "lucide-react";
 
 interface ConsoleNavbarProps {
   fixed?: boolean;
+  onMenuClick?: () => void;
+  showMenuButton?: boolean;
 }
 
-const ConsoleNavbar: React.FC<ConsoleNavbarProps> = ({ fixed = false }) => {
+const ConsoleNavbar: React.FC<ConsoleNavbarProps> = ({ fixed = false, onMenuClick, showMenuButton = false }) => {
   const { user, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -37,10 +39,20 @@ const ConsoleNavbar: React.FC<ConsoleNavbarProps> = ({ fixed = false }) => {
 
   return (
     <nav className={(fixed ? "fixed top-0 left-0 right-0 z-50 " : "") + "bg-white border-b border-gray-200 shadow-sm"}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Left Side - Logo and Name */}
           <div className="flex items-center space-x-3">
+            {showMenuButton && (
+              <button
+                type="button"
+                onClick={onMenuClick}
+                className="lg:hidden inline-flex items-center justify-center rounded-md p-2 hover:bg-gray-100"
+                aria-label="Open sidebar"
+              >
+                <Menu className="h-5 w-5 text-gray-700" />
+              </button>
+            )}
             <Link to="/console" className="flex items-center space-x-3">
               <div className="h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center">
                 <Shield className="h-6 w-6 text-white" />
