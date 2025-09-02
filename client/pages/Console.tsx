@@ -8,10 +8,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -83,7 +97,10 @@ const SystemLink: React.FC<{ resource: string }> = ({ resource }) => {
   const path = getSystemPath(resource);
   if (path) {
     return (
-      <Link to={path} className="text-sm text-blue-600 hover:underline truncate">
+      <Link
+        to={path}
+        className="text-sm text-blue-600 hover:underline truncate"
+      >
         {resource}
       </Link>
     );
@@ -106,7 +123,10 @@ const ModuleLink: React.FC<{ module: string }> = ({ module }) => {
   const path = getModulePath(module);
   if (path) {
     return (
-      <Link to={path} className="text-sm text-blue-600 hover:underline truncate">
+      <Link
+        to={path}
+        className="text-sm text-blue-600 hover:underline truncate"
+      >
         {module}
       </Link>
     );
@@ -396,7 +416,9 @@ const Console: React.FC = () => {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <Badge className={`${getSystemStatusColor(system.status)} text-xs px-2 py-0.5`}>
+                    <Badge
+                      className={`${getSystemStatusColor(system.status)} text-xs px-2 py-0.5`}
+                    >
                       {system.status}
                     </Badge>
                     {system.lastAccessed && (
@@ -424,20 +446,44 @@ const Console: React.FC = () => {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Add System Shortcut</DialogTitle>
-                <DialogDescription>Quickly add a system to your console shortcuts.</DialogDescription>
+                <DialogDescription>
+                  Quickly add a system to your console shortcuts.
+                </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div className="grid grid-cols-4 items-center gap-2">
-                  <Label htmlFor="name" className="col-span-1">Name</Label>
-                  <Input id="name" className="col-span-3" value={newName} onChange={(e) => setNewName(e.target.value)} />
+                  <Label htmlFor="name" className="col-span-1">
+                    Name
+                  </Label>
+                  <Input
+                    id="name"
+                    className="col-span-3"
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                  />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-2">
-                  <Label htmlFor="desc" className="col-span-1">Description</Label>
-                  <Input id="desc" className="col-span-3" value={newDesc} onChange={(e) => setNewDesc(e.target.value)} />
+                  <Label htmlFor="desc" className="col-span-1">
+                    Description
+                  </Label>
+                  <Input
+                    id="desc"
+                    className="col-span-3"
+                    value={newDesc}
+                    onChange={(e) => setNewDesc(e.target.value)}
+                  />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-2">
-                  <Label htmlFor="url" className="col-span-1">URL</Label>
-                  <Input id="url" className="col-span-3" placeholder="/path-or-https://..." value={newUrl} onChange={(e) => setNewUrl(e.target.value)} />
+                  <Label htmlFor="url" className="col-span-1">
+                    URL
+                  </Label>
+                  <Input
+                    id="url"
+                    className="col-span-3"
+                    placeholder="/path-or-https://..."
+                    value={newUrl}
+                    onChange={(e) => setNewUrl(e.target.value)}
+                  />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-2">
                   <Label className="col-span-1">Icon</Label>
@@ -462,7 +508,8 @@ const Console: React.FC = () => {
                 <Button
                   onClick={() => {
                     if (!newName.trim() || !newUrl.trim()) return;
-                    const IconComp = iconMap[newIcon as keyof typeof iconMap] || Globe;
+                    const IconComp =
+                      iconMap[newIcon as keyof typeof iconMap] || Globe;
                     const item: SystemAccess = {
                       id: String(Date.now()),
                       name: newName.trim(),
@@ -570,7 +617,10 @@ const Console: React.FC = () => {
           <CardContent>
             <div className="space-y-2">
               {accessHistory.map((event) => (
-                <div key={event.id} className="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow">
+                <div
+                  key={event.id}
+                  className="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow"
+                >
                   <div className="grid justify-items-start items-start gap-2 p-2.5 grid-cols-1 sm:grid-cols-[auto_12rem_minmax(0,1fr)_10rem_10rem_8rem]">
                     <div className="flex items-start justify-start text-gray-500 self-start">
                       {getStatusIcon(event.status)}
