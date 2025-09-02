@@ -22,7 +22,8 @@ let mockNotifications: Notification[] = [
   {
     id: "2",
     title: "System Update",
-    message: "IAM system successfully updated to version 2.1.0 with new security features",
+    message:
+      "IAM system successfully updated to version 2.1.0 with new security features",
     type: "success",
     isRead: false,
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
@@ -30,7 +31,8 @@ let mockNotifications: Notification[] = [
   {
     id: "3",
     title: "Policy Conflict Detection",
-    message: "Potential conflicts found in user permission policies, immediate attention required",
+    message:
+      "Potential conflicts found in user permission policies, immediate attention required",
     type: "warning",
     isRead: true,
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
@@ -48,7 +50,8 @@ let mockNotifications: Notification[] = [
   {
     id: "5",
     title: "User Permission Review",
-    message: "Administrator permissions for John Smith will expire in 7 days, renewal required",
+    message:
+      "Administrator permissions for John Smith will expire in 7 days, renewal required",
     type: "warning",
     isRead: false,
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3), // 3 days ago

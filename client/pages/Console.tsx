@@ -680,7 +680,10 @@ const Console: React.FC = () => {
               </div>
               <div className="flex items-center space-x-2">
                 {unreadCount > 0 && (
-                  <Badge variant="destructive" className="text-xs animate-pulse">
+                  <Badge
+                    variant="destructive"
+                    className="text-xs animate-pulse"
+                  >
                     {unreadCount} new
                   </Badge>
                 )}
@@ -734,11 +737,17 @@ const Console: React.FC = () => {
                   const getNotificationIcon = () => {
                     switch (notification.type) {
                       case "error":
-                        return <AlertTriangle className="h-4 w-4 text-red-500" />;
+                        return (
+                          <AlertTriangle className="h-4 w-4 text-red-500" />
+                        );
                       case "warning":
-                        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+                        return (
+                          <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                        );
                       case "success":
-                        return <CheckCircle className="h-4 w-4 text-green-500" />;
+                        return (
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                        );
                       case "security":
                         return <Shield className="h-4 w-4 text-purple-500" />;
                       default:
@@ -768,11 +777,14 @@ const Console: React.FC = () => {
                   const getActionLinks = (notification: any) => {
                     const links = [];
 
-                    if (notification.type === "error" || notification.type === "warning") {
+                    if (
+                      notification.type === "error" ||
+                      notification.type === "warning"
+                    ) {
                       links.push({
                         text: "View Details",
                         action: () => navigate("/audit"),
-                        color: "text-blue-600 hover:text-blue-800"
+                        color: "text-blue-600 hover:text-blue-800",
                       });
                     }
 
@@ -780,7 +792,7 @@ const Console: React.FC = () => {
                       links.push({
                         text: "Resolve",
                         action: () => navigate("/policies"),
-                        color: "text-purple-600 hover:text-purple-800"
+                        color: "text-purple-600 hover:text-purple-800",
                       });
                     }
 
@@ -788,7 +800,7 @@ const Console: React.FC = () => {
                       links.push({
                         text: notification.actionText,
                         action: () => navigate(notification.actionUrl!),
-                        color: "text-green-600 hover:text-green-800"
+                        color: "text-green-600 hover:text-green-800",
                       });
                     }
 
@@ -810,18 +822,26 @@ const Console: React.FC = () => {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-2">
-                              <h4 className={`text-sm font-medium truncate ${
-                                !notification.isRead ? "text-gray-900" : "text-gray-600"
-                              }`}>
+                              <h4
+                                className={`text-sm font-medium truncate ${
+                                  !notification.isRead
+                                    ? "text-gray-900"
+                                    : "text-gray-600"
+                                }`}
+                              >
                                 {notification.title}
                               </h4>
                               {!notification.isRead && (
                                 <div className="w-1.5 h-1.5 bg-blue-500 rounded-full flex-shrink-0 animate-pulse"></div>
                               )}
                             </div>
-                            <p className={`text-xs mt-1 truncate ${
-                              !notification.isRead ? "text-gray-700" : "text-gray-500"
-                            }`}>
+                            <p
+                              className={`text-xs mt-1 truncate ${
+                                !notification.isRead
+                                  ? "text-gray-700"
+                                  : "text-gray-500"
+                              }`}
+                            >
                               {notification.message}
                             </p>
                           </div>
@@ -846,11 +866,13 @@ const Console: React.FC = () => {
 
                           {/* Time */}
                           <span className="text-xs text-gray-400 whitespace-nowrap">
-                            {new Date(notification.createdAt).toLocaleDateString('en-US', {
-                              month: 'numeric',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit'
+                            {new Date(
+                              notification.createdAt,
+                            ).toLocaleDateString("en-US", {
+                              month: "numeric",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
                             })}
                           </span>
                         </div>
@@ -906,7 +928,8 @@ const Console: React.FC = () => {
                 </button>
                 {notifications.length > 0 && (
                   <span className="text-xs text-gray-500">
-                    Showing latest {Math.min(5, notifications.length)} of {notifications.length} messages
+                    Showing latest {Math.min(5, notifications.length)} of{" "}
+                    {notifications.length} messages
                   </span>
                 )}
               </div>
@@ -923,7 +946,10 @@ const Console: React.FC = () => {
                 System Alerts
               </div>
               {systemAlerts.length > 0 && (
-                <Badge variant="secondary" className="bg-orange-100 text-orange-700">
+                <Badge
+                  variant="secondary"
+                  className="bg-orange-100 text-orange-700"
+                >
                   {systemAlerts.length} alerts
                 </Badge>
               )}
@@ -943,19 +969,19 @@ const Console: React.FC = () => {
                           return {
                             bg: "bg-red-50 hover:bg-red-100/50",
                             icon: "text-red-500",
-                            dot: "bg-red-500"
+                            dot: "bg-red-500",
                           };
                         case "warning":
                           return {
                             bg: "bg-yellow-50 hover:bg-yellow-100/50",
                             icon: "text-yellow-500",
-                            dot: "bg-yellow-500"
+                            dot: "bg-yellow-500",
                           };
                         default:
                           return {
                             bg: "bg-blue-50 hover:bg-blue-100/50",
                             icon: "text-blue-500",
-                            dot: "bg-blue-500"
+                            dot: "bg-blue-500",
                           };
                       }
                     };
@@ -969,7 +995,9 @@ const Console: React.FC = () => {
                       >
                         <div className="flex items-start p-4">
                           {/* Status dot */}
-                          <div className={`w-2 h-2 rounded-full mt-2 mr-3 ${styles.dot} animate-pulse`}></div>
+                          <div
+                            className={`w-2 h-2 rounded-full mt-2 mr-3 ${styles.dot} animate-pulse`}
+                          ></div>
 
                           {/* Content */}
                           <div className="flex-1 min-w-0">
@@ -986,12 +1014,16 @@ const Console: React.FC = () => {
                               {/* Priority indicator */}
                               {alert.type === "error" && (
                                 <div className="ml-2 px-2 py-1 bg-red-100 rounded-full">
-                                  <span className="text-xs font-medium text-red-700">High</span>
+                                  <span className="text-xs font-medium text-red-700">
+                                    High
+                                  </span>
                                 </div>
                               )}
                               {alert.type === "warning" && (
                                 <div className="ml-2 px-2 py-1 bg-yellow-100 rounded-full">
-                                  <span className="text-xs font-medium text-yellow-700">Medium</span>
+                                  <span className="text-xs font-medium text-yellow-700">
+                                    Medium
+                                  </span>
                                 </div>
                               )}
                             </div>
@@ -999,12 +1031,15 @@ const Console: React.FC = () => {
                             {/* Footer with time and actions */}
                             <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-200/50">
                               <span className="text-xs text-gray-400">
-                                {new Date(alert.timestamp).toLocaleDateString('en-US', {
-                                  month: 'short',
-                                  day: 'numeric',
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })}
+                                {new Date(alert.timestamp).toLocaleDateString(
+                                  "en-US",
+                                  {
+                                    month: "short",
+                                    day: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  },
+                                )}
                               </span>
 
                               <div className="flex items-center space-x-2">

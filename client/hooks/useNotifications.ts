@@ -14,12 +14,14 @@ export const useNotifications = () => {
     try {
       const response = await fetch("/api/notifications", {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
       if (!response.ok) {
-        throw new Error(`Server error: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Server error: ${response.status} ${response.statusText}`,
+        );
       }
 
       const data: NotificationResponse = await response.json();
@@ -27,7 +29,8 @@ export const useNotifications = () => {
       setUnreadCount(data.unreadCount);
       setError(null); // Clear any previous errors
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "An error occurred";
+      const errorMessage =
+        err instanceof Error ? err.message : "An error occurred";
       console.error("Error fetching notifications:", err);
 
       // Retry once after a short delay
