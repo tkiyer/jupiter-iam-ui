@@ -140,7 +140,12 @@ export const useNotifications = () => {
 
   // Load notifications on component mount
   useEffect(() => {
-    fetchNotifications();
+    // Add a small delay to ensure server is ready
+    const timer = setTimeout(() => {
+      fetchNotifications();
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return {
@@ -153,5 +158,6 @@ export const useNotifications = () => {
     markAllAsRead,
     deleteNotification,
     clearAll,
+    refreshNotifications: () => fetchNotifications(),
   };
 };
