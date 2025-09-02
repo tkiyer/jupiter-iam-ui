@@ -74,6 +74,12 @@ const Console: React.FC = () => {
   const [accessHistory, setAccessHistory] = useState<AccessEvent[]>([]);
   const [systemAlerts, setSystemAlerts] = useState<SystemAlert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [quickAccess, setQuickAccess] = useState<SystemAccess[]>([]);
+  const [addOpen, setAddOpen] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newDesc, setNewDesc] = useState("");
+  const [newUrl, setNewUrl] = useState("");
+  const [newIcon, setNewIcon] = useState("Globe");
 
   useEffect(() => {
     fetchConsoleData();
