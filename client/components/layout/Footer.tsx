@@ -11,9 +11,15 @@ const Footer: React.FC = () => {
           <span>© {year}</span>
         </div>
         <nav className="flex items-center gap-4">
-          <Link to="#" className="hover:text-gray-900">Privacy</Link>
-          <Link to="#" className="hover:text-gray-900">Terms</Link>
-          <Link to="#" className="hover:text-gray-900">Support</Link>
+          <Link to="#" className="hover:text-gray-900">
+            Privacy
+          </Link>
+          <Link to="#" className="hover:text-gray-900">
+            Terms
+          </Link>
+          <Link to="#" className="hover:text-gray-900">
+            Support
+          </Link>
         </nav>
       </div>
     </footer>
