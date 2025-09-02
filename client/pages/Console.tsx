@@ -978,7 +978,7 @@ const Console: React.FC = () => {
                             {/* Footer with time and actions */}
                             <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-200/50">
                               <span className="text-xs text-gray-400">
-                                {new Date(alert.timestamp).toLocaleDateString('zh-CN', {
+                                {new Date(alert.timestamp).toLocaleDateString('en-US', {
                                   month: 'short',
                                   day: 'numeric',
                                   hour: '2-digit',
