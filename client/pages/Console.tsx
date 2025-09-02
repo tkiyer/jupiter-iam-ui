@@ -45,6 +45,7 @@ interface AccessEvent {
   timestamp: string;
   action: string;
   resource: string;
+  module: string;
   status: "success" | "failure" | "warning";
   ip: string;
   userAgent: string;
@@ -90,6 +91,29 @@ const SystemLink: React.FC<{ resource: string }> = ({ resource }) => {
   return <span className="text-sm text-gray-900 truncate">{resource}</span>;
 };
 
+const getModulePath = (module: string): string | null => {
+  const m = module.toLowerCase();
+  if (m.includes("auth") || m.includes("login")) return "/console";
+  if (m.includes("policy")) return "/policies";
+  if (m.includes("user")) return "/users";
+  if (m.includes("api") || m.includes("permission")) return "/permissions";
+  if (m.includes("access")) return "/access-control";
+  if (m.includes("audit") || m.includes("security")) return "/audit";
+  return null;
+};
+
+const ModuleLink: React.FC<{ module: string }> = ({ module }) => {
+  const path = getModulePath(module);
+  if (path) {
+    return (
+      <Link to={path} className="text-sm text-blue-600 hover:underline truncate">
+        {module}
+      </Link>
+    );
+  }
+  return <span className="text-sm text-gray-900 truncate">{module}</span>;
+};
+
 const Console: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -117,6 +141,7 @@ const Console: React.FC = () => {
           timestamp: "2024-01-15T10:30:00Z",
           action: "Login",
           resource: "IAM Console",
+          module: "Authentication",
           status: "success",
           ip: "192.168.1.100",
           userAgent: "Chrome/120.0.0.0",
@@ -126,6 +151,7 @@ const Console: React.FC = () => {
           timestamp: "2024-01-15T10:25:00Z",
           action: "Policy Update",
           resource: "user-access-policy",
+          module: "Policies",
           status: "success",
           ip: "192.168.1.100",
           userAgent: "Chrome/120.0.0.0",
@@ -135,6 +161,7 @@ const Console: React.FC = () => {
           timestamp: "2024-01-15T10:20:00Z",
           action: "Role Assignment",
           resource: "john.doe@company.com",
+          module: "Users",
           status: "success",
           ip: "192.168.1.100",
           userAgent: "Chrome/120.0.0.0",
@@ -144,6 +171,7 @@ const Console: React.FC = () => {
           timestamp: "2024-01-15T10:15:00Z",
           action: "Failed Login",
           resource: "IAM Console",
+          module: "Authentication",
           status: "failure",
           ip: "203.0.113.1",
           userAgent: "Unknown",
@@ -153,6 +181,7 @@ const Console: React.FC = () => {
           timestamp: "2024-01-15T10:10:00Z",
           action: "Permission Grant",
           resource: "api-access",
+          module: "API",
           status: "warning",
           ip: "192.168.1.100",
           userAgent: "Chrome/120.0.0.0",
@@ -543,11 +572,12 @@ const Console: React.FC = () => {
               {accessHistory.map((event) => (
                 <div
                   key={event.id}
-                  className="grid justify-items-start items-center gap-3 p-3 border rounded-md hover:bg-gray-50 grid-cols-1 sm:grid-cols-[auto_minmax(0,1.2fr)_minmax(0,1fr)_auto_auto]"
+                  className="grid justify-items-start items-center gap-3 p-3 border rounded-md hover:bg-gray-50 grid-cols-1 sm:grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.9fr)_auto_auto]"
                 >
                   <div className="flex items-center justify-start text-gray-500">
                     {getStatusIcon(event.status)}
                   </div>
+                  <ModuleLink module={event.module} />
                   <SystemLink resource={event.resource} />
                   <div className="text-sm text-gray-700 truncate">
                     {event.action}
