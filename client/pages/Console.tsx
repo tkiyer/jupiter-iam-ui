@@ -156,6 +156,7 @@ const Console: React.FC = () => {
     markAsRead,
     markAllAsRead,
     deleteNotification,
+    refreshNotifications,
   } = useNotifications();
   const [accessHistory, setAccessHistory] = useState<AccessEvent[]>([]);
   const [systemAlerts, setSystemAlerts] = useState<SystemAlert[]>([]);
