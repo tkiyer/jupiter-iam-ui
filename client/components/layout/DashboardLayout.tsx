@@ -50,7 +50,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       )}
 
       {/* Body area below navbar */}
-      <div className="pt-16 flex h:[calc(100vh-4rem)] overflow-hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="pt-16 flex h-[calc(100vh-4rem)] overflow-hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Sidebar */}
         <div
           className={cn(
