@@ -146,6 +146,14 @@ const ModuleLink: React.FC<{ module: string }> = ({ module }) => {
 const Console: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const {
+    notifications,
+    unreadCount,
+    loading: notificationsLoading,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification,
+  } = useNotifications();
   const [accessHistory, setAccessHistory] = useState<AccessEvent[]>([]);
   const [systemAlerts, setSystemAlerts] = useState<SystemAlert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
