@@ -572,20 +572,20 @@ const Console: React.FC = () => {
               {accessHistory.map((event) => (
                 <div
                   key={event.id}
-                  className="grid justify-items-start items-center gap-2 p-2.5 hover:bg-gray-50 grid-cols-1 sm:grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.9fr)_auto_auto]"
+                  className="grid justify-items-start items-start gap-2 p-2.5 hover:bg-gray-50 grid-cols-1 sm:grid-cols-[auto_12rem_minmax(0,1fr)_10rem_10rem_8rem]"
                 >
-                  <div className="flex items-center justify-start text-gray-500">
+                  <div className="flex items-start justify-start text-gray-500 self-start">
                     {getStatusIcon(event.status)}
                   </div>
                   <ModuleLink module={event.module} />
                   <SystemLink resource={event.resource} />
-                  <div className="text-sm text-gray-700 truncate">
+                  <div className="text-[13px] text-gray-700 truncate leading-tight self-start">
                     {event.action}
                   </div>
-                  <div className="text-xs text-gray-900 whitespace-nowrap">
+                  <div className="text-xs text-gray-900 whitespace-nowrap leading-tight self-start">
                     {formatTimestamp(event.timestamp)}
                   </div>
-                  <div className="text-[11px] text-gray-500 whitespace-nowrap">
+                  <div className="text-[11px] text-gray-500 whitespace-nowrap leading-tight self-start">
                     {event.ip}
                   </div>
                 </div>
