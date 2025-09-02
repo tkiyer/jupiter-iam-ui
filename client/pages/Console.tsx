@@ -861,21 +861,26 @@ const Console: React.FC = () => {
                 })}
               </div>
             ) : (
-              <div className="text-center py-8">
-                <BellRing className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-sm font-medium text-gray-600 mb-2">
-                  No notifications
+              <div className="text-center py-12">
+                <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <BellRing className="h-8 w-8 text-gray-400" />
+                </div>
+                <h3 className="text-sm font-medium text-gray-700 mb-2">
+                  暂无通知消息
                 </h3>
-                <p className="text-xs text-gray-500">
-                  You're all caught up! New notifications will appear here.
+                <p className="text-xs text-gray-500 max-w-sm mx-auto">
+                  您已查看了所有通知！新的系统消息和重要通知将会在这里显示。
                 </p>
               </div>
             )}
             {notifications.length > 5 && (
-              <Button variant="outline" className="w-full mt-4">
-                <Bell className="mr-2 h-4 w-4" />
-                View All Notifications ({notifications.length})
-              </Button>
+              <div className="mt-4 pt-3 border-t border-gray-100">
+                <Button variant="outline" className="w-full hover:bg-blue-50 hover:border-blue-200">
+                  <Bell className="mr-2 h-4 w-4" />
+                  查看全部通知 ({notifications.length})
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
             )}
           </CardContent>
         </Card>
