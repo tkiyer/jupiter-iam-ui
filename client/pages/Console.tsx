@@ -33,6 +33,7 @@ import {
   Settings,
   Lock,
   Globe,
+  Plus,
 } from "lucide-react";
 
 interface AccessEvent {
