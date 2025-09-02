@@ -895,16 +895,11 @@ const Console: React.FC = () => {
 
         {/* System Alerts */}
         <Card>
-          <CardHeader className="pb-4">
+          <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center">
-                <div className="h-10 w-10 bg-orange-100 rounded-full flex items-center justify-center mr-3">
-                  <AlertTriangle className="h-5 w-5 text-orange-700" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">System Alerts</h3>
-                  <p className="text-sm text-gray-500 mt-0.5">Important system status notifications</p>
-                </div>
+                <AlertTriangle className="mr-2 h-5 w-5" />
+                System Alerts
               </div>
               {systemAlerts.length > 0 && (
                 <Badge variant="secondary" className="bg-orange-100 text-orange-700">
@@ -912,6 +907,9 @@ const Console: React.FC = () => {
                 </Badge>
               )}
             </CardTitle>
+            <CardDescription>
+              Important system status notifications
+            </CardDescription>
           </CardHeader>
           <CardContent className="pt-0">
             {systemAlerts.length > 0 ? (
