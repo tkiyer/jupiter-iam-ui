@@ -5,7 +5,16 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import ConsoleNavbar from "@/components/layout/ConsoleNavbar";
-import { Shield, Users, Key, Settings, FileText, BarChart3, Home, Building2 } from "lucide-react";
+import {
+  Shield,
+  Users,
+  Key,
+  Settings,
+  FileText,
+  BarChart3,
+  Home,
+  Building2,
+} from "lucide-react";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -39,7 +48,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Fixed top navbar */}
-      <ConsoleNavbar fixed showMenuButton onMenuClick={() => setSidebarOpen(true)} />
+      <ConsoleNavbar
+        fixed
+        showMenuButton
+        onMenuClick={() => setSidebarOpen(true)}
+      />
 
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
@@ -76,7 +89,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   )}
                   onClick={() => setSidebarOpen(false)}
                 >
-                  <Icon className={cn("mr-3 h-5 w-5", isActive ? "text-blue-700" : "text-gray-400")} />
+                  <Icon
+                    className={cn(
+                      "mr-3 h-5 w-5",
+                      isActive ? "text-blue-700" : "text-gray-400",
+                    )}
+                  />
                   {item.label}
                 </Link>
               );
@@ -110,7 +128,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         {/* Main Content */}
         <div className="flex-1 flex flex-col min-h-0">
           {/* Page Content */}
-          <main className="flex-1 overflow-auto bg-gray-50 p-6 min-h-0">{children}</main>
+          <main className="flex-1 overflow-auto bg-gray-50 p-6 min-h-0">
+            {children}
+          </main>
         </div>
       </div>
     </div>

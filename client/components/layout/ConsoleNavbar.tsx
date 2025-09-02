@@ -12,7 +12,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { NotificationsDropdown } from "@/components/ui/notifications-dropdown";
-import { Shield, Search, Settings, User, LogOut, ChevronDown, Home, Menu } from "lucide-react";
+import {
+  Shield,
+  Search,
+  Settings,
+  User,
+  LogOut,
+  ChevronDown,
+  Home,
+  Menu,
+} from "lucide-react";
 
 interface ConsoleNavbarProps {
   fixed?: boolean;
@@ -20,7 +29,11 @@ interface ConsoleNavbarProps {
   showMenuButton?: boolean;
 }
 
-const ConsoleNavbar: React.FC<ConsoleNavbarProps> = ({ fixed = false, onMenuClick, showMenuButton = false }) => {
+const ConsoleNavbar: React.FC<ConsoleNavbarProps> = ({
+  fixed = false,
+  onMenuClick,
+  showMenuButton = false,
+}) => {
   const { user, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -38,7 +51,12 @@ const ConsoleNavbar: React.FC<ConsoleNavbarProps> = ({ fixed = false, onMenuClic
   };
 
   return (
-    <nav className={(fixed ? "fixed top-0 left-0 right-0 z-50 " : "") + "bg-white border-b border-gray-200 shadow-sm"}>
+    <nav
+      className={
+        (fixed ? "fixed top-0 left-0 right-0 z-50 " : "") +
+        "bg-white border-b border-gray-200 shadow-sm"
+      }
+    >
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Left Side - Logo and Name */}
@@ -59,10 +77,14 @@ const ConsoleNavbar: React.FC<ConsoleNavbarProps> = ({ fixed = false, onMenuClic
               </div>
               <div>
                 <div className="flex items-center space-x-2">
-                  <h1 className="text-xl font-bold text-gray-900">IAM Console</h1>
+                  <h1 className="text-xl font-bold text-gray-900">
+                    IAM Console
+                  </h1>
                   <Home className="h-5 w-5 text-gray-600 hover:text-blue-600 transition-colors" />
                 </div>
-                <p className="text-xs text-gray-500">Identity & Access Management</p>
+                <p className="text-xs text-gray-500">
+                  Identity & Access Management
+                </p>
               </div>
             </Link>
           </div>
@@ -92,17 +114,24 @@ const ConsoleNavbar: React.FC<ConsoleNavbarProps> = ({ fixed = false, onMenuClic
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center space-x-2 pl-2 pr-3">
+                <Button
+                  variant="ghost"
+                  className="flex items-center space-x-2 pl-2 pr-3"
+                >
                   <Avatar className="h-8 w-8">
                     <AvatarFallback className="bg-blue-100 text-blue-700 text-sm">
-                      {user ? getUserInitials(user.firstName, user.lastName) : "U"}
+                      {user
+                        ? getUserInitials(user.firstName, user.lastName)
+                        : "U"}
                     </AvatarFallback>
                   </Avatar>
                   <div className="hidden md:block text-left">
                     <p className="text-sm font-medium text-gray-900">
                       {user ? `${user.firstName} ${user.lastName}` : "User"}
                     </p>
-                    <p className="text-xs text-gray-500">{user?.roles[0] || "User"}</p>
+                    <p className="text-xs text-gray-500">
+                      {user?.roles[0] || "User"}
+                    </p>
                   </div>
                   <ChevronDown className="h-4 w-4 text-gray-500" />
                 </Button>
@@ -119,7 +148,10 @@ const ConsoleNavbar: React.FC<ConsoleNavbarProps> = ({ fixed = false, onMenuClic
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="text-red-600"
+                >
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign Out
                 </DropdownMenuItem>
