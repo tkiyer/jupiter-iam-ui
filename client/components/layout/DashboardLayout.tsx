@@ -1,12 +1,11 @@
 import React, { ReactNode, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate, useLocation, Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import ConsoleNavbar from "@/components/layout/ConsoleNavbar";
-import { Shield, Users, Key, Settings, FileText, BarChart3, Home, Menu, X, Building2 } from "lucide-react";
+import { Shield, Users, Key, Settings, FileText, BarChart3, Home, Building2 } from "lucide-react";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -59,22 +58,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             sidebarOpen ? "translate-x-0" : "-translate-x-full",
           )}
         >
-          {/* Sidebar Header */}
-          <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
-            <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Shield className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-xl font-semibold text-gray-900">IAM System</span>
-              <Link to="/console" className="p-1 rounded hover:bg-gray-100 transition-colors" title="返回主页">
-                <Home className="h-4 w-4 text-gray-600 hover:text-blue-600" />
-              </Link>
-            </div>
-            <Button variant="ghost" size="sm" className="lg:hidden" onClick={() => setSidebarOpen(false)}>
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1">
             {navigationItems.map((item) => {
@@ -126,20 +109,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Local page header (title + mobile menu button) */}
-          <header className="bg-white border-b border-gray-200 px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <Button variant="ghost" size="sm" className="lg:hidden" onClick={() => setSidebarOpen(true)}>
-                  <Menu className="h-5 w-5" />
-                </Button>
-                <h1 className="text-2xl font-semibold text-gray-900">
-                  {navigationItems.find((item) => item.path === location.pathname)?.label || "Dashboard"}
-                </h1>
-              </div>
-            </div>
-          </header>
-
           {/* Page Content */}
           <main className="flex-1 overflow-auto bg-gray-50 p-6">{children}</main>
         </div>
