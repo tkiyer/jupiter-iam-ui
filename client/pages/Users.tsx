@@ -442,7 +442,7 @@ const CreateUserDialog: React.FC<{
   };
 
   return (
-    <DialogContent className="max-w-5xl w-full max-h-[90vh] overflow-y-auto">
+    <DialogContent className="max-w-6xl w-full max-h-[90vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>Create New User</DialogTitle>
         <DialogDescription>
@@ -1551,9 +1551,9 @@ const EnhancedRolesSelector: React.FC<{
         </Card>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
         {/* Category Sidebar */}
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-2">
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm">Categories</CardTitle>
