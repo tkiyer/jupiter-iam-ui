@@ -36,13 +36,13 @@ import SidebarExample from "./components/layout/SidebarExample";
 import Profile from "./pages/Profile";
 
 // Settings Pages
-import BasicInformation from "./pages/console-settings/BasicInformation";
-import Appearance from "./pages/console-settings/Appearance";
-import Notifications from "./pages/console-settings/Notifications";
-import SystemIntegration from "./pages/console-settings/SystemIntegration";
-import SystemParameters from "./pages/console-settings/SystemParameters";
-import LanguageTimezone from "./pages/console-settings/LanguageTimezone";
-import SettingsIndex from "./pages/console-settings/index";
+import BasicInformation from "./pages/settings/BasicInformation";
+import Appearance from "./pages/settings/Appearance";
+import Notifications from "./pages/settings/Notifications";
+import SystemIntegration from "./pages/settings/SystemIntegration";
+import SystemParameters from "./pages/settings/SystemParameters";
+import LanguageTimezone from "./pages/settings/LanguageTimezone";
+import SettingsIndex from "./pages/settings/index";
 
 // Error Boundary Component for catching React errors
 class ErrorBoundary extends React.Component<
