@@ -38,6 +38,12 @@ export const defaultNavbarConfig: NavbarConfig = {
       href: "/dashboard",
     },
     {
+      id: "console-settings",
+      label: "Console Setting",
+      icon: Settings,
+      href: "/console/settings",
+    },
+    {
       id: "separator-1",
       label: "",
       icon: User, // Will be ignored due to separator
