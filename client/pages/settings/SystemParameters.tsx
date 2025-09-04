@@ -36,7 +36,7 @@ const SystemParameters: React.FC = () => {
   const [auditRetention, setAuditRetention] = React.useState([90]);
 
   return (
-    <div className="space-y-6">
+    <div className="settings-blue-theme space-y-6">
       <Tabs defaultValue="security" className="space-y-6">
         <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="security">Security</TabsTrigger>

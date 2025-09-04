@@ -210,7 +210,7 @@ const Notifications: React.FC = () => {
     setEnabled((p) => ({ ...p, [id]: value }));
 
   return (
-    <div className="space-y-6">
+    <div className="settings-blue-theme space-y-6">
       {/* General Notifications with multi-channel selection */}
       <Card>
         <CardHeader>
