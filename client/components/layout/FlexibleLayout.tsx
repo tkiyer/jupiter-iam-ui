@@ -52,9 +52,7 @@ const FlexibleLayout: React.FC<FlexibleLayoutProps> = ({
         fixed={fixedNavbar}
         showMenuButton={showSidebar}
         onMenuClick={openSidebar}
-      >
-        {navbarContent}
-      </ConsoleNavbar>
+      />
 
       {/* Mobile sidebar backdrop */}
       {showSidebar && sidebarOpen && (
