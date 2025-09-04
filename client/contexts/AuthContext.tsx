@@ -34,7 +34,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Verify token with server (simplified for demo)
       checkAuthStatus();
     } else {
-      setIsLoading(false);
+      // For development, provide a fallback demo user if no backend is available
+      if (process.env.NODE_ENV === 'development') {
+        const fallbackUser = {
+          id: "demo-user",
+          username: "demo",
+          email: "demo@example.com",
+          firstName: "Demo",
+          lastName: "User",
+          status: "active" as const,
+          roles: ["user"],
+          attributes: {
+            department: "Demo",
+            clearanceLevel: "medium"
+          },
+          createdAt: new Date().toISOString(),
+          lastLogin: new Date().toISOString()
+        };
+
+        // Auto-login demo user after a brief delay to simulate loading
+        setTimeout(() => {
+          setUser(fallbackUser);
+          setIsLoading(false);
+        }, 1000);
+      } else {
+        setIsLoading(false);
+      }
     }
   }, []);
 
