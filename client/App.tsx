@@ -22,21 +22,20 @@ import ConsoleLayout from "@/components/layout/ConsoleLayout";
 import SettingsAwareDashboardLayout from "@/components/layout/SettingsAwareDashboardLayout";
 import RootRedirect from "@/components/RootRedirect";
 import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/iam/Dashboard";
 import Console from "./pages/Console";
-import Users from "./pages/Users";
-import Roles from "./pages/Roles";
-import Permissions from "./pages/Permissions";
-import Policies from "./pages/Policies";
-import AccessControl from "./pages/AccessControl";
-import BusinessScenarios from "./pages/BusinessScenarios";
-import Audit from "./pages/Audit";
+import Users from "./pages/iam/Users";
+import Roles from "./pages/iam/Roles";
+import Permissions from "./pages/iam/Permissions";
+import Policies from "./pages/iam/Policies";
+import AccessControl from "./pages/iam/AccessControl";
+import BusinessScenarios from "./pages/iam/BusinessScenarios";
+import Audit from "./pages/iam/Audit";
 import NotFound from "./pages/NotFound";
 import SidebarExample from "./components/layout/SidebarExample";
 import Profile from "./pages/Profile";
 
 // Settings Pages
-import BasicInformation from "./pages/settings/BasicInformation";
 import Appearance from "./pages/settings/Appearance";
 import Notifications from "./pages/settings/Notifications";
 import SystemIntegration from "./pages/settings/SystemIntegration";
@@ -217,14 +216,6 @@ const App = () => (
 
               {/* Settings Routes */}
               <Route path="/settings" element={<SettingsIndex />} />
-              <Route
-                path="/settings/basic-info"
-                element={
-                  <SettingsAwareDashboardLayout>
-                    <BasicInformation />
-                  </SettingsAwareDashboardLayout>
-                }
-              />
               <Route
                 path="/settings/appearance"
                 element={

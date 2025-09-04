@@ -3,16 +3,22 @@
  * Demonstrates and tests access control enforcement
  */
 
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { Badge } from '../components/ui/badge';
-import { Alert, AlertDescription } from '../components/ui/alert';
-import { Separator } from '../components/ui/separator';
-import { ScrollArea } from '../components/ui/scroll-area';
+import React, { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   PermissionGuard,
   RoleGuard,
@@ -20,76 +26,107 @@ import {
   FieldGuard,
   ConditionalRender,
   AccessIndicator,
-  AccessDebug
-} from '../components/access-control/AccessGuard';
-import { usePermission, useRole, usePermissions, useAccessControlContext } from '../hooks/useAccessControl';
-import { Shield, CheckCircle, XCircle, Info, User, Key, Database, Settings, FileText, Users } from 'lucide-react';
+  AccessDebug,
+} from "@/components/access-control/AccessGuard";
+import {
+  usePermission,
+  useRole,
+  usePermissions,
+  useAccessControlContext,
+} from "@/hooks/useAccessControl";
+import {
+  Shield,
+  CheckCircle,
+  XCircle,
+  Info,
+  User,
+  Key,
+  Database,
+  Settings,
+  FileText,
+  Users,
+} from "lucide-react";
 
 export default function AccessControl() {
-  const [testResource, setTestResource] = useState('users');
-  const [testAction, setTestAction] = useState('read');
-  const [testContext, setTestContext] = useState('{}');
+  const [testResource, setTestResource] = useState("users");
+  const [testAction, setTestAction] = useState("read");
+  const [testContext, setTestContext] = useState("{}");
   const [testResults, setTestResults] = useState<any[]>([]);
 
   const { context, loading: contextLoading } = useAccessControlContext();
 
   // Test permission hook
-  const { hasPermission: canRead, loading: readLoading, reason: readReason } = usePermission('users', 'read');
-  const { hasPermission: canWrite, loading: writeLoading, reason: writeReason } = usePermission('users', 'write');
-  const { hasPermission: canDelete, loading: deleteLoading, reason: deleteReason } = usePermission('users', 'delete');
+  const {
+    hasPermission: canRead,
+    loading: readLoading,
+    reason: readReason,
+  } = usePermission("users", "read");
+  const {
+    hasPermission: canWrite,
+    loading: writeLoading,
+    reason: writeReason,
+  } = usePermission("users", "write");
+  const {
+    hasPermission: canDelete,
+    loading: deleteLoading,
+    reason: deleteReason,
+  } = usePermission("users", "delete");
 
   // Test role hook
-  const { hasRole: isAdmin, loading: adminLoading } = useRole('Administrator');
-  const { hasRole: isManager, loading: managerLoading } = useRole('Manager');
+  const { hasRole: isAdmin, loading: adminLoading } = useRole("Administrator");
+  const { hasRole: isManager, loading: managerLoading } = useRole("Manager");
 
   // Test multiple permissions
   const { results: multiResults, loading: multiLoading } = usePermissions([
-    { resource: 'users', action: 'read' },
-    { resource: 'users', action: 'write' },
-    { resource: 'roles', action: 'read' },
-    { resource: 'permissions', action: 'read' }
+    { resource: "users", action: "read" },
+    { resource: "users", action: "write" },
+    { resource: "roles", action: "read" },
+    { resource: "permissions", action: "read" },
   ]);
 
   const runPermissionTest = async () => {
     try {
-      const contextObj = JSON.parse(testContext || '{}');
-      const response = await fetch('/api/access-control/evaluate', {
-        method: 'POST',
+      const contextObj = JSON.parse(testContext || "{}");
+      const response = await fetch("/api/access-control/evaluate", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
         body: JSON.stringify({
           userId: context?.user.id,
           resource: testResource,
           action: testAction,
-          context: contextObj
-        })
+          context: contextObj,
+        }),
       });
 
       const result = await response.json();
-      
-      setTestResults(prev => [{
-        id: Date.now(),
-        resource: testResource,
-        action: testAction,
-        context: contextObj,
-        result,
-        timestamp: new Date().toISOString()
-      }, ...prev.slice(0, 9)]); // Keep last 10 results
+
+      setTestResults((prev) => [
+        {
+          id: Date.now(),
+          resource: testResource,
+          action: testAction,
+          context: contextObj,
+          result,
+          timestamp: new Date().toISOString(),
+        },
+        ...prev.slice(0, 9),
+      ]); // Keep last 10 results
     } catch (error) {
-      console.error('Test failed:', error);
+      console.error("Test failed:", error);
     }
   };
 
   // Mock sensitive data for field access testing
   const mockUserData = {
-    id: '123',
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    ssn: '123-45-6789',
+    id: "123",
+    name: "John Doe",
+    email: "john.doe@example.com",
+    ssn: "123-45-6789",
     salary: 75000,
-    phone: '+1-555-0123'
+    phone: "+1-555-0123",
   };
 
   return (
@@ -122,7 +159,8 @@ export default function AccessControl() {
                 Permission Tester
               </CardTitle>
               <CardDescription>
-                Test access control in real-time by specifying resource, action, and context
+                Test access control in real-time by specifying resource, action,
+                and context
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -155,7 +193,7 @@ export default function AccessControl() {
                   />
                 </div>
               </div>
-              
+
               <Button onClick={runPermissionTest} className="w-full">
                 Test Permission
               </Button>
@@ -171,8 +209,12 @@ export default function AccessControl() {
                             <div className="font-mono text-sm">
                               {test.resource}:{test.action}
                             </div>
-                            <Badge variant={test.result.allowed ? 'default' : 'destructive'}>
-                              {test.result.allowed ? 'ALLOWED' : 'DENIED'}
+                            <Badge
+                              variant={
+                                test.result.allowed ? "default" : "destructive"
+                              }
+                            >
+                              {test.result.allowed ? "ALLOWED" : "DENIED"}
                             </Badge>
                           </div>
                           <div className="text-sm text-muted-foreground">
@@ -205,8 +247,8 @@ export default function AccessControl() {
                   {readLoading ? (
                     <Badge variant="outline">Loading...</Badge>
                   ) : (
-                    <Badge variant={canRead ? 'default' : 'destructive'}>
-                      {canRead ? 'Allowed' : 'Denied'}
+                    <Badge variant={canRead ? "default" : "destructive"}>
+                      {canRead ? "Allowed" : "Denied"}
                     </Badge>
                   )}
                 </div>
@@ -215,8 +257,8 @@ export default function AccessControl() {
                   {writeLoading ? (
                     <Badge variant="outline">Loading...</Badge>
                   ) : (
-                    <Badge variant={canWrite ? 'default' : 'destructive'}>
-                      {canWrite ? 'Allowed' : 'Denied'}
+                    <Badge variant={canWrite ? "default" : "destructive"}>
+                      {canWrite ? "Allowed" : "Denied"}
                     </Badge>
                   )}
                 </div>
@@ -225,8 +267,8 @@ export default function AccessControl() {
                   {deleteLoading ? (
                     <Badge variant="outline">Loading...</Badge>
                   ) : (
-                    <Badge variant={canDelete ? 'default' : 'destructive'}>
-                      {canDelete ? 'Allowed' : 'Denied'}
+                    <Badge variant={canDelete ? "default" : "destructive"}>
+                      {canDelete ? "Allowed" : "Denied"}
                     </Badge>
                   )}
                 </div>
@@ -246,8 +288,8 @@ export default function AccessControl() {
                   {adminLoading ? (
                     <Badge variant="outline">Loading...</Badge>
                   ) : (
-                    <Badge variant={isAdmin ? 'default' : 'secondary'}>
-                      {isAdmin ? 'Active' : 'Not Active'}
+                    <Badge variant={isAdmin ? "default" : "secondary"}>
+                      {isAdmin ? "Active" : "Not Active"}
                     </Badge>
                   )}
                 </div>
@@ -256,8 +298,8 @@ export default function AccessControl() {
                   {managerLoading ? (
                     <Badge variant="outline">Loading...</Badge>
                   ) : (
-                    <Badge variant={isManager ? 'default' : 'secondary'}>
-                      {isManager ? 'Active' : 'Not Active'}
+                    <Badge variant={isManager ? "default" : "secondary"}>
+                      {isManager ? "Active" : "Not Active"}
                     </Badge>
                   )}
                 </div>
@@ -276,10 +318,15 @@ export default function AccessControl() {
                   <Badge variant="outline">Loading...</Badge>
                 ) : (
                   Object.entries(multiResults).map(([key, result]) => (
-                    <div key={key} className="flex items-center justify-between">
+                    <div
+                      key={key}
+                      className="flex items-center justify-between"
+                    >
                       <span className="text-sm">{key}</span>
-                      <Badge variant={result.allowed ? 'default' : 'destructive'}>
-                        {result.allowed ? 'Allowed' : 'Denied'}
+                      <Badge
+                        variant={result.allowed ? "default" : "destructive"}
+                      >
+                        {result.allowed ? "Allowed" : "Denied"}
                       </Badge>
                     </div>
                   ))
@@ -306,7 +353,8 @@ export default function AccessControl() {
                     <Alert>
                       <CheckCircle className="h-4 w-4" />
                       <AlertDescription>
-                        ✅ This content is visible because you have 'read users' permission
+                        ✅ This content is visible because you have 'read users'
+                        permission
                       </AlertDescription>
                     </Alert>
                   </PermissionGuard>
@@ -320,14 +368,15 @@ export default function AccessControl() {
                     </Alert>
                   </PermissionGuard>
 
-                  <PermissionGuard 
-                    resource="sensitive_data" 
-                    action="read" 
+                  <PermissionGuard
+                    resource="sensitive_data"
+                    action="read"
                     fallback={
                       <Alert variant="destructive">
                         <XCircle className="h-4 w-4" />
                         <AlertDescription>
-                          ❌ Custom fallback: You don't have access to sensitive data
+                          ❌ Custom fallback: You don't have access to sensitive
+                          data
                         </AlertDescription>
                       </Alert>
                     }
@@ -349,8 +398,8 @@ export default function AccessControl() {
                 <div className="space-y-4">
                   <MultiPermissionGuard
                     permissions={[
-                      { resource: 'users', action: 'read' },
-                      { resource: 'roles', action: 'read' }
+                      { resource: "users", action: "read" },
+                      { resource: "roles", action: "read" },
                     ]}
                     operator="AND"
                     showReason
@@ -358,15 +407,16 @@ export default function AccessControl() {
                     <Alert>
                       <CheckCircle className="h-4 w-4" />
                       <AlertDescription>
-                        ✅ This requires BOTH 'read users' AND 'read roles' permissions
+                        ✅ This requires BOTH 'read users' AND 'read roles'
+                        permissions
                       </AlertDescription>
                     </Alert>
                   </MultiPermissionGuard>
 
                   <MultiPermissionGuard
                     permissions={[
-                      { resource: 'admin', action: 'write' },
-                      { resource: 'users', action: 'read' }
+                      { resource: "admin", action: "write" },
+                      { resource: "users", action: "read" },
                     ]}
                     operator="OR"
                     showReason
@@ -374,7 +424,8 @@ export default function AccessControl() {
                     <Alert>
                       <CheckCircle className="h-4 w-4" />
                       <AlertDescription>
-                        ✅ This requires EITHER 'write admin' OR 'read users' permission
+                        ✅ This requires EITHER 'write admin' OR 'read users'
+                        permission
                       </AlertDescription>
                     </Alert>
                   </MultiPermissionGuard>
@@ -387,8 +438,12 @@ export default function AccessControl() {
                 <h4 className="font-semibold mb-3">Conditional Rendering</h4>
                 <div className="space-y-4">
                   <ConditionalRender
-                    when={{ resource: 'users', action: 'write' }}
-                    otherwise={<span className="text-muted-foreground">No write access</span>}
+                    when={{ resource: "users", action: "write" }}
+                    otherwise={
+                      <span className="text-muted-foreground">
+                        No write access
+                      </span>
+                    }
                   >
                     <Button>
                       <Settings className="h-4 w-4 mr-2" />
@@ -397,8 +452,10 @@ export default function AccessControl() {
                   </ConditionalRender>
 
                   <ConditionalRender
-                    when={{ role: 'Administrator' }}
-                    otherwise={<span className="text-muted-foreground">Admin only</span>}
+                    when={{ role: "Administrator" }}
+                    otherwise={
+                      <span className="text-muted-foreground">Admin only</span>
+                    }
                   >
                     <Button variant="destructive">
                       <Database className="h-4 w-4 mr-2" />
@@ -434,14 +491,12 @@ export default function AccessControl() {
                 <RoleGuard role="Manager" showReason>
                   <Alert>
                     <CheckCircle className="h-4 w-4" />
-                    <AlertDescription>
-                      ✅ Manager only content
-                    </AlertDescription>
+                    <AlertDescription>✅ Manager only content</AlertDescription>
                   </Alert>
                 </RoleGuard>
 
-                <RoleGuard 
-                  role="SuperAdmin" 
+                <RoleGuard
+                  role="SuperAdmin"
                   fallback={
                     <Alert variant="destructive">
                       <XCircle className="h-4 w-4" />
@@ -479,15 +534,19 @@ export default function AccessControl() {
                   <div>
                     <Label>Full Name</Label>
                     <FieldGuard fieldName="name" value={mockUserData.name}>
-                      <div className="p-2 border rounded">{mockUserData.name}</div>
+                      <div className="p-2 border rounded">
+                        {mockUserData.name}
+                      </div>
                     </FieldGuard>
                   </div>
-                  
+
                   <div>
                     <Label>Email Address</Label>
                     <FieldGuard fieldName="email" value={mockUserData.email}>
                       {(value, applyMasking) => (
-                        <div className="p-2 border rounded">{applyMasking(value)}</div>
+                        <div className="p-2 border rounded">
+                          {applyMasking(value)}
+                        </div>
                       )}
                     </FieldGuard>
                   </div>
@@ -496,7 +555,9 @@ export default function AccessControl() {
                     <Label>Social Security Number</Label>
                     <FieldGuard fieldName="ssn" value={mockUserData.ssn}>
                       {(value, applyMasking) => (
-                        <div className="p-2 border rounded">{applyMasking(value)}</div>
+                        <div className="p-2 border rounded">
+                          {applyMasking(value)}
+                        </div>
                       )}
                     </FieldGuard>
                   </div>
@@ -505,7 +566,9 @@ export default function AccessControl() {
                     <Label>Salary</Label>
                     <FieldGuard fieldName="salary" value={mockUserData.salary}>
                       {(value, applyMasking) => (
-                        <div className="p-2 border rounded">${applyMasking(value)}</div>
+                        <div className="p-2 border rounded">
+                          ${applyMasking(value)}
+                        </div>
                       )}
                     </FieldGuard>
                   </div>
@@ -514,7 +577,9 @@ export default function AccessControl() {
                     <Label>Phone Number</Label>
                     <FieldGuard fieldName="phone" value={mockUserData.phone}>
                       {(value, applyMasking) => (
-                        <div className="p-2 border rounded">{applyMasking(value)}</div>
+                        <div className="p-2 border rounded">
+                          {applyMasking(value)}
+                        </div>
                       )}
                     </FieldGuard>
                   </div>
@@ -522,7 +587,9 @@ export default function AccessControl() {
                   <div>
                     <Label>Employee ID</Label>
                     <FieldGuard fieldName="employee_id" value={mockUserData.id}>
-                      <div className="p-2 border rounded">{mockUserData.id}</div>
+                      <div className="p-2 border rounded">
+                        {mockUserData.id}
+                      </div>
                     </FieldGuard>
                   </div>
                 </div>
@@ -537,7 +604,8 @@ export default function AccessControl() {
             <CardHeader>
               <CardTitle>Access Control Context</CardTitle>
               <CardDescription>
-                Current user's access control context including roles, permissions, and policies
+                Current user's access control context including roles,
+                permissions, and policies
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -553,18 +621,23 @@ export default function AccessControl() {
                     <h4 className="font-semibold mb-2">User Information</h4>
                     <div className="p-4 border rounded-lg bg-gray-50">
                       <div className="grid grid-cols-2 gap-2 text-sm">
-                        <span>ID:</span> <span className="font-mono">{context.user.id}</span>
-                        <span>Username:</span> <span>{context.user.username}</span>
+                        <span>ID:</span>{" "}
+                        <span className="font-mono">{context.user.id}</span>
+                        <span>Username:</span>{" "}
+                        <span>{context.user.username}</span>
                         <span>Email:</span> <span>{context.user.email}</span>
-                        <span>Status:</span> <Badge>{context.user.status}</Badge>
+                        <span>Status:</span>{" "}
+                        <Badge>{context.user.status}</Badge>
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <h4 className="font-semibold mb-2">Roles ({context.roles.length})</h4>
+                    <h4 className="font-semibold mb-2">
+                      Roles ({context.roles.length})
+                    </h4>
                     <div className="flex flex-wrap gap-2">
-                      {context.roles.map(role => (
+                      {context.roles.map((role) => (
                         <Badge key={role.id} variant="outline">
                           {role.name}
                         </Badge>
@@ -573,17 +646,29 @@ export default function AccessControl() {
                   </div>
 
                   <div>
-                    <h4 className="font-semibold mb-2">Permissions ({context.permissions.length})</h4>
+                    <h4 className="font-semibold mb-2">
+                      Permissions ({context.permissions.length})
+                    </h4>
                     <ScrollArea className="h-32">
                       <div className="space-y-1">
-                        {context.permissions.map(permission => (
-                          <div key={permission.id} className="flex items-center justify-between p-2 border rounded">
+                        {context.permissions.map((permission) => (
+                          <div
+                            key={permission.id}
+                            className="flex items-center justify-between p-2 border rounded"
+                          >
                             <span className="text-sm">{permission.name}</span>
                             <div className="flex gap-2">
                               <Badge variant="outline" className="text-xs">
                                 {permission.resource}:{permission.action}
                               </Badge>
-                              <Badge variant={permission.risk === 'critical' ? 'destructive' : 'secondary'} className="text-xs">
+                              <Badge
+                                variant={
+                                  permission.risk === "critical"
+                                    ? "destructive"
+                                    : "secondary"
+                                }
+                                className="text-xs"
+                              >
                                 {permission.risk}
                               </Badge>
                             </div>
@@ -594,14 +679,22 @@ export default function AccessControl() {
                   </div>
 
                   <div>
-                    <h4 className="font-semibold mb-2">Active Policies ({context.policies.length})</h4>
+                    <h4 className="font-semibold mb-2">
+                      Active Policies ({context.policies.length})
+                    </h4>
                     <div className="space-y-2">
-                      {context.policies.map(policy => (
+                      {context.policies.map((policy) => (
                         <div key={policy.id} className="p-3 border rounded">
                           <div className="flex items-center justify-between mb-1">
                             <span className="font-medium">{policy.name}</span>
                             <div className="flex gap-2">
-                              <Badge variant={policy.effect === 'allow' ? 'default' : 'destructive'}>
+                              <Badge
+                                variant={
+                                  policy.effect === "allow"
+                                    ? "default"
+                                    : "destructive"
+                                }
+                              >
                                 {policy.effect.toUpperCase()}
                               </Badge>
                               <Badge variant="outline">
@@ -609,7 +702,9 @@ export default function AccessControl() {
                               </Badge>
                             </div>
                           </div>
-                          <p className="text-sm text-muted-foreground">{policy.description}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {policy.description}
+                          </p>
                         </div>
                       ))}
                     </div>
