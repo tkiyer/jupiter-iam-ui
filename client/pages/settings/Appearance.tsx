@@ -79,7 +79,7 @@ const Appearance: React.FC = () => {
   const scheme = COLOR_PRESETS[colorScheme];
 
   return (
-    <div className="space-y-6">
+    <div className="settings-blue-theme space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="theme">Theme & Color</TabsTrigger>

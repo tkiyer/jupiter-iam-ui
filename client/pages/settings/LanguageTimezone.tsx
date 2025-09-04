@@ -23,7 +23,7 @@ import { Globe, Clock, Calendar, Languages } from "lucide-react";
 
 const LanguageTimezone: React.FC = () => {
   return (
-    <div className="space-y-6">
+    <div className="settings-blue-theme space-y-6">
       <Tabs defaultValue="language" className="space-y-6">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="language">Language</TabsTrigger>
