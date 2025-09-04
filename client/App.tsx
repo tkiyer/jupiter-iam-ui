@@ -34,15 +34,14 @@ import NotFound from "./pages/NotFound";
 import SidebarExample from "./components/layout/SidebarExample";
 import Profile from "./pages/Profile";
 
-// Console Settings Pages
-import ConsoleSettingsLayout from "./components/layout/ConsoleSettingsLayout";
+// Settings Pages
 import BasicInformation from "./pages/console-settings/BasicInformation";
 import Appearance from "./pages/console-settings/Appearance";
 import Notifications from "./pages/console-settings/Notifications";
 import SystemIntegration from "./pages/console-settings/SystemIntegration";
 import SystemParameters from "./pages/console-settings/SystemParameters";
 import LanguageTimezone from "./pages/console-settings/LanguageTimezone";
-import ConsoleSettingsIndex from "./pages/console-settings/index";
+import SettingsIndex from "./pages/console-settings/index";
 
 // Error Boundary Component for catching React errors
 class ErrorBoundary extends React.Component<
@@ -218,57 +217,57 @@ const App = () => (
                 element={<SidebarExample />}
               />
 
-              {/* Console Settings Routes */}
+              {/* Settings Routes */}
               <Route
-                path="/console/settings"
-                element={<ConsoleSettingsIndex />}
+                path="/settings"
+                element={<SettingsIndex />}
               />
               <Route
-                path="/console/settings/basic-info"
+                path="/settings/basic-info"
                 element={
-                  <ConsoleSettingsLayout>
+                  <DashboardLayout>
                     <BasicInformation />
-                  </ConsoleSettingsLayout>
+                  </DashboardLayout>
                 }
               />
               <Route
-                path="/console/settings/appearance"
+                path="/settings/appearance"
                 element={
-                  <ConsoleSettingsLayout>
+                  <DashboardLayout>
                     <Appearance />
-                  </ConsoleSettingsLayout>
+                  </DashboardLayout>
                 }
               />
               <Route
-                path="/console/settings/notifications"
+                path="/settings/notifications"
                 element={
-                  <ConsoleSettingsLayout>
+                  <DashboardLayout>
                     <Notifications />
-                  </ConsoleSettingsLayout>
+                  </DashboardLayout>
                 }
               />
               <Route
-                path="/console/settings/system-integration"
+                path="/settings/system-integration"
                 element={
-                  <ConsoleSettingsLayout>
+                  <DashboardLayout>
                     <SystemIntegration />
-                  </ConsoleSettingsLayout>
+                  </DashboardLayout>
                 }
               />
               <Route
-                path="/console/settings/system-parameters"
+                path="/settings/system-parameters"
                 element={
-                  <ConsoleSettingsLayout>
+                  <DashboardLayout>
                     <SystemParameters />
-                  </ConsoleSettingsLayout>
+                  </DashboardLayout>
                 }
               />
               <Route
-                path="/console/settings/language-timezone"
+                path="/settings/language-timezone"
                 element={
-                  <ConsoleSettingsLayout>
+                  <DashboardLayout>
                     <LanguageTimezone />
-                  </ConsoleSettingsLayout>
+                  </DashboardLayout>
                 }
               />
 

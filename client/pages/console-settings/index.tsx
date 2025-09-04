@@ -2,10 +2,10 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 
 /**
- * Default redirect for console settings - redirects to basic information page
+ * Default redirect for settings - redirects to basic information page
  */
-const ConsoleSettingsIndex: React.FC = () => {
-  return <Navigate to="/console/settings/basic-info" replace />;
+const SettingsIndex: React.FC = () => {
+  return <Navigate to="/settings/basic-info" replace />;
 };
 
-export default ConsoleSettingsIndex;
+export default SettingsIndex;
