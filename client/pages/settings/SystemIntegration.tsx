@@ -91,7 +91,7 @@ const SystemIntegration: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="settings-blue-theme space-y-6">
       <Tabs defaultValue="overview" className="space-y-6">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
