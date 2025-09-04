@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { DashboardStats } from '@shared/iam';
-import FullReportDialog from '@/components/dashboard/FullReportDialog';
+import React, { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { DashboardStats } from "@shared/iam";
+import FullReportDialog from "@/components/dashboard/FullReportDialog";
 import {
   Users,
   Key,
@@ -15,8 +21,8 @@ import {
   Activity,
   Clock,
   UserCheck,
-  UserX
-} from 'lucide-react';
+  UserX,
+} from "lucide-react";
 
 const Dashboard: React.FC = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -29,11 +35,11 @@ const Dashboard: React.FC = () => {
 
   const fetchDashboardStats = async () => {
     try {
-      const response = await fetch('/api/dashboard/stats');
+      const response = await fetch("/api/dashboard/stats");
       const data = await response.json();
       setStats(data);
     } catch (error) {
-      console.error('Error fetching dashboard stats:', error);
+      console.error("Error fetching dashboard stats:", error);
       // Mock data for demo
       setStats({
         totalUsers: 1247,
@@ -42,7 +48,7 @@ const Dashboard: React.FC = () => {
         totalPermissions: 48,
         totalPolicies: 23,
         recentLogins: 89,
-        failedLogins: 3
+        failedLogins: 3,
       });
     } finally {
       setIsLoading(false);
@@ -68,49 +74,74 @@ const Dashboard: React.FC = () => {
 
   const statCards = [
     {
-      title: 'Total Users',
+      title: "Total Users",
       value: stats?.totalUsers || 0,
       icon: Users,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50',
-      change: '+12%',
-      changeType: 'positive' as const
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
+      change: "+12%",
+      changeType: "positive" as const,
     },
     {
-      title: 'Active Users',
+      title: "Active Users",
       value: stats?.activeUsers || 0,
       icon: UserCheck,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50',
-      change: '+8%',
-      changeType: 'positive' as const
+      color: "text-green-600",
+      bgColor: "bg-green-50",
+      change: "+8%",
+      changeType: "positive" as const,
     },
     {
-      title: 'Total Roles',
+      title: "Total Roles",
       value: stats?.totalRoles || 0,
       icon: Key,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50',
-      change: '+2',
-      changeType: 'positive' as const
+      color: "text-purple-600",
+      bgColor: "bg-purple-50",
+      change: "+2",
+      changeType: "positive" as const,
     },
     {
-      title: 'Active Policies',
+      title: "Active Policies",
       value: stats?.totalPolicies || 0,
       icon: Shield,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-50',
-      change: '+1',
-      changeType: 'positive' as const
-    }
+      color: "text-orange-600",
+      bgColor: "bg-orange-50",
+      change: "+1",
+      changeType: "positive" as const,
+    },
   ];
 
   const activityData = [
-    { time: '2 minutes ago', action: 'User login', user: 'john.doe@company.com', status: 'success' },
-    { time: '5 minutes ago', action: 'Role assignment', user: 'admin@company.com', status: 'success' },
-    { time: '12 minutes ago', action: 'Failed login attempt', user: 'unknown@domain.com', status: 'failure' },
-    { time: '18 minutes ago', action: 'Policy updated', user: 'manager@company.com', status: 'success' },
-    { time: '25 minutes ago', action: 'User created', user: 'admin@company.com', status: 'success' },
+    {
+      time: "2 minutes ago",
+      action: "User login",
+      user: "john.doe@company.com",
+      status: "success",
+    },
+    {
+      time: "5 minutes ago",
+      action: "Role assignment",
+      user: "admin@company.com",
+      status: "success",
+    },
+    {
+      time: "12 minutes ago",
+      action: "Failed login attempt",
+      user: "unknown@domain.com",
+      status: "failure",
+    },
+    {
+      time: "18 minutes ago",
+      action: "Policy updated",
+      user: "manager@company.com",
+      status: "success",
+    },
+    {
+      time: "25 minutes ago",
+      action: "User created",
+      user: "admin@company.com",
+      status: "success",
+    },
   ];
 
   return (
@@ -118,8 +149,12 @@ const Dashboard: React.FC = () => {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
-          <p className="text-gray-600 mt-1">Monitor and manage your IAM system</p>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Dashboard Overview
+          </h1>
+          <p className="text-gray-600 mt-1">
+            Monitor and manage your IAM system
+          </p>
         </div>
         <Button
           className="bg-blue-600 hover:bg-blue-700"
@@ -139,12 +174,20 @@ const Dashboard: React.FC = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value.toLocaleString()}</p>
+                    <p className="text-sm font-medium text-gray-600">
+                      {stat.title}
+                    </p>
+                    <p className="text-3xl font-bold text-gray-900 mt-2">
+                      {stat.value.toLocaleString()}
+                    </p>
                     <div className="flex items-center mt-2">
                       <TrendingUp className="h-3 w-3 text-green-500 mr-1" />
-                      <span className="text-xs text-green-500 font-medium">{stat.change}</span>
-                      <span className="text-xs text-gray-500 ml-1">vs last month</span>
+                      <span className="text-xs text-green-500 font-medium">
+                        {stat.change}
+                      </span>
+                      <span className="text-xs text-gray-500 ml-1">
+                        vs last month
+                      </span>
                     </div>
                   </div>
                   <div className={`p-3 rounded-full ${stat.bgColor}`}>
@@ -192,7 +235,9 @@ const Dashboard: React.FC = () => {
             <div className="pt-2 border-t">
               <div className="flex items-center text-sm text-red-600">
                 <AlertTriangle className="mr-2 h-4 w-4" />
-                <span>{stats?.failedLogins || 0} failed login attempts today</span>
+                <span>
+                  {stats?.failedLogins || 0} failed login attempts today
+                </span>
               </div>
             </div>
           </CardContent>
@@ -205,32 +250,51 @@ const Dashboard: React.FC = () => {
               <Clock className="mr-2 h-5 w-5" />
               Recent Activity
             </CardTitle>
-            <CardDescription>Latest system events and user actions</CardDescription>
+            <CardDescription>
+              Latest system events and user actions
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {activityData.map((activity, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                >
                   <div className="flex items-center space-x-3">
-                    <div className={`p-2 rounded-full ${
-                      activity.status === 'success' ? 'bg-green-100' : 'bg-red-100'
-                    }`}>
-                      {activity.status === 'success' ? (
+                    <div
+                      className={`p-2 rounded-full ${
+                        activity.status === "success"
+                          ? "bg-green-100"
+                          : "bg-red-100"
+                      }`}
+                    >
+                      {activity.status === "success" ? (
                         <UserCheck className={`h-4 w-4 text-green-600`} />
                       ) : (
                         <UserX className={`h-4 w-4 text-red-600`} />
                       )}
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{activity.action}</p>
+                      <p className="text-sm font-medium text-gray-900">
+                        {activity.action}
+                      </p>
                       <p className="text-xs text-gray-500">{activity.user}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <Badge variant={activity.status === 'success' ? 'default' : 'destructive'}>
+                    <Badge
+                      variant={
+                        activity.status === "success"
+                          ? "default"
+                          : "destructive"
+                      }
+                    >
                       {activity.status}
                     </Badge>
-                    <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {activity.time}
+                    </p>
                   </div>
                 </div>
               ))}

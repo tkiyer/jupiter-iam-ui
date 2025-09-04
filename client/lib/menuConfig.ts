@@ -12,7 +12,6 @@ import type { SidebarMenuItem } from "@/components/layout/Sidebar";
 
 // Default dashboard navigation items
 export const defaultDashboardMenuItems: SidebarMenuItem[] = [
-  { path: "/console", label: "Console", icon: Home },
   { path: "/dashboard", label: "Dashboard", icon: BarChart3 },
   { path: "/users", label: "User Management", icon: Users },
   { path: "/roles", label: "Role Management", icon: Key },
@@ -21,7 +20,6 @@ export const defaultDashboardMenuItems: SidebarMenuItem[] = [
   { path: "/access-control", label: "Access Control", icon: Shield },
   { path: "/business-scenarios", label: "Business Scenarios", icon: Building2 },
   { path: "/audit", label: "Audit Logs", icon: BarChart3 },
-  { path: "/settings", label: "Settings", icon: Settings },
 ];
 
 // Console-specific navigation items (if console needs a sidebar)
