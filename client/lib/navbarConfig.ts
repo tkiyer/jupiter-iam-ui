@@ -69,8 +69,8 @@ export const consoleNavbarConfig: NavbarConfig = {
       href: "/dashboard",
     },
     {
-      id: "settings",
-      label: "Console Settings",
+      id: "console-settings",
+      label: "Console Setting",
       icon: Settings,
       href: "/console/settings",
     },
