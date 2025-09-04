@@ -28,7 +28,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   sidebarFooter,
 }) => {
   const { user, isAuthenticated } = useAuth();
-  const { isOpen: sidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar(false);
+  const {
+    isOpen: sidebarOpen,
+    open: openSidebar,
+    close: closeSidebar,
+  } = useSidebar(false);
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -40,11 +44,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   return (
     <div className="h-screen overflow-hidden bg-gray-50">
       {/* Fixed top navbar */}
-      <ConsoleNavbar
-        fixed
-        showMenuButton
-        onMenuClick={openSidebar}
-      />
+      <ConsoleNavbar fixed showMenuButton onMenuClick={openSidebar} />
 
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (

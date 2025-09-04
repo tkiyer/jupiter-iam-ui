@@ -36,7 +36,11 @@ const FlexibleLayout: React.FC<FlexibleLayoutProps> = ({
   fixedNavbar = true,
 }) => {
   const { user, isAuthenticated } = useAuth();
-  const { isOpen: sidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar(false);
+  const {
+    isOpen: sidebarOpen,
+    open: openSidebar,
+    close: closeSidebar,
+  } = useSidebar(false);
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -60,7 +64,9 @@ const FlexibleLayout: React.FC<FlexibleLayoutProps> = ({
       )}
 
       {/* Body area */}
-      <div className={`${fixedNavbar ? "pt-16" : ""} flex h-[100vh] w-full overflow-hidden`}>
+      <div
+        className={`${fixedNavbar ? "pt-16" : ""} flex h-[100vh] w-full overflow-hidden`}
+      >
         {/* Conditional Sidebar */}
         {showSidebar && (
           <Sidebar
@@ -75,7 +81,9 @@ const FlexibleLayout: React.FC<FlexibleLayoutProps> = ({
         )}
 
         {/* Main Content */}
-        <div className={`flex-1 flex flex-col min-h-0 ${showSidebar ? "lg:ml-64" : ""}`}>
+        <div
+          className={`flex-1 flex flex-col min-h-0 ${showSidebar ? "lg:ml-64" : ""}`}
+        >
           <main className="flex-1 overflow-y-auto bg-gray-50 p-6 min-h-0 flex flex-col">
             <div className="flex-1">{children}</div>
             <SiteFooter />

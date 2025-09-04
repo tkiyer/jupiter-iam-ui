@@ -99,8 +99,8 @@ const ReusableNavbar: React.FC<ReusableNavbarProps> = ({
             )}
 
             {/* Settings Button */}
-            {showSettings && (
-              onSettingsClick ? (
+            {showSettings &&
+              (onSettingsClick ? (
                 <Button
                   variant="ghost"
                   size="sm"
@@ -116,8 +116,7 @@ const ReusableNavbar: React.FC<ReusableNavbarProps> = ({
                     <Settings className="h-5 w-5 text-gray-600" />
                   </Link>
                 </Button>
-              )
-            )}
+              ))}
 
             {/* Notifications */}
             {showNotifications && <NotificationsDropdown />}

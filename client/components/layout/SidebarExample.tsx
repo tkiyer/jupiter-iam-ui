@@ -66,8 +66,9 @@ const SidebarExample: React.FC = () => {
             Sidebar Component Examples
           </h1>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            This page demonstrates various ways to use the reusable Sidebar component
-            with different configurations, menu items, and customizations.
+            This page demonstrates various ways to use the reusable Sidebar
+            component with different configurations, menu items, and
+            customizations.
           </p>
         </div>
 
@@ -76,7 +77,9 @@ const SidebarExample: React.FC = () => {
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             <div className="p-4 bg-gray-50 border-b">
               <h2 className="font-semibold text-gray-900">Basic Sidebar</h2>
-              <p className="text-sm text-gray-600">Simple sidebar with basic menu items</p>
+              <p className="text-sm text-gray-600">
+                Simple sidebar with basic menu items
+              </p>
             </div>
             <div className="relative h-96">
               <Sidebar
@@ -93,7 +96,9 @@ const SidebarExample: React.FC = () => {
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             <div className="p-4 bg-gray-50 border-b">
               <h2 className="font-semibold text-gray-900">Advanced Sidebar</h2>
-              <p className="text-sm text-gray-600">Sidebar with badges and disabled items</p>
+              <p className="text-sm text-gray-600">
+                Sidebar with badges and disabled items
+              </p>
             </div>
             <div className="relative h-96">
               <Sidebar
@@ -110,7 +115,9 @@ const SidebarExample: React.FC = () => {
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             <div className="p-4 bg-gray-50 border-b">
               <h2 className="font-semibold text-gray-900">Custom Header</h2>
-              <p className="text-sm text-gray-600">Sidebar with custom header content</p>
+              <p className="text-sm text-gray-600">
+                Sidebar with custom header content
+              </p>
             </div>
             <div className="relative h-96">
               <Sidebar
@@ -128,7 +135,9 @@ const SidebarExample: React.FC = () => {
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             <div className="p-4 bg-gray-50 border-b">
               <h2 className="font-semibold text-gray-900">Custom Footer</h2>
-              <p className="text-sm text-gray-600">Sidebar with custom footer content</p>
+              <p className="text-sm text-gray-600">
+                Sidebar with custom footer content
+              </p>
             </div>
             <div className="relative h-96">
               <Sidebar
@@ -146,13 +155,17 @@ const SidebarExample: React.FC = () => {
 
         {/* Code Examples */}
         <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Usage Examples</h2>
-          
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            Usage Examples
+          </h2>
+
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">1. Basic Usage</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                1. Basic Usage
+              </h3>
               <pre className="bg-gray-50 p-4 rounded-lg text-sm overflow-x-auto">
-{`import Sidebar from '@/components/layout/Sidebar';
+                {`import Sidebar from '@/components/layout/Sidebar';
 import { useSidebar } from '@/hooks/useSidebar';
 
 const { isOpen, close } = useSidebar();
@@ -167,9 +180,11 @@ const { isOpen, close } = useSidebar();
             </div>
 
             <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">2. Advanced Configuration</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                2. Advanced Configuration
+              </h3>
               <pre className="bg-gray-50 p-4 rounded-lg text-sm overflow-x-auto">
-{`<Sidebar
+                {`<Sidebar
   menuItems={menuItems}
   user={user}
   isOpen={isOpen}
@@ -183,9 +198,11 @@ const { isOpen, close } = useSidebar();
             </div>
 
             <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">3. Menu Item with Badge</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                3. Menu Item with Badge
+              </h3>
               <pre className="bg-gray-50 p-4 rounded-lg text-sm overflow-x-auto">
-{`const menuItems: SidebarMenuItem[] = [
+                {`const menuItems: SidebarMenuItem[] = [
   {
     path: "/notifications",
     label: "Notifications",

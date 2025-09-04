@@ -29,9 +29,7 @@ const NavbarLogo: React.FC<NavbarLogoProps> = ({
             <Home className="h-5 w-5 text-gray-600 hover:text-blue-600 transition-colors" />
           )}
         </div>
-        {subtitle && (
-          <p className="text-xs text-gray-500">{subtitle}</p>
-        )}
+        {subtitle && <p className="text-xs text-gray-500">{subtitle}</p>}
       </div>
     </Link>
   );

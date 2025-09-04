@@ -83,6 +83,8 @@ export const getSettingById = (id: string): SettingsMenuItem | undefined => {
 };
 
 // Get setting item by path
-export const getSettingByPath = (path: string): SettingsMenuItem | undefined => {
+export const getSettingByPath = (
+  path: string,
+): SettingsMenuItem | undefined => {
   return settingsMenuItems.find((item) => item.path === path);
 };

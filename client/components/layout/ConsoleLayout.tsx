@@ -24,7 +24,11 @@ const ConsoleLayout: React.FC<ConsoleLayoutProps> = ({
   showUserInfo = false,
 }) => {
   const { user, isAuthenticated } = useAuth();
-  const { isOpen: sidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar(false);
+  const {
+    isOpen: sidebarOpen,
+    open: openSidebar,
+    close: closeSidebar,
+  } = useSidebar(false);
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -46,11 +50,7 @@ const ConsoleLayout: React.FC<ConsoleLayoutProps> = ({
   // Console layout with optional sidebar
   return (
     <div className="h-screen overflow-hidden bg-gray-50">
-      <ConsoleNavbar
-        fixed
-        showMenuButton
-        onMenuClick={openSidebar}
-      />
+      <ConsoleNavbar fixed showMenuButton onMenuClick={openSidebar} />
 
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (

@@ -1,7 +1,10 @@
 import React, { ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import DashboardLayout from "./DashboardLayout";
-import { getSettingByPath, getSettingsSidebarItems } from "@/lib/settingsConfig";
+import {
+  getSettingByPath,
+  getSettingsSidebarItems,
+} from "@/lib/settingsConfig";
 
 interface SettingsAwareDashboardLayoutProps {
   children: ReactNode;
@@ -11,9 +14,9 @@ interface SettingsAwareDashboardLayoutProps {
  * Enhanced DashboardLayout that provides proper context for settings pages
  * This component adds a page header for settings pages within the main dashboard layout
  */
-const SettingsAwareDashboardLayout: React.FC<SettingsAwareDashboardLayoutProps> = ({
-  children,
-}) => {
+const SettingsAwareDashboardLayout: React.FC<
+  SettingsAwareDashboardLayoutProps
+> = ({ children }) => {
   const location = useLocation();
   const isSettingsPage = location.pathname.startsWith("/settings");
 
@@ -24,7 +27,9 @@ const SettingsAwareDashboardLayout: React.FC<SettingsAwareDashboardLayoutProps> 
   // Get current setting info based on path
   const currentSetting = getSettingByPath(location.pathname);
   const pageTitle = currentSetting?.label || "Settings";
-  const pageDescription = currentSetting?.description || "Manage your console settings and preferences";
+  const pageDescription =
+    currentSetting?.description ||
+    "Manage your console settings and preferences";
 
   // Get settings-specific sidebar menu items
   const settingsMenuItems = getSettingsSidebarItems();
@@ -42,9 +47,7 @@ const SettingsAwareDashboardLayout: React.FC<SettingsAwareDashboardLayoutProps> 
       </div>
 
       {/* Settings Page Content */}
-      <div className="max-w-4xl mx-auto w-full">
-        {children}
-      </div>
+      <div className="max-w-4xl mx-auto w-full">{children}</div>
     </DashboardLayout>
   );
 };

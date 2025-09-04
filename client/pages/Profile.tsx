@@ -1,6 +1,12 @@
 import React from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -19,7 +25,9 @@ const Profile: React.FC = () => {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Access Denied
+          </h1>
           <p className="text-gray-600">Please log in to view your profile.</p>
         </div>
       </div>
@@ -31,7 +39,9 @@ const Profile: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Profile Settings</h1>
-          <p className="text-gray-600 mt-2">Manage your account information and preferences</p>
+          <p className="text-gray-600 mt-2">
+            Manage your account information and preferences
+          </p>
         </div>
 
         <div className="space-y-6">
@@ -102,7 +112,7 @@ const Profile: React.FC = () => {
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
                 <div className="flex items-center space-x-2">
@@ -130,8 +140,10 @@ const Profile: React.FC = () => {
               <div className="space-y-2">
                 <Label htmlFor="status">Account Status</Label>
                 <div className="flex items-center space-x-2">
-                  <Badge 
-                    variant={user.status === "active" ? "default" : "destructive"}
+                  <Badge
+                    variant={
+                      user.status === "active" ? "default" : "destructive"
+                    }
                     className="capitalize"
                   >
                     {user.status}
@@ -142,7 +154,9 @@ const Profile: React.FC = () => {
               <div className="space-y-2">
                 <Label>Last Login</Label>
                 <p className="text-sm text-gray-600">
-                  {user.lastLogin ? new Date(user.lastLogin).toLocaleString() : "Never"}
+                  {user.lastLogin
+                    ? new Date(user.lastLogin).toLocaleString()
+                    : "Never"}
                 </p>
               </div>
             </CardContent>
@@ -164,7 +178,9 @@ const Profile: React.FC = () => {
                 {Object.entries(user.attributes).map(([key, value]) => (
                   <div key={key} className="space-y-2">
                     <Label htmlFor={key} className="capitalize">
-                      {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                      {key
+                        .replace(/([A-Z])/g, " $1")
+                        .replace(/^./, (str) => str.toUpperCase())}
                     </Label>
                     <Input
                       id={key}
@@ -188,25 +204,18 @@ const Profile: React.FC = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-3">
-                <Button variant="outline">
-                  Change Password
-                </Button>
-                <Button variant="outline">
-                  Update Profile Picture
-                </Button>
-                <Button variant="outline">
-                  Download Account Data
-                </Button>
-                <Button variant="outline">
-                  Security Settings
-                </Button>
+                <Button variant="outline">Change Password</Button>
+                <Button variant="outline">Update Profile Picture</Button>
+                <Button variant="outline">Download Account Data</Button>
+                <Button variant="outline">Security Settings</Button>
               </div>
-              
+
               <div className="pt-4 border-t">
                 <p className="text-sm text-gray-600 mb-3">
-                  <strong>Note:</strong> This is a read-only view of your profile. 
-                  To make changes, please contact your system administrator or use the 
-                  Console Settings for available options.
+                  <strong>Note:</strong> This is a read-only view of your
+                  profile. To make changes, please contact your system
+                  administrator or use the Console Settings for available
+                  options.
                 </p>
               </div>
             </CardContent>

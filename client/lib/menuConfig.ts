@@ -51,10 +51,14 @@ export const getUserMenuItems = (userRoles: string[]): SidebarMenuItem[] => {
     switch (item.path) {
       case "/users":
       case "/roles":
-        return userRoles.includes("admin") || userRoles.includes("user-manager");
+        return (
+          userRoles.includes("admin") || userRoles.includes("user-manager")
+        );
       case "/policies":
       case "/access-control":
-        return userRoles.includes("admin") || userRoles.includes("policy-manager");
+        return (
+          userRoles.includes("admin") || userRoles.includes("policy-manager")
+        );
       case "/audit":
         return userRoles.includes("admin") || userRoles.includes("auditor");
       default:

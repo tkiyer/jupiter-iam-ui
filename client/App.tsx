@@ -213,16 +213,10 @@ const App = () => (
                   </DashboardLayout>
                 }
               />
-              <Route
-                path="/sidebar-example"
-                element={<SidebarExample />}
-              />
+              <Route path="/sidebar-example" element={<SidebarExample />} />
 
               {/* Settings Routes */}
-              <Route
-                path="/settings"
-                element={<SettingsIndex />}
-              />
+              <Route path="/settings" element={<SettingsIndex />} />
               <Route
                 path="/settings/basic-info"
                 element={

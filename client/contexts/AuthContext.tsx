@@ -1,5 +1,11 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, LoginRequest, LoginResponse } from '@shared/iam';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { User, LoginRequest, LoginResponse } from "@shared/iam";
 
 interface AuthContextType {
   user: User | null;
@@ -14,7 +20,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -29,13 +35,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     // Check for stored auth token on app load
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem("authToken");
     if (token) {
       // Verify token with server (simplified for demo)
       checkAuthStatus();
     } else {
       // For development, provide a fallback demo user if no backend is available
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NODE_ENV === "development") {
         const fallbackUser = {
           id: "demo-user",
           username: "demo",
@@ -46,10 +52,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           roles: ["user"],
           attributes: {
             department: "Demo",
-            clearanceLevel: "medium"
+            clearanceLevel: "medium",
           },
           createdAt: new Date().toISOString(),
-          lastLogin: new Date().toISOString()
+          lastLogin: new Date().toISOString(),
         };
 
         // Auto-login demo user after a brief delay to simulate loading
@@ -65,7 +71,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const checkAuthStatus = async () => {
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem("authToken");
       if (!token) {
         setIsLoading(false);
         return;
@@ -75,12 +81,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-      const response = await fetch('/api/auth/verify', {
+      const response = await fetch("/api/auth/verify", {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-        signal: controller.signal
+        signal: controller.signal,
       });
 
       clearTimeout(timeoutId);
@@ -90,29 +96,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (userData.success && userData.user) {
           setUser(userData.user);
         } else {
-          console.warn('Auth verification response invalid:', userData);
-          localStorage.removeItem('authToken');
+          console.warn("Auth verification response invalid:", userData);
+          localStorage.removeItem("authToken");
         }
       } else {
-        console.warn(`Auth verification failed with status: ${response.status}`);
-        localStorage.removeItem('authToken');
+        console.warn(
+          `Auth verification failed with status: ${response.status}`,
+        );
+        localStorage.removeItem("authToken");
       }
     } catch (error) {
       // Handle different types of errors gracefully
       if (error instanceof Error) {
-        if (error.name === 'AbortError') {
-          console.warn('Auth verification timed out');
-        } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
-          console.warn('Auth verification failed - server unreachable:', error.message);
+        if (error.name === "AbortError") {
+          console.warn("Auth verification timed out");
+        } else if (
+          error.name === "TypeError" &&
+          error.message.includes("fetch")
+        ) {
+          console.warn(
+            "Auth verification failed - server unreachable:",
+            error.message,
+          );
         } else {
-          console.warn('Auth verification failed:', error.message);
+          console.warn("Auth verification failed:", error.message);
         }
       } else {
-        console.warn('Auth verification failed with unknown error:', error);
+        console.warn("Auth verification failed with unknown error:", error);
       }
 
       // Remove invalid token but don't prevent app from loading
-      localStorage.removeItem('authToken');
+      localStorage.removeItem("authToken");
     } finally {
       setIsLoading(false);
     }
@@ -123,20 +137,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(credentials),
-        signal: controller.signal
+        signal: controller.signal,
       });
 
       clearTimeout(timeoutId);
       const data: LoginResponse = await response.json();
 
       if (data.success && data.token && data.user) {
-        localStorage.setItem('authToken', data.token);
+        localStorage.setItem("authToken", data.token);
         setUser(data.user);
         return true;
       }
@@ -144,20 +158,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       return false;
     } catch (error) {
       if (error instanceof Error) {
-        if (error.name === 'AbortError') {
-          console.error('Login timed out');
+        if (error.name === "AbortError") {
+          console.error("Login timed out");
         } else {
-          console.error('Login failed:', error.message);
+          console.error("Login failed:", error.message);
         }
       } else {
-        console.error('Login failed with unknown error:', error);
+        console.error("Login failed with unknown error:", error);
       }
       return false;
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem("authToken");
     setUser(null);
   };
 

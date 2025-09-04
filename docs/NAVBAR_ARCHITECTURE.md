@@ -12,12 +12,14 @@ This document outlines the architectural improvements made to the navbar system,
 ## 🏗️ Architecture Overview
 
 ### Before Refactoring
+
 - Monolithic `ConsoleNavbar` component with hardcoded UI and logic
 - No separation of concerns
 - Difficult to customize or extend
 - Menu items hardcoded within the component
 
 ### After Refactoring
+
 - **Modular component system** with clear separation of concerns
 - **Configuration-driven** navbar that adapts to different contexts
 - **Reusable components** that can be composed in different ways
@@ -48,6 +50,7 @@ client/
 **Purpose**: Centralized configuration for navbar appearance and behavior
 
 **Key Features**:
+
 - Role-based menu configurations
 - Permission filtering for menu items
 - Customizable navbar settings (title, subtitle, search placeholder)
@@ -68,6 +71,7 @@ interface NavbarConfig {
 **Purpose**: Main configurable navbar component that composes all sub-components
 
 **Key Features**:
+
 - Accepts configuration object for customization
 - Composable with different sub-components
 - Support for custom menu items and callbacks
@@ -76,16 +80,19 @@ interface NavbarConfig {
 ### 3. Modular Sub-Components
 
 #### NavbarUserMenu
+
 - Handles user dropdown menu with avatar
 - Supports custom menu items with icons and actions
 - Role-based menu item filtering
 
 #### NavbarSearch
+
 - Reusable search input with customizable placeholder
 - Configurable search callback
 - Consistent styling and behavior
 
 #### NavbarLogo
+
 - Configurable branding area
 - Support for custom icons, titles, and subtitles
 - Customizable navigation link
@@ -93,16 +100,19 @@ interface NavbarConfig {
 ## 🎨 Configuration Examples
 
 ### Basic Console Configuration
+
 ```typescript
 const consoleConfig = getNavbarConfig(user.roles, "console");
 ```
 
 ### Admin Configuration
+
 ```typescript
 const adminConfig = getNavbarConfig(["admin"], "admin");
 ```
 
 ### Custom Menu Items
+
 ```typescript
 const customMenuItems = [
   createNavbarMenuItem("custom", "Custom Action", CustomIcon, {
@@ -119,11 +129,12 @@ The new system includes built-in role-based menu filtering:
 // Automatic filtering based on user roles
 const filteredMenuItems = filterMenuItemsByPermissions(
   config.userMenuItems,
-  user.roles
+  user.roles,
 );
 ```
 
 **Permission Logic**:
+
 - Admin-only items are hidden from regular users
 - Menu items can be dynamically shown/hidden based on permissions
 - Extensible permission system for future requirements
@@ -131,21 +142,25 @@ const filteredMenuItems = filterMenuItemsByPermissions(
 ## 📈 Benefits of the New Architecture
 
 ### 1. **Maintainability**
+
 - Single source of truth for navbar configuration
 - Clear separation of concerns
 - Easier to update and modify
 
 ### 2. **Reusability**
+
 - Components can be used in different contexts
 - Configuration-driven customization
 - Consistent behavior across the application
 
 ### 3. **Extensibility**
+
 - Easy to add new menu items or configurations
 - Support for custom components and callbacks
 - Role-based customization out of the box
 
 ### 4. **Testability**
+
 - Smaller, focused components are easier to test
 - Configuration can be mocked for testing
 - Clear interfaces and dependencies
@@ -153,6 +168,7 @@ const filteredMenuItems = filterMenuItemsByPermissions(
 ## 🔄 Migration Guide
 
 ### For Existing Usage
+
 The `ConsoleNavbar` component maintains backward compatibility:
 
 ```typescript
@@ -160,9 +176,9 @@ The `ConsoleNavbar` component maintains backward compatibility:
 <ConsoleNavbar fixed showMenuButton onMenuClick={handleMenuClick} />
 
 // After (with new options)
-<ConsoleNavbar 
-  fixed 
-  showMenuButton 
+<ConsoleNavbar
+  fixed
+  showMenuButton
   onMenuClick={handleMenuClick}
   context="admin"
   showSearch={false}
@@ -170,6 +186,7 @@ The `ConsoleNavbar` component maintains backward compatibility:
 ```
 
 ### For New Implementations
+
 Use the `ReusableNavbar` directly for maximum flexibility:
 
 ```typescript
@@ -198,16 +215,19 @@ The new architecture enables easy implementation of:
 ## 🧪 Testing Strategy
 
 ### Unit Tests
+
 - Test individual components in isolation
 - Mock configuration objects for consistent testing
 - Test role-based filtering logic
 
 ### Integration Tests
+
 - Test component composition and interaction
 - Verify configuration changes reflect in UI
 - Test responsive behavior
 
 ### E2E Tests
+
 - Test complete navbar workflows
 - Verify navigation and user interactions
 - Test mobile responsive behavior

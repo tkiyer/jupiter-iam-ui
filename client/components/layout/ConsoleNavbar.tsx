@@ -1,7 +1,10 @@
 import React from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import ReusableNavbar from "./navbar/ReusableNavbar";
-import { getNavbarConfig, filterMenuItemsByPermissions } from "@/lib/navbarConfig";
+import {
+  getNavbarConfig,
+  filterMenuItemsByPermissions,
+} from "@/lib/navbarConfig";
 
 interface ConsoleNavbarProps {
   fixed?: boolean;
@@ -34,7 +37,7 @@ const ConsoleNavbar: React.FC<ConsoleNavbarProps> = ({
   // Filter menu items based on user permissions
   const filteredMenuItems = filterMenuItemsByPermissions(
     config.userMenuItems,
-    user?.roles || []
+    user?.roles || [],
   );
 
   const handleSearch = (query: string) => {

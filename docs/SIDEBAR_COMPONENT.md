@@ -30,8 +30,8 @@ A flexible and reusable sidebar component that displays different menu content a
 ### Basic Usage
 
 ```tsx
-import Sidebar, { type SidebarMenuItem } from '@/components/layout/Sidebar';
-import { useSidebar } from '@/hooks/useSidebar';
+import Sidebar, { type SidebarMenuItem } from "@/components/layout/Sidebar";
+import { useSidebar } from "@/hooks/useSidebar";
 
 const menuItems: SidebarMenuItem[] = [
   { path: "/dashboard", label: "Dashboard", icon: BarChart3 },
@@ -41,7 +41,7 @@ const menuItems: SidebarMenuItem[] = [
 
 const MyLayout = () => {
   const { isOpen, close } = useSidebar();
-  
+
   return (
     <Sidebar
       menuItems={menuItems}
@@ -81,7 +81,7 @@ const advancedMenuItems: SidebarMenuItem[] = [
 ### Role-Based Menu Configuration
 
 ```tsx
-import { getUserMenuItems } from '@/lib/menuConfig';
+import { getUserMenuItems } from "@/lib/menuConfig";
 
 const menuItems = getUserMenuItems(user.roles);
 ```
@@ -92,11 +92,11 @@ const menuItems = getUserMenuItems(user.roles);
 
 ```tsx
 interface SidebarMenuItem {
-  path: string;          // Route path
-  label: string;         // Display text
-  icon: LucideIcon;      // Lucide React icon
-  badge?: string;        // Optional badge text
-  disabled?: boolean;    // Whether item is disabled
+  path: string; // Route path
+  label: string; // Display text
+  icon: LucideIcon; // Lucide React icon
+  badge?: string; // Optional badge text
+  disabled?: boolean; // Whether item is disabled
 }
 ```
 
@@ -115,14 +115,14 @@ interface SidebarUser {
 
 ```tsx
 interface SidebarProps {
-  menuItems: SidebarMenuItem[];     // Menu items to display
-  user?: SidebarUser | null;        // User information
-  isOpen: boolean;                  // Whether sidebar is open (mobile)
-  onClose: () => void;              // Close callback (mobile)
-  className?: string;               // Additional CSS classes
-  showUserInfo?: boolean;           // Show user info section
-  header?: React.ReactNode;         // Custom header content
-  footer?: React.ReactNode;         // Custom footer content
+  menuItems: SidebarMenuItem[]; // Menu items to display
+  user?: SidebarUser | null; // User information
+  isOpen: boolean; // Whether sidebar is open (mobile)
+  onClose: () => void; // Close callback (mobile)
+  className?: string; // Additional CSS classes
+  showUserInfo?: boolean; // Show user info section
+  header?: React.ReactNode; // Custom header content
+  footer?: React.ReactNode; // Custom footer content
 }
 ```
 
@@ -132,10 +132,10 @@ interface SidebarProps {
 
 ```tsx
 <DashboardLayout
-  menuItems={customMenuItems}      // Optional custom menu
-  showUserInfo={true}              // Show user info
-  sidebarHeader={<Header />}       // Custom header
-  sidebarFooter={<Footer />}       // Custom footer
+  menuItems={customMenuItems} // Optional custom menu
+  showUserInfo={true} // Show user info
+  sidebarHeader={<Header />} // Custom header
+  sidebarFooter={<Footer />} // Custom footer
 >
   <YourPageContent />
 </DashboardLayout>
@@ -145,9 +145,9 @@ interface SidebarProps {
 
 ```tsx
 <ConsoleLayout
-  showSidebar={true}               // Enable sidebar
-  menuItems={consoleMenuItems}     // Custom menu for console
-  showUserInfo={false}             // Hide user info
+  showSidebar={true} // Enable sidebar
+  menuItems={consoleMenuItems} // Custom menu for console
+  showUserInfo={false} // Hide user info
 >
   <YourConsoleContent />
 </ConsoleLayout>
@@ -226,12 +226,14 @@ See `SidebarExample.tsx` for comprehensive usage examples including:
 ### From Old DashboardLayout
 
 Before:
+
 ```tsx
 // Hard-coded navigation in DashboardLayout
 const navigationItems = [...];
 ```
 
 After:
+
 ```tsx
 // Flexible menu configuration
 import { getUserMenuItems } from '@/lib/menuConfig';
@@ -243,6 +245,7 @@ const menuItems = getUserMenuItems(user.roles);
 ### Adding New Menu Items
 
 1. Define your menu items:
+
 ```tsx
 const myMenuItems: SidebarMenuItem[] = [
   { path: "/my-page", label: "My Page", icon: MyIcon },
@@ -250,6 +253,7 @@ const myMenuItems: SidebarMenuItem[] = [
 ```
 
 2. Use in any layout:
+
 ```tsx
 <Sidebar menuItems={myMenuItems} ... />
 ```

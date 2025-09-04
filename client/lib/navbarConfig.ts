@@ -139,16 +139,17 @@ export const getNavbarConfig = (
   userRoles: string[] = [],
   context: "console" | "dashboard" | "admin" = "console",
 ): NavbarConfig => {
-  const isAdmin = userRoles.includes("admin") || userRoles.includes("super-admin");
-  
+  const isAdmin =
+    userRoles.includes("admin") || userRoles.includes("super-admin");
+
   if (isAdmin && context === "admin") {
     return adminNavbarConfig;
   }
-  
+
   if (context === "console") {
     return consoleNavbarConfig;
   }
-  
+
   return defaultNavbarConfig;
 };
 
