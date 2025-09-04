@@ -120,14 +120,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (credentials: LoginRequest): Promise<boolean> => {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(credentials),
+        signal: controller.signal
       });
 
+      clearTimeout(timeoutId);
       const data: LoginResponse = await response.json();
 
       if (data.success && data.token && data.user) {
@@ -135,10 +140,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(data.user);
         return true;
       }
-      
+
       return false;
     } catch (error) {
-      console.error('Login failed:', error);
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          console.error('Login timed out');
+        } else {
+          console.error('Login failed:', error.message);
+        }
+      } else {
+        console.error('Login failed with unknown error:', error);
+      }
       return false;
     }
   };
