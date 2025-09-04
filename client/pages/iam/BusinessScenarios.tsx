@@ -10,26 +10,26 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "../components/ui/tabs";
-import { Badge } from "../components/ui/badge";
-import { Alert, AlertDescription } from "../components/ui/alert";
-import { Separator } from "../components/ui/separator";
+} from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Separator } from "@/components/ui/separator";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../components/ui/select";
+} from "@/components/ui/select";
 import {
   Building2,
   CreditCard,
@@ -47,10 +47,10 @@ import {
   Settings,
   GitBranch,
 } from "lucide-react";
-import BusinessAccessDashboard from "../components/business/BusinessAccessDashboard";
-import BusinessPolicyFlow from "../components/business/BusinessPolicyFlow";
-import BusinessScenarioSimulator from "../components/business/BusinessScenarioSimulator";
-import BusinessWorkflowSystem from "../components/business/BusinessWorkflowSystem";
+import BusinessAccessDashboard from "@/components/business/BusinessAccessDashboard";
+import BusinessPolicyFlow from "@/components/business/BusinessPolicyFlow";
+import BusinessScenarioSimulator from "@/components/business/BusinessScenarioSimulator";
+import BusinessWorkflowSystem from "@/components/business/BusinessWorkflowSystem";
 
 interface BusinessScenario {
   id: string;
@@ -205,7 +205,7 @@ const businessScenarios: BusinessScenario[] = [
       "所有部署必须可回滚",
     ],
     exampleCase: {
-      user: "陈工程师 (DevOps工程师)",
+      user: "陈���程师 (DevOps工程师)",
       action: "生产环境部署",
       context: {
         deploymentWindow: true,
