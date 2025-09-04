@@ -3,9 +3,10 @@ import "./global.css";
 // Import ResizeObserver fix FIRST to prevent Radix UI errors
 import "@/utils/resizeObserver";
 
-// Import accessibility validation in development
+// Import accessibility validation and debug utilities in development
 if (process.env.NODE_ENV === "development") {
   import("@/utils/accessibility-check");
+  import("@/utils/debugAuth");
 }
 
 import React from "react";
