@@ -58,7 +58,16 @@ const CHANNELS: ChannelMeta[] = [
 ];
 
 // Config types per channel (simplified demo)
-interface EmailConfig { address: string; senderName: string; }
+interface EmailConfig {
+  fromAddress: string;
+  senderName: string;
+  smtpHost: string;
+  smtpPort: string;
+  encryption: "none" | "ssl_tls" | "starttls";
+  username: string;
+  password: string;
+  authRequired: boolean;
+}
 interface SmsConfig { phone: string; provider: string; }
 interface InappConfig { sound: boolean; desktop: boolean; }
 interface FeishuConfig { webhook: string; secret?: string; }
@@ -89,7 +98,16 @@ const Notifications: React.FC = () => {
 
   const [config, setConfig] = useState<ChannelConfig>({
     inapp: { sound: true, desktop: true },
-    email: { address: "admin@example.com", senderName: "IAM Console" },
+    email: {
+      fromAddress: "no-reply@example.com",
+      senderName: "IAM Console",
+      smtpHost: "smtp.example.com",
+      smtpPort: "587",
+      encryption: "starttls",
+      username: "",
+      password: "",
+      authRequired: true,
+    },
     sms: { phone: "+1 (555) 123-4567", provider: "twilio" },
     feishu: { webhook: "" },
     wecom: { webhook: "" },
@@ -111,7 +129,7 @@ const Notifications: React.FC = () => {
           <CardDescription>Configure delivery channels and defaults</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4">
             {CHANNELS.map(({ id, name, Logo, color, bg }) => (
               <div key={id} className={cn("rounded-lg border p-4", enabled[id] ? "ring-2 ring-blue-500" : "")}> 
                 <div className="flex items-center justify-between">
@@ -298,12 +316,48 @@ function ChannelConfigForm({
     return (
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label>Notification Email</Label>
-          <Input value={cfg.address} onChange={(e) => onChange((p) => ({ ...p, email: { ...p.email, address: e.target.value } }))} placeholder="admin@example.com" />
+          <Label>From Address</Label>
+          <Input value={cfg.fromAddress} onChange={(e) => onChange((p) => ({ ...p, email: { ...p.email, fromAddress: e.target.value } }))} placeholder="no-reply@example.com" />
         </div>
         <div className="space-y-2">
           <Label>Sender Name</Label>
           <Input value={cfg.senderName} onChange={(e) => onChange((p) => ({ ...p, email: { ...p.email, senderName: e.target.value } }))} placeholder="IAM Console" />
+        </div>
+        <div className="space-y-2">
+          <Label>SMTP Host</Label>
+          <Input value={cfg.smtpHost} onChange={(e) => onChange((p) => ({ ...p, email: { ...p.email, smtpHost: e.target.value } }))} placeholder="smtp.example.com" />
+        </div>
+        <div className="space-y-2">
+          <Label>SMTP Port</Label>
+          <Input value={cfg.smtpPort} onChange={(e) => onChange((p) => ({ ...p, email: { ...p.email, smtpPort: e.target.value } }))} placeholder="587" />
+        </div>
+        <div className="space-y-2">
+          <Label>Encryption</Label>
+          <Select value={cfg.encryption} onValueChange={(v: "none" | "ssl_tls" | "starttls") => onChange((p) => ({ ...p, email: { ...p.email, encryption: v } }))}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">None</SelectItem>
+              <SelectItem value="ssl_tls">SSL/TLS</SelectItem>
+              <SelectItem value="starttls">STARTTLS</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex items-center justify-between col-span-2">
+          <div className="space-y-0.5">
+            <Label>Authentication required</Label>
+            <p className="text-sm text-gray-500">Use username/password for SMTP</p>
+          </div>
+          <Switch checked={cfg.authRequired} onCheckedChange={(v) => onChange((p) => ({ ...p, email: { ...p.email, authRequired: v } }))} />
+        </div>
+        <div className="space-y-2">
+          <Label>Username</Label>
+          <Input disabled={!cfg.authRequired} value={cfg.username} onChange={(e) => onChange((p) => ({ ...p, email: { ...p.email, username: e.target.value } }))} placeholder="your-email@example.com" />
+        </div>
+        <div className="space-y-2">
+          <Label>Password</Label>
+          <Input type="password" disabled={!cfg.authRequired} value={cfg.password} onChange={(e) => onChange((p) => ({ ...p, email: { ...p.email, password: e.target.value } }))} placeholder="••••••••" />
         </div>
       </div>
     );
