@@ -1,31 +1,39 @@
 import React, { ReactNode } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
-import { cn } from "@/lib/utils";
 import ConsoleNavbar from "@/components/layout/ConsoleNavbar";
 import SiteFooter from "@/components/layout/SiteFooter";
 import Sidebar, { type SidebarMenuItem } from "@/components/layout/Sidebar";
 import { useSidebar } from "@/hooks/useSidebar";
-import { getUserMenuItems } from "@/lib/menuConfig";
 
-interface DashboardLayoutProps {
+interface FlexibleLayoutProps {
   children: ReactNode;
-  /** Custom menu items to override default navigation */
-  menuItems?: SidebarMenuItem[];
+  /** Menu items for the sidebar */
+  menuItems: SidebarMenuItem[];
+  /** Whether to show the sidebar at all */
+  showSidebar?: boolean;
   /** Whether to show user info in sidebar */
   showUserInfo?: boolean;
   /** Custom sidebar header */
   sidebarHeader?: React.ReactNode;
   /** Custom sidebar footer */
   sidebarFooter?: React.ReactNode;
+  /** Whether the navbar is fixed */
+  fixedNavbar?: boolean;
 }
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({
+/**
+ * A flexible layout component that can be configured with different sidebar options
+ * This demonstrates the reusability of the Sidebar component
+ */
+const FlexibleLayout: React.FC<FlexibleLayoutProps> = ({
   children,
   menuItems,
+  showSidebar = true,
   showUserInfo = true,
   sidebarHeader,
   sidebarFooter,
+  fixedNavbar = true,
 }) => {
   const { user, isAuthenticated } = useAuth();
   const {
@@ -38,38 +46,44 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     return <Navigate to="/login" replace />;
   }
 
-  // Use custom menu items or default based on user roles
-  const navigationItems = menuItems || getUserMenuItems(user?.roles || []);
-
   return (
     <div className="h-screen overflow-hidden bg-gray-50">
       {/* Fixed top navbar */}
-      <ConsoleNavbar fixed showMenuButton onMenuClick={openSidebar} />
+      <ConsoleNavbar
+        fixed={fixedNavbar}
+        showMenuButton={showSidebar}
+        onMenuClick={openSidebar}
+      />
 
       {/* Mobile sidebar backdrop */}
-      {sidebarOpen && (
+      {showSidebar && sidebarOpen && (
         <div
           className="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"
           onClick={closeSidebar}
         />
       )}
 
-      {/* Body area below navbar */}
-      <div className="pt-16 flex h-[100vh] w-full overflow-hidden">
-        {/* Reusable Sidebar */}
-        <Sidebar
-          menuItems={navigationItems}
-          user={user}
-          isOpen={sidebarOpen}
-          onClose={closeSidebar}
-          showUserInfo={showUserInfo}
-          header={sidebarHeader}
-          footer={sidebarFooter}
-        />
+      {/* Body area */}
+      <div
+        className={`${fixedNavbar ? "pt-16" : ""} flex h-[100vh] w-full overflow-hidden`}
+      >
+        {/* Conditional Sidebar */}
+        {showSidebar && (
+          <Sidebar
+            menuItems={menuItems}
+            user={user}
+            isOpen={sidebarOpen}
+            onClose={closeSidebar}
+            showUserInfo={showUserInfo}
+            header={sidebarHeader}
+            footer={sidebarFooter}
+          />
+        )}
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col min-h-0 lg:ml-64">
-          {/* Page Content */}
+        <div
+          className={`flex-1 flex flex-col min-h-0 ${showSidebar ? "lg:ml-64" : ""}`}
+        >
           <main className="flex-1 overflow-y-auto bg-gray-50 p-6 min-h-0 flex flex-col">
             <div className="flex-1">{children}</div>
             <SiteFooter />
@@ -80,4 +94,4 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   );
 };
 
-export default DashboardLayout;
+export default FlexibleLayout;

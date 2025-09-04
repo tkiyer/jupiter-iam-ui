@@ -3,9 +3,10 @@ import "./global.css";
 // Import ResizeObserver fix FIRST to prevent Radix UI errors
 import "@/utils/resizeObserver";
 
-// Import accessibility validation in development
+// Import accessibility validation and debug utilities in development
 if (process.env.NODE_ENV === "development") {
   import("@/utils/accessibility-check");
+  import("@/utils/debugAuth");
 }
 
 import React from "react";
@@ -18,6 +19,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import ConsoleLayout from "@/components/layout/ConsoleLayout";
+import SettingsAwareDashboardLayout from "@/components/layout/SettingsAwareDashboardLayout";
 import RootRedirect from "@/components/RootRedirect";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -30,6 +32,17 @@ import AccessControl from "./pages/AccessControl";
 import BusinessScenarios from "./pages/BusinessScenarios";
 import Audit from "./pages/Audit";
 import NotFound from "./pages/NotFound";
+import SidebarExample from "./components/layout/SidebarExample";
+import Profile from "./pages/Profile";
+
+// Settings Pages
+import BasicInformation from "./pages/settings/BasicInformation";
+import Appearance from "./pages/settings/Appearance";
+import Notifications from "./pages/settings/Notifications";
+import SystemIntegration from "./pages/settings/SystemIntegration";
+import SystemParameters from "./pages/settings/SystemParameters";
+import LanguageTimezone from "./pages/settings/LanguageTimezone";
+import SettingsIndex from "./pages/settings/index";
 
 // Error Boundary Component for catching React errors
 class ErrorBoundary extends React.Component<
@@ -121,6 +134,14 @@ const App = () => (
               <Route path="/" element={<RootRedirect />} />
               <Route path="/login" element={<Login />} />
               <Route
+                path="/profile"
+                element={
+                  <DashboardLayout>
+                    <Profile />
+                  </DashboardLayout>
+                }
+              />
+              <Route
                 path="/console"
                 element={
                   <ConsoleLayout>
@@ -192,6 +213,63 @@ const App = () => (
                   </DashboardLayout>
                 }
               />
+              <Route path="/sidebar-example" element={<SidebarExample />} />
+
+              {/* Settings Routes */}
+              <Route path="/settings" element={<SettingsIndex />} />
+              <Route
+                path="/settings/basic-info"
+                element={
+                  <SettingsAwareDashboardLayout>
+                    <BasicInformation />
+                  </SettingsAwareDashboardLayout>
+                }
+              />
+              <Route
+                path="/settings/appearance"
+                element={
+                  <SettingsAwareDashboardLayout>
+                    <Appearance />
+                  </SettingsAwareDashboardLayout>
+                }
+              />
+              <Route
+                path="/settings/notifications"
+                element={
+                  <SettingsAwareDashboardLayout>
+                    <Notifications />
+                  </SettingsAwareDashboardLayout>
+                }
+              />
+              <Route
+                path="/settings/system-integration"
+                element={
+                  <SettingsAwareDashboardLayout>
+                    <SystemIntegration />
+                  </SettingsAwareDashboardLayout>
+                }
+              />
+              <Route
+                path="/settings/system-parameters"
+                element={
+                  <SettingsAwareDashboardLayout>
+                    <SystemParameters />
+                  </SettingsAwareDashboardLayout>
+                }
+              />
+              <Route
+                path="/settings/language-timezone"
+                element={
+                  <SettingsAwareDashboardLayout>
+                    <LanguageTimezone />
+                  </SettingsAwareDashboardLayout>
+                }
+              />
+
+              {/* Backwards compatibility redirects for old console/settings URLs */}
+              <Route path="/console/settings" element={<SettingsIndex />} />
+              <Route path="/console/settings/*" element={<SettingsIndex />} />
+
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
