@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { NotificationsDropdown } from "@/components/ui/notifications-dropdown";
 import { Settings, Menu } from "lucide-react";
@@ -32,6 +33,10 @@ interface ReusableNavbarProps {
   className?: string;
   /** Custom navbar menu items (overrides config) */
   customMenuItems?: NavbarMenuItem[];
+  /** Custom settings click handler (overrides default routing) */
+  onSettingsClick?: () => void;
+  /** Settings route path (default: /console/settings) */
+  settingsPath?: string;
 }
 
 /**
@@ -51,6 +56,8 @@ const ReusableNavbar: React.FC<ReusableNavbarProps> = ({
   showNotifications = true,
   className = "",
   customMenuItems,
+  onSettingsClick,
+  settingsPath = "/console/settings",
 }) => {
   const menuItems = customMenuItems || config.userMenuItems;
 
@@ -93,9 +100,23 @@ const ReusableNavbar: React.FC<ReusableNavbarProps> = ({
 
             {/* Settings Button */}
             {showSettings && (
-              <Button variant="ghost" size="sm" className="p-2">
-                <Settings className="h-5 w-5 text-gray-600" />
-              </Button>
+              onSettingsClick ? (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="p-2"
+                  onClick={onSettingsClick}
+                  title="Console Settings"
+                >
+                  <Settings className="h-5 w-5 text-gray-600" />
+                </Button>
+              ) : (
+                <Button variant="ghost" size="sm" className="p-2" asChild>
+                  <Link to={settingsPath} title="Console Settings">
+                    <Settings className="h-5 w-5 text-gray-600" />
+                  </Link>
+                </Button>
+              )
             )}
 
             {/* Notifications */}
