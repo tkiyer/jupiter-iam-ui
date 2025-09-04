@@ -19,6 +19,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import ConsoleLayout from "@/components/layout/ConsoleLayout";
+import SettingsAwareDashboardLayout from "@/components/layout/SettingsAwareDashboardLayout";
 import RootRedirect from "@/components/RootRedirect";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -225,51 +226,55 @@ const App = () => (
               <Route
                 path="/settings/basic-info"
                 element={
-                  <DashboardLayout>
+                  <SettingsAwareDashboardLayout>
                     <BasicInformation />
-                  </DashboardLayout>
+                  </SettingsAwareDashboardLayout>
                 }
               />
               <Route
                 path="/settings/appearance"
                 element={
-                  <DashboardLayout>
+                  <SettingsAwareDashboardLayout>
                     <Appearance />
-                  </DashboardLayout>
+                  </SettingsAwareDashboardLayout>
                 }
               />
               <Route
                 path="/settings/notifications"
                 element={
-                  <DashboardLayout>
+                  <SettingsAwareDashboardLayout>
                     <Notifications />
-                  </DashboardLayout>
+                  </SettingsAwareDashboardLayout>
                 }
               />
               <Route
                 path="/settings/system-integration"
                 element={
-                  <DashboardLayout>
+                  <SettingsAwareDashboardLayout>
                     <SystemIntegration />
-                  </DashboardLayout>
+                  </SettingsAwareDashboardLayout>
                 }
               />
               <Route
                 path="/settings/system-parameters"
                 element={
-                  <DashboardLayout>
+                  <SettingsAwareDashboardLayout>
                     <SystemParameters />
-                  </DashboardLayout>
+                  </SettingsAwareDashboardLayout>
                 }
               />
               <Route
                 path="/settings/language-timezone"
                 element={
-                  <DashboardLayout>
+                  <SettingsAwareDashboardLayout>
                     <LanguageTimezone />
-                  </DashboardLayout>
+                  </SettingsAwareDashboardLayout>
                 }
               />
+
+              {/* Backwards compatibility redirects for old console/settings URLs */}
+              <Route path="/console/settings" element={<SettingsIndex />} />
+              <Route path="/console/settings/*" element={<SettingsIndex />} />
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
