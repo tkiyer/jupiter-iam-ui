@@ -32,6 +32,15 @@ import Audit from "./pages/Audit";
 import NotFound from "./pages/NotFound";
 import SidebarExample from "./components/layout/SidebarExample";
 
+// Console Settings Pages
+import ConsoleSettingsLayout from "./components/layout/ConsoleSettingsLayout";
+import BasicInformation from "./pages/console-settings/BasicInformation";
+import Appearance from "./pages/console-settings/Appearance";
+import Notifications from "./pages/console-settings/Notifications";
+import SystemIntegration from "./pages/console-settings/SystemIntegration";
+import SystemParameters from "./pages/console-settings/SystemParameters";
+import LanguageTimezone from "./pages/console-settings/LanguageTimezone";
+
 // Error Boundary Component for catching React errors
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -197,6 +206,65 @@ const App = () => (
                 path="/sidebar-example"
                 element={<SidebarExample />}
               />
+
+              {/* Console Settings Routes */}
+              <Route
+                path="/console/settings"
+                element={
+                  <ConsoleSettingsLayout>
+                    <BasicInformation />
+                  </ConsoleSettingsLayout>
+                }
+              />
+              <Route
+                path="/console/settings/basic-info"
+                element={
+                  <ConsoleSettingsLayout>
+                    <BasicInformation />
+                  </ConsoleSettingsLayout>
+                }
+              />
+              <Route
+                path="/console/settings/appearance"
+                element={
+                  <ConsoleSettingsLayout>
+                    <Appearance />
+                  </ConsoleSettingsLayout>
+                }
+              />
+              <Route
+                path="/console/settings/notifications"
+                element={
+                  <ConsoleSettingsLayout>
+                    <Notifications />
+                  </ConsoleSettingsLayout>
+                }
+              />
+              <Route
+                path="/console/settings/system-integration"
+                element={
+                  <ConsoleSettingsLayout>
+                    <SystemIntegration />
+                  </ConsoleSettingsLayout>
+                }
+              />
+              <Route
+                path="/console/settings/system-parameters"
+                element={
+                  <ConsoleSettingsLayout>
+                    <SystemParameters />
+                  </ConsoleSettingsLayout>
+                }
+              />
+              <Route
+                path="/console/settings/language-timezone"
+                element={
+                  <ConsoleSettingsLayout>
+                    <LanguageTimezone />
+                  </ConsoleSettingsLayout>
+                }
+              />
+
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
