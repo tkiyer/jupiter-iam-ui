@@ -35,7 +35,7 @@ interface ReusableNavbarProps {
   customMenuItems?: NavbarMenuItem[];
   /** Custom settings click handler (overrides default routing) */
   onSettingsClick?: () => void;
-  /** Settings route path (default: /console/settings) */
+  /** Settings route path (default: /settings) */
   settingsPath?: string;
 }
 
@@ -57,7 +57,7 @@ const ReusableNavbar: React.FC<ReusableNavbarProps> = ({
   className = "",
   customMenuItems,
   onSettingsClick,
-  settingsPath = "/console/settings",
+  settingsPath = "/settings",
 }) => {
   const menuItems = customMenuItems || config.userMenuItems;
 

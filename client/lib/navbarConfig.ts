@@ -38,10 +38,10 @@ export const defaultNavbarConfig: NavbarConfig = {
       href: "/dashboard",
     },
     {
-      id: "console-settings",
-      label: "Console Setting",
+      id: "settings",
+      label: "Settings",
       icon: Settings,
-      href: "/console/settings",
+      href: "/settings",
     },
     {
       id: "separator-1",
@@ -75,10 +75,10 @@ export const consoleNavbarConfig: NavbarConfig = {
       href: "/dashboard",
     },
     {
-      id: "console-settings",
-      label: "Console Setting",
+      id: "settings",
+      label: "Settings",
       icon: Settings,
-      href: "/console/settings",
+      href: "/settings",
     },
     {
       id: "separator-1",
