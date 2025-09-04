@@ -30,6 +30,7 @@ import AccessControl from "./pages/AccessControl";
 import BusinessScenarios from "./pages/BusinessScenarios";
 import Audit from "./pages/Audit";
 import NotFound from "./pages/NotFound";
+import SidebarExample from "./components/layout/SidebarExample";
 
 // Error Boundary Component for catching React errors
 class ErrorBoundary extends React.Component<
@@ -191,6 +192,10 @@ const App = () => (
                     <Audit />
                   </DashboardLayout>
                 }
+              />
+              <Route
+                path="/sidebar-example"
+                element={<SidebarExample />}
               />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
