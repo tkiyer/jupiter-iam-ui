@@ -1,12 +1,4 @@
-import {
-  Info,
-  Palette,
-  Bell,
-  Plug,
-  Settings,
-  Globe,
-  LucideIcon,
-} from "lucide-react";
+import { Palette, Bell, Plug, Settings, Globe, LucideIcon } from "lucide-react";
 import type { SidebarMenuItem } from "@/components/layout/Sidebar";
 
 /**
@@ -24,13 +16,6 @@ export interface SettingsMenuItem {
 
 // Settings Navigation Items
 export const settingsMenuItems: SettingsMenuItem[] = [
-  {
-    id: "basic-info",
-    path: "/settings/basic-info",
-    label: "Basic Information",
-    icon: Info,
-    description: "Manage basic console and user information",
-  },
   {
     id: "appearance",
     path: "/settings/appearance",

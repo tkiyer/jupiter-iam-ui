@@ -36,7 +36,6 @@ import SidebarExample from "./components/layout/SidebarExample";
 import Profile from "./pages/Profile";
 
 // Settings Pages
-import BasicInformation from "./pages/settings/BasicInformation";
 import Appearance from "./pages/settings/Appearance";
 import Notifications from "./pages/settings/Notifications";
 import SystemIntegration from "./pages/settings/SystemIntegration";
@@ -217,14 +216,6 @@ const App = () => (
 
               {/* Settings Routes */}
               <Route path="/settings" element={<SettingsIndex />} />
-              <Route
-                path="/settings/basic-info"
-                element={
-                  <SettingsAwareDashboardLayout>
-                    <BasicInformation />
-                  </SettingsAwareDashboardLayout>
-                }
-              />
               <Route
                 path="/settings/appearance"
                 element={
