@@ -31,6 +31,7 @@ import BusinessScenarios from "./pages/BusinessScenarios";
 import Audit from "./pages/Audit";
 import NotFound from "./pages/NotFound";
 import SidebarExample from "./components/layout/SidebarExample";
+import Profile from "./pages/Profile";
 
 // Console Settings Pages
 import ConsoleSettingsLayout from "./components/layout/ConsoleSettingsLayout";
@@ -131,6 +132,14 @@ const App = () => (
             <Routes>
               <Route path="/" element={<RootRedirect />} />
               <Route path="/login" element={<Login />} />
+              <Route
+                path="/profile"
+                element={
+                  <DashboardLayout>
+                    <Profile />
+                  </DashboardLayout>
+                }
+              />
               <Route
                 path="/console"
                 element={
