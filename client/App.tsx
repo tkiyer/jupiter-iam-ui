@@ -40,6 +40,7 @@ import Notifications from "./pages/console-settings/Notifications";
 import SystemIntegration from "./pages/console-settings/SystemIntegration";
 import SystemParameters from "./pages/console-settings/SystemParameters";
 import LanguageTimezone from "./pages/console-settings/LanguageTimezone";
+import ConsoleSettingsIndex from "./pages/console-settings/index";
 
 // Error Boundary Component for catching React errors
 class ErrorBoundary extends React.Component<
@@ -210,11 +211,7 @@ const App = () => (
               {/* Console Settings Routes */}
               <Route
                 path="/console/settings"
-                element={
-                  <ConsoleSettingsLayout>
-                    <BasicInformation />
-                  </ConsoleSettingsLayout>
-                }
+                element={<ConsoleSettingsIndex />}
               />
               <Route
                 path="/console/settings/basic-info"
