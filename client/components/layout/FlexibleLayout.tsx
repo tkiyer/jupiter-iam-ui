@@ -18,8 +18,6 @@ interface FlexibleLayoutProps {
   sidebarHeader?: React.ReactNode;
   /** Custom sidebar footer */
   sidebarFooter?: React.ReactNode;
-  /** Custom navbar content */
-  navbarContent?: React.ReactNode;
   /** Whether the navbar is fixed */
   fixedNavbar?: boolean;
 }
@@ -35,7 +33,6 @@ const FlexibleLayout: React.FC<FlexibleLayoutProps> = ({
   showUserInfo = true,
   sidebarHeader,
   sidebarFooter,
-  navbarContent,
   fixedNavbar = true,
 }) => {
   const { user, isAuthenticated } = useAuth();
