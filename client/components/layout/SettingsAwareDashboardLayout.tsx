@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import DashboardLayout from "./DashboardLayout";
-import { getSettingByPath } from "@/lib/settingsConfig";
+import { getSettingByPath, getSettingsSidebarItems } from "@/lib/settingsConfig";
 
 interface SettingsAwareDashboardLayoutProps {
   children: ReactNode;
