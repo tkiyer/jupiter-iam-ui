@@ -16,7 +16,7 @@ const SettingsAwareDashboardLayout: React.FC<SettingsAwareDashboardLayoutProps> 
 }) => {
   const location = useLocation();
   const isSettingsPage = location.pathname.startsWith("/settings");
-  
+
   if (!isSettingsPage) {
     return <DashboardLayout>{children}</DashboardLayout>;
   }
@@ -26,8 +26,11 @@ const SettingsAwareDashboardLayout: React.FC<SettingsAwareDashboardLayoutProps> 
   const pageTitle = currentSetting?.label || "Settings";
   const pageDescription = currentSetting?.description || "Manage your console settings and preferences";
 
+  // Get settings-specific sidebar menu items
+  const settingsMenuItems = getSettingsSidebarItems();
+
   return (
-    <DashboardLayout>
+    <DashboardLayout menuItems={settingsMenuItems}>
       {/* Settings Page Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4 mb-6 -mx-6 -mt-6">
         <div className="flex items-center justify-between">
@@ -37,7 +40,7 @@ const SettingsAwareDashboardLayout: React.FC<SettingsAwareDashboardLayoutProps> 
           </div>
         </div>
       </div>
-      
+
       {/* Settings Page Content */}
       <div className="max-w-4xl mx-auto w-full">
         {children}
