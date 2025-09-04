@@ -36,18 +36,18 @@ const SettingsAwareDashboardLayout: React.FC<
 
   return (
     <DashboardLayout menuItems={settingsMenuItems}>
-      {/* Settings Page Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4 mb-6 -mx-6 -mt-6">
+      {/* Settings Page Header (match IAM pages) */}
+      <div className="mb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{pageTitle}</h1>
-            <p className="text-sm text-gray-600 mt-1">{pageDescription}</p>
+            <h1 className="text-3xl font-bold text-gray-900">{pageTitle}</h1>
+            <p className="text-gray-600 mt-1">{pageDescription}</p>
           </div>
         </div>
       </div>
 
-      {/* Settings Page Content */}
-      <div className="max-w-4xl mx-auto w-full">{children}</div>
+      {/* Settings Page Content (full width like IAM) */}
+      <div className="w-full">{children}</div>
     </DashboardLayout>
   );
 };
