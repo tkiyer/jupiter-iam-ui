@@ -144,7 +144,7 @@ const ConsoleNavbar: React.FC<ConsoleNavbarProps> = ({
                 <DropdownMenuItem asChild>
                   <Link to="/dashboard">
                     <Home className="mr-2 h-4 w-4" />
-                    Dashboard View
+                    IAM Center
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
