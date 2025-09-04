@@ -1,11 +1,23 @@
 import React from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -14,7 +26,7 @@ import {
   Database,
   Network,
   Cpu,
-  AlertTriangle
+  AlertTriangle,
 } from "lucide-react";
 
 const SystemParameters: React.FC = () => {
@@ -65,7 +77,9 @@ const SystemParameters: React.FC = () => {
               </div>
 
               <div className="space-y-3">
-                <Label>Maximum Login Attempts: {maxLoginAttempts[0]} attempts</Label>
+                <Label>
+                  Maximum Login Attempts: {maxLoginAttempts[0]} attempts
+                </Label>
                 <Slider
                   value={maxLoginAttempts}
                   onValueChange={setMaxLoginAttempts}
@@ -82,7 +96,9 @@ const SystemParameters: React.FC = () => {
               </div>
 
               <div className="space-y-3">
-                <Label>Password Complexity Level: {passwordComplexity[0]}</Label>
+                <Label>
+                  Password Complexity Level: {passwordComplexity[0]}
+                </Label>
                 <Slider
                   value={passwordComplexity}
                   onValueChange={setPasswordComplexity}
@@ -102,7 +118,9 @@ const SystemParameters: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="lockoutDuration">Account Lockout Duration</Label>
+                  <Label htmlFor="lockoutDuration">
+                    Account Lockout Duration
+                  </Label>
                   <Select defaultValue="15">
                     <SelectTrigger>
                       <SelectValue placeholder="Select duration" />
@@ -137,7 +155,9 @@ const SystemParameters: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Two-Factor Authentication Required</Label>
-                  <p className="text-sm text-gray-500">Require 2FA for all user accounts</p>
+                  <p className="text-sm text-gray-500">
+                    Require 2FA for all user accounts
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -145,7 +165,9 @@ const SystemParameters: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>IP Whitelisting</Label>
-                  <p className="text-sm text-gray-500">Restrict access to specific IP addresses</p>
+                  <p className="text-sm text-gray-500">
+                    Restrict access to specific IP addresses
+                  </p>
                 </div>
                 <Switch />
               </div>
@@ -168,7 +190,9 @@ const SystemParameters: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Concurrent Session Limit</Label>
-                  <p className="text-sm text-gray-500">Maximum concurrent sessions per user</p>
+                  <p className="text-sm text-gray-500">
+                    Maximum concurrent sessions per user
+                  </p>
                 </div>
                 <div className="w-24">
                   <Input type="number" defaultValue="3" min="1" max="10" />
@@ -178,7 +202,9 @@ const SystemParameters: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Session Refresh on Activity</Label>
-                  <p className="text-sm text-gray-500">Automatically refresh sessions on user activity</p>
+                  <p className="text-sm text-gray-500">
+                    Automatically refresh sessions on user activity
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -186,7 +212,9 @@ const SystemParameters: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Remember Me Option</Label>
-                  <p className="text-sm text-gray-500">Allow users to stay logged in longer</p>
+                  <p className="text-sm text-gray-500">
+                    Allow users to stay logged in longer
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -264,7 +292,9 @@ const SystemParameters: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Database Encryption at Rest</Label>
-                  <p className="text-sm text-gray-500">Encrypt stored data in the database</p>
+                  <p className="text-sm text-gray-500">
+                    Encrypt stored data in the database
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -272,7 +302,9 @@ const SystemParameters: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Auto-Backup</Label>
-                  <p className="text-sm text-gray-500">Automatically backup database daily</p>
+                  <p className="text-sm text-gray-500">
+                    Automatically backup database daily
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -354,7 +386,9 @@ const SystemParameters: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Enable Performance Monitoring</Label>
-                  <p className="text-sm text-gray-500">Monitor system performance metrics</p>
+                  <p className="text-sm text-gray-500">
+                    Monitor system performance metrics
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -362,7 +396,9 @@ const SystemParameters: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Auto-Scaling</Label>
-                  <p className="text-sm text-gray-500">Automatically scale resources based on load</p>
+                  <p className="text-sm text-gray-500">
+                    Automatically scale resources based on load
+                  </p>
                 </div>
                 <Switch />
               </div>
@@ -384,7 +420,9 @@ const SystemParameters: React.FC = () => {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="requestTimeout">Request Timeout (seconds)</Label>
+                  <Label htmlFor="requestTimeout">
+                    Request Timeout (seconds)
+                  </Label>
                   <Input
                     id="requestTimeout"
                     type="number"
@@ -417,7 +455,9 @@ const SystemParameters: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Rate Limiting</Label>
-                  <p className="text-sm text-gray-500">Enable API rate limiting</p>
+                  <p className="text-sm text-gray-500">
+                    Enable API rate limiting
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -454,7 +494,9 @@ const SystemParameters: React.FC = () => {
                   <div>
                     <h4 className="font-medium text-yellow-800">Warning</h4>
                     <p className="text-sm text-yellow-700">
-                      Modifying these parameters can affect system stability. Please ensure you understand the impact before making changes.
+                      Modifying these parameters can affect system stability.
+                      Please ensure you understand the impact before making
+                      changes.
                     </p>
                   </div>
                 </div>
@@ -476,7 +518,9 @@ const SystemParameters: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="customConfig">Custom Configuration (JSON)</Label>
+                <Label htmlFor="customConfig">
+                  Custom Configuration (JSON)
+                </Label>
                 <Textarea
                   id="customConfig"
                   placeholder="Enter custom configuration as JSON..."
@@ -485,8 +529,12 @@ const SystemParameters: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm">Validate Configuration</Button>
-                <Button variant="outline" size="sm">Load Defaults</Button>
+                <Button variant="outline" size="sm">
+                  Validate Configuration
+                </Button>
+                <Button variant="outline" size="sm">
+                  Load Defaults
+                </Button>
               </div>
             </CardContent>
           </Card>

@@ -1,9 +1,21 @@
 import React from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -39,8 +51,12 @@ const LanguageTimezone: React.FC = () => {
                     <SelectValue placeholder="Select language" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="en-US">English (United States)</SelectItem>
-                    <SelectItem value="en-GB">English (United Kingdom)</SelectItem>
+                    <SelectItem value="en-US">
+                      English (United States)
+                    </SelectItem>
+                    <SelectItem value="en-GB">
+                      English (United Kingdom)
+                    </SelectItem>
                     <SelectItem value="es-ES">Español (España)</SelectItem>
                     <SelectItem value="es-MX">Español (México)</SelectItem>
                     <SelectItem value="fr-FR">Français (France)</SelectItem>
@@ -83,14 +99,17 @@ const LanguageTimezone: React.FC = () => {
                   </SelectContent>
                 </Select>
                 <p className="text-sm text-gray-500">
-                  Affects number formatting, currency display, and address formats
+                  Affects number formatting, currency display, and address
+                  formats
                 </p>
               </div>
 
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Auto-detect Language</Label>
-                  <p className="text-sm text-gray-500">Automatically detect language from browser settings</p>
+                  <p className="text-sm text-gray-500">
+                    Automatically detect language from browser settings
+                  </p>
                 </div>
                 <Switch />
               </div>
@@ -98,7 +117,9 @@ const LanguageTimezone: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Right-to-Left Text Support</Label>
-                  <p className="text-sm text-gray-500">Enable RTL layout for Arabic and Hebrew</p>
+                  <p className="text-sm text-gray-500">
+                    Enable RTL layout for Arabic and Hebrew
+                  </p>
                 </div>
                 <Switch />
               </div>
@@ -125,31 +146,62 @@ const LanguageTimezone: React.FC = () => {
                     <SelectValue placeholder="Select timezone" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="America/New_York">Eastern Time (UTC-5)</SelectItem>
-                    <SelectItem value="America/Chicago">Central Time (UTC-6)</SelectItem>
-                    <SelectItem value="America/Denver">Mountain Time (UTC-7)</SelectItem>
-                    <SelectItem value="America/Los_Angeles">Pacific Time (UTC-8)</SelectItem>
-                    <SelectItem value="UTC">Coordinated Universal Time (UTC)</SelectItem>
-                    <SelectItem value="Europe/London">Greenwich Mean Time (UTC+0)</SelectItem>
-                    <SelectItem value="Europe/Paris">Central European Time (UTC+1)</SelectItem>
-                    <SelectItem value="Europe/Istanbul">Turkey Time (UTC+3)</SelectItem>
-                    <SelectItem value="Asia/Dubai">Gulf Standard Time (UTC+4)</SelectItem>
-                    <SelectItem value="Asia/Kolkata">India Standard Time (UTC+5:30)</SelectItem>
-                    <SelectItem value="Asia/Shanghai">China Standard Time (UTC+8)</SelectItem>
-                    <SelectItem value="Asia/Tokyo">Japan Standard Time (UTC+9)</SelectItem>
-                    <SelectItem value="Australia/Sydney">Australian Eastern Time (UTC+10)</SelectItem>
-                    <SelectItem value="Pacific/Auckland">New Zealand Time (UTC+12)</SelectItem>
+                    <SelectItem value="America/New_York">
+                      Eastern Time (UTC-5)
+                    </SelectItem>
+                    <SelectItem value="America/Chicago">
+                      Central Time (UTC-6)
+                    </SelectItem>
+                    <SelectItem value="America/Denver">
+                      Mountain Time (UTC-7)
+                    </SelectItem>
+                    <SelectItem value="America/Los_Angeles">
+                      Pacific Time (UTC-8)
+                    </SelectItem>
+                    <SelectItem value="UTC">
+                      Coordinated Universal Time (UTC)
+                    </SelectItem>
+                    <SelectItem value="Europe/London">
+                      Greenwich Mean Time (UTC+0)
+                    </SelectItem>
+                    <SelectItem value="Europe/Paris">
+                      Central European Time (UTC+1)
+                    </SelectItem>
+                    <SelectItem value="Europe/Istanbul">
+                      Turkey Time (UTC+3)
+                    </SelectItem>
+                    <SelectItem value="Asia/Dubai">
+                      Gulf Standard Time (UTC+4)
+                    </SelectItem>
+                    <SelectItem value="Asia/Kolkata">
+                      India Standard Time (UTC+5:30)
+                    </SelectItem>
+                    <SelectItem value="Asia/Shanghai">
+                      China Standard Time (UTC+8)
+                    </SelectItem>
+                    <SelectItem value="Asia/Tokyo">
+                      Japan Standard Time (UTC+9)
+                    </SelectItem>
+                    <SelectItem value="Australia/Sydney">
+                      Australian Eastern Time (UTC+10)
+                    </SelectItem>
+                    <SelectItem value="Pacific/Auckland">
+                      New Zealand Time (UTC+12)
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 <p className="text-sm text-gray-500">
-                  Current time: <span className="font-medium">2024-01-15 14:30:22 EST</span>
+                  Current time:{" "}
+                  <span className="font-medium">2024-01-15 14:30:22 EST</span>
                 </p>
               </div>
 
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Auto-detect Timezone</Label>
-                  <p className="text-sm text-gray-500">Automatically detect timezone from browser</p>
+                  <p className="text-sm text-gray-500">
+                    Automatically detect timezone from browser
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -157,7 +209,9 @@ const LanguageTimezone: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Daylight Saving Time</Label>
-                  <p className="text-sm text-gray-500">Automatically adjust for daylight saving time</p>
+                  <p className="text-sm text-gray-500">
+                    Automatically adjust for daylight saving time
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -170,11 +224,21 @@ const LanguageTimezone: React.FC = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">None</SelectItem>
-                    <SelectItem value="UTC">Coordinated Universal Time (UTC)</SelectItem>
-                    <SelectItem value="America/Los_Angeles">Pacific Time (UTC-8)</SelectItem>
-                    <SelectItem value="Europe/London">Greenwich Mean Time (UTC+0)</SelectItem>
-                    <SelectItem value="Asia/Tokyo">Japan Standard Time (UTC+9)</SelectItem>
-                    <SelectItem value="Australia/Sydney">Australian Eastern Time (UTC+10)</SelectItem>
+                    <SelectItem value="UTC">
+                      Coordinated Universal Time (UTC)
+                    </SelectItem>
+                    <SelectItem value="America/Los_Angeles">
+                      Pacific Time (UTC-8)
+                    </SelectItem>
+                    <SelectItem value="Europe/London">
+                      Greenwich Mean Time (UTC+0)
+                    </SelectItem>
+                    <SelectItem value="Asia/Tokyo">
+                      Japan Standard Time (UTC+9)
+                    </SelectItem>
+                    <SelectItem value="Australia/Sydney">
+                      Australian Eastern Time (UTC+10)
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 <p className="text-sm text-gray-500">
@@ -193,7 +257,8 @@ const LanguageTimezone: React.FC = () => {
                 Date & Time Format
               </CardTitle>
               <CardDescription>
-                Customize how dates and times are displayed throughout the system
+                Customize how dates and times are displayed throughout the
+                system
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -254,7 +319,9 @@ const LanguageTimezone: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Show Relative Time</Label>
-                  <p className="text-sm text-gray-500">Display "2 hours ago" instead of exact timestamps</p>
+                  <p className="text-sm text-gray-500">
+                    Display "2 hours ago" instead of exact timestamps
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -262,7 +329,9 @@ const LanguageTimezone: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Show Seconds</Label>
-                  <p className="text-sm text-gray-500">Include seconds in time displays</p>
+                  <p className="text-sm text-gray-500">
+                    Include seconds in time displays
+                  </p>
                 </div>
                 <Switch />
               </div>

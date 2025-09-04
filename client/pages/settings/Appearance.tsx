@@ -1,23 +1,66 @@
 import React from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Palette, Monitor, Sun, Moon, Eye, Layout, Component, PanelsTopLeft } from "lucide-react";
+import {
+  Palette,
+  Monitor,
+  Sun,
+  Moon,
+  Eye,
+  Layout,
+  Component,
+  PanelsTopLeft,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type ThemeMode = "light" | "dark" | "system";
 type ColorScheme = "blue" | "green" | "purple" | "orange" | "red";
 
-const COLOR_PRESETS: Record<ColorScheme, { primary: string; primaryText: string; subtle: string; ring: string }> = {
-  blue: { primary: "bg-blue-600", primaryText: "text-blue-600", subtle: "bg-blue-50", ring: "ring-blue-500" },
-  green: { primary: "bg-green-600", primaryText: "text-green-600", subtle: "bg-green-50", ring: "ring-green-500" },
-  purple: { primary: "bg-purple-600", primaryText: "text-purple-600", subtle: "bg-purple-50", ring: "ring-purple-500" },
-  orange: { primary: "bg-orange-600", primaryText: "text-orange-600", subtle: "bg-orange-50", ring: "ring-orange-500" },
-  red: { primary: "bg-red-600", primaryText: "text-red-600", subtle: "bg-red-50", ring: "ring-red-500" },
+const COLOR_PRESETS: Record<
+  ColorScheme,
+  { primary: string; primaryText: string; subtle: string; ring: string }
+> = {
+  blue: {
+    primary: "bg-blue-600",
+    primaryText: "text-blue-600",
+    subtle: "bg-blue-50",
+    ring: "ring-blue-500",
+  },
+  green: {
+    primary: "bg-green-600",
+    primaryText: "text-green-600",
+    subtle: "bg-green-50",
+    ring: "ring-green-500",
+  },
+  purple: {
+    primary: "bg-purple-600",
+    primaryText: "text-purple-600",
+    subtle: "bg-purple-50",
+    ring: "ring-purple-500",
+  },
+  orange: {
+    primary: "bg-orange-600",
+    primaryText: "text-orange-600",
+    subtle: "bg-orange-50",
+    ring: "ring-orange-500",
+  },
+  red: {
+    primary: "bg-red-600",
+    primaryText: "text-red-600",
+    subtle: "bg-red-50",
+    ring: "ring-red-500",
+  },
 };
 
 const Appearance: React.FC = () => {
@@ -52,28 +95,52 @@ const Appearance: React.FC = () => {
                 <Palette className="h-5 w-5 text-blue-600" />
                 <span>Theme & Color</span>
               </CardTitle>
-              <CardDescription>Choose your preferred theme and color scheme</CardDescription>
+              <CardDescription>
+                Choose your preferred theme and color scheme
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Theme Mode */}
               <div className="space-y-3">
                 <Label>Theme Mode</Label>
-                <RadioGroup value={themeMode} onValueChange={(v) => setThemeMode(v as ThemeMode)} className="grid grid-cols-3 gap-4">
-                  <label htmlFor="light" className={cn("flex items-center space-x-2 border rounded-lg p-4 hover:bg-gray-50 cursor-pointer", themeMode === "light" && "ring-2 ring-blue-500")}> 
+                <RadioGroup
+                  value={themeMode}
+                  onValueChange={(v) => setThemeMode(v as ThemeMode)}
+                  className="grid grid-cols-3 gap-4"
+                >
+                  <label
+                    htmlFor="light"
+                    className={cn(
+                      "flex items-center space-x-2 border rounded-lg p-4 hover:bg-gray-50 cursor-pointer",
+                      themeMode === "light" && "ring-2 ring-blue-500",
+                    )}
+                  >
                     <RadioGroupItem value="light" id="light" />
                     <div className="flex items-center space-x-2">
                       <Sun className="h-4 w-4" />
                       <span>Light</span>
                     </div>
                   </label>
-                  <label htmlFor="dark" className={cn("flex items-center space-x-2 border rounded-lg p-4 hover:bg-gray-50 cursor-pointer", themeMode === "dark" && "ring-2 ring-blue-500")}>
+                  <label
+                    htmlFor="dark"
+                    className={cn(
+                      "flex items-center space-x-2 border rounded-lg p-4 hover:bg-gray-50 cursor-pointer",
+                      themeMode === "dark" && "ring-2 ring-blue-500",
+                    )}
+                  >
                     <RadioGroupItem value="dark" id="dark" />
                     <div className="flex items-center space-x-2">
                       <Moon className="h-4 w-4" />
                       <span>Dark</span>
                     </div>
                   </label>
-                  <label htmlFor="system" className={cn("flex items-center space-x-2 border rounded-lg p-4 hover:bg-gray-50 cursor-pointer", themeMode === "system" && "ring-2 ring-blue-500")}>
+                  <label
+                    htmlFor="system"
+                    className={cn(
+                      "flex items-center space-x-2 border rounded-lg p-4 hover:bg-gray-50 cursor-pointer",
+                      themeMode === "system" && "ring-2 ring-blue-500",
+                    )}
+                  >
                     <RadioGroupItem value="system" id="system" />
                     <div className="flex items-center space-x-2">
                       <Monitor className="h-4 w-4" />
@@ -97,18 +164,26 @@ const Appearance: React.FC = () => {
                         onClick={() => setColorScheme(key)}
                         className={cn(
                           "group relative rounded-lg border p-2 text-left transition-colors",
-                          selected ? `ring-2 ${preset.ring} border-transparent` : "hover:bg-gray-50"
+                          selected
+                            ? `ring-2 ${preset.ring} border-transparent`
+                            : "hover:bg-gray-50",
                         )}
                         aria-pressed={selected}
                       >
                         <div className="flex items-center gap-2">
-                          <span className={cn("h-6 w-6 rounded", preset.primary)} />
+                          <span
+                            className={cn("h-6 w-6 rounded", preset.primary)}
+                          />
                           <div className="flex items-center gap-1">
-                            <span className={cn("h-4 w-6 rounded", preset.subtle)} />
+                            <span
+                              className={cn("h-4 w-6 rounded", preset.subtle)}
+                            />
                             <span className="h-4 w-6 rounded bg-gray-200" />
                           </div>
                         </div>
-                        <div className="mt-2 text-xs font-medium capitalize">{key}</div>
+                        <div className="mt-2 text-xs font-medium capitalize">
+                          {key}
+                        </div>
                       </button>
                     );
                   })}
@@ -119,9 +194,14 @@ const Appearance: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>High Contrast Mode</Label>
-                  <p className="text-sm text-gray-500">Increase contrast for better accessibility</p>
+                  <p className="text-sm text-gray-500">
+                    Increase contrast for better accessibility
+                  </p>
                 </div>
-                <Switch checked={highContrast} onCheckedChange={setHighContrast} />
+                <Switch
+                  checked={highContrast}
+                  onCheckedChange={setHighContrast}
+                />
               </div>
             </CardContent>
           </Card>
@@ -133,7 +213,9 @@ const Appearance: React.FC = () => {
                 <Component className="h-5 w-5 text-blue-600" />
                 <span>Live Preview</span>
               </CardTitle>
-              <CardDescription>Preview how the selected theme will look</CardDescription>
+              <CardDescription>
+                Preview how the selected theme will look
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <ThemePreview
@@ -158,12 +240,21 @@ const Appearance: React.FC = () => {
                 <Layout className="h-5 w-5 text-blue-600" />
                 <span>Layout & Display</span>
               </CardTitle>
-              <CardDescription>Customize the layout and display preferences</CardDescription>
+              <CardDescription>
+                Customize the layout and display preferences
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-3">
                 <Label>Font Size: {fontSize[0]}px</Label>
-                <Slider value={fontSize} onValueChange={setFontSize} min={12} max={20} step={1} className="w-full" />
+                <Slider
+                  value={fontSize}
+                  onValueChange={setFontSize}
+                  min={12}
+                  max={20}
+                  step={1}
+                  className="w-full"
+                />
                 <div className="flex justify-between text-xs text-gray-500">
                   <span>Small</span>
                   <span>Medium</span>
@@ -173,7 +264,14 @@ const Appearance: React.FC = () => {
 
               <div className="space-y-3">
                 <Label>Sidebar Width: {sidebarWidth[0]}px</Label>
-                <Slider value={sidebarWidth} onValueChange={setSidebarWidth} min={200} max={320} step={8} className="w-full" />
+                <Slider
+                  value={sidebarWidth}
+                  onValueChange={setSidebarWidth}
+                  min={200}
+                  max={320}
+                  step={8}
+                  className="w-full"
+                />
                 <div className="flex justify-between text-xs text-gray-500">
                   <span>Narrow</span>
                   <span>Default</span>
@@ -184,17 +282,27 @@ const Appearance: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Compact Mode</Label>
-                  <p className="text-sm text-gray-500">Reduce spacing and padding for more content</p>
+                  <p className="text-sm text-gray-500">
+                    Reduce spacing and padding for more content
+                  </p>
                 </div>
-                <Switch checked={compactMode} onCheckedChange={setCompactMode} />
+                <Switch
+                  checked={compactMode}
+                  onCheckedChange={setCompactMode}
+                />
               </div>
 
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Show Sidebar by Default</Label>
-                  <p className="text-sm text-gray-500">Keep sidebar open when navigating</p>
+                  <p className="text-sm text-gray-500">
+                    Keep sidebar open when navigating
+                  </p>
                 </div>
-                <Switch checked={showSidebar} onCheckedChange={setShowSidebar} />
+                <Switch
+                  checked={showSidebar}
+                  onCheckedChange={setShowSidebar}
+                />
               </div>
             </CardContent>
           </Card>
@@ -208,31 +316,48 @@ const Appearance: React.FC = () => {
                 <Eye className="h-5 w-5 text-blue-600" />
                 <span>Accessibility</span>
               </CardTitle>
-              <CardDescription>Settings to improve accessibility and usability</CardDescription>
+              <CardDescription>
+                Settings to improve accessibility and usability
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Reduce Motion</Label>
-                  <p className="text-sm text-gray-500">Minimize animations and transitions</p>
+                  <p className="text-sm text-gray-500">
+                    Minimize animations and transitions
+                  </p>
                 </div>
-                <Switch checked={reduceMotion} onCheckedChange={setReduceMotion} />
+                <Switch
+                  checked={reduceMotion}
+                  onCheckedChange={setReduceMotion}
+                />
               </div>
 
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Focus Indicators</Label>
-                  <p className="text-sm text-gray-500">Enhanced focus outlines for keyboard navigation</p>
+                  <p className="text-sm text-gray-500">
+                    Enhanced focus outlines for keyboard navigation
+                  </p>
                 </div>
-                <Switch checked={focusIndicators} onCheckedChange={setFocusIndicators} />
+                <Switch
+                  checked={focusIndicators}
+                  onCheckedChange={setFocusIndicators}
+                />
               </div>
 
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Screen Reader Support</Label>
-                  <p className="text-sm text-gray-500">Optimize for screen reader compatibility</p>
+                  <p className="text-sm text-gray-500">
+                    Optimize for screen reader compatibility
+                  </p>
                 </div>
-                <Switch checked={screenReader} onCheckedChange={setScreenReader} />
+                <Switch
+                  checked={screenReader}
+                  onCheckedChange={setScreenReader}
+                />
               </div>
             </CardContent>
           </Card>
@@ -258,9 +383,19 @@ function ThemePreview(props: {
   reduceMotion: boolean;
   showSidebar: boolean;
 }) {
-  const { themeMode, colorScheme, highContrast, compact, sidebarWidth, focusIndicators, reduceMotion, showSidebar } = props;
+  const {
+    themeMode,
+    colorScheme,
+    highContrast,
+    compact,
+    sidebarWidth,
+    focusIndicators,
+    reduceMotion,
+    showSidebar,
+  } = props;
   const preset = COLOR_PRESETS[colorScheme];
-  const darkClass = themeMode === "dark" ? "dark" : themeMode === "system" ? "" : "";
+  const darkClass =
+    themeMode === "dark" ? "dark" : themeMode === "system" ? "" : "";
   const spacing = compact ? "space-y-3 p-3" : "space-y-4 p-4";
 
   return (
@@ -268,11 +403,16 @@ function ThemePreview(props: {
       <div
         className={cn(
           "rounded-lg overflow-hidden border",
-          highContrast ? "border-black" : "border-gray-200"
+          highContrast ? "border-black" : "border-gray-200",
         )}
       >
         {/* Top bar */}
-        <div className={cn("h-10 flex items-center justify-between px-4", preset.primary)}>
+        <div
+          className={cn(
+            "h-10 flex items-center justify-between px-4",
+            preset.primary,
+          )}
+        >
           <div className="flex items-center gap-2 text-white">
             <PanelsTopLeft className="h-4 w-4" />
             <span className="text-sm font-medium">Console</span>
@@ -291,7 +431,7 @@ function ThemePreview(props: {
               className={cn(
                 "shrink-0 border-r bg-gray-50 p-3",
                 highContrast ? "border-black" : "border-gray-200",
-                compact ? "space-y-2" : "space-y-3"
+                compact ? "space-y-2" : "space-y-3",
               )}
             >
               {[1, 2, 3, 4].map((i) => (
@@ -302,10 +442,22 @@ function ThemePreview(props: {
 
           {/* Content */}
           <div className={cn("flex-1", spacing)}>
-            <div className={cn("rounded border bg-white", highContrast ? "border-black" : "border-gray-200")}> 
-              <div className={cn("border-b px-4 py-2 flex items-center justify-between", highContrast ? "border-black" : "border-gray-200")}> 
+            <div
+              className={cn(
+                "rounded border bg-white",
+                highContrast ? "border-black" : "border-gray-200",
+              )}
+            >
+              <div
+                className={cn(
+                  "border-b px-4 py-2 flex items-center justify-between",
+                  highContrast ? "border-black" : "border-gray-200",
+                )}
+              >
                 <span className="text-sm font-medium">Overview</span>
-                <span className={cn("text-xs", preset.primaryText)}>Active</span>
+                <span className={cn("text-xs", preset.primaryText)}>
+                  Active
+                </span>
               </div>
               <div className="p-4 grid grid-cols-3 gap-3">
                 <div className={cn("h-10 rounded", preset.subtle)} />
@@ -316,16 +468,38 @@ function ThemePreview(props: {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className={cn("inline-block h-3 w-3 rounded-full", preset.primary)} />
+                <span
+                  className={cn(
+                    "inline-block h-3 w-3 rounded-full",
+                    preset.primary,
+                  )}
+                />
                 <span className="text-sm">Primary</span>
               </div>
-              <Button className={cn("h-8 px-3 text-white", preset.primary)}>Action</Button>
+              <Button className={cn("h-8 px-3 text-white", preset.primary)}>
+                Action
+              </Button>
             </div>
 
             <div className="grid grid-cols-3 gap-3">
-              <div className={cn("h-16 rounded border bg-white", highContrast ? "border-black" : "border-gray-200")} />
-              <div className={cn("h-16 rounded border bg-white", highContrast ? "border-black" : "border-gray-200")} />
-              <div className={cn("h-16 rounded border bg-white", highContrast ? "border-black" : "border-gray-200")} />
+              <div
+                className={cn(
+                  "h-16 rounded border bg-white",
+                  highContrast ? "border-black" : "border-gray-200",
+                )}
+              />
+              <div
+                className={cn(
+                  "h-16 rounded border bg-white",
+                  highContrast ? "border-black" : "border-gray-200",
+                )}
+              />
+              <div
+                className={cn(
+                  "h-16 rounded border bg-white",
+                  highContrast ? "border-black" : "border-gray-200",
+                )}
+              />
             </div>
           </div>
         </div>

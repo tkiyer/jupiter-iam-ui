@@ -1,23 +1,35 @@
 import React from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Plug, 
-  Database, 
-  Cloud, 
-  Shield, 
+import {
+  Plug,
+  Database,
+  Cloud,
+  Shield,
   Webhook,
   ExternalLink,
   CheckCircle,
   XCircle,
-  Clock
+  Clock,
 } from "lucide-react";
 
 const SystemIntegration: React.FC = () => {
@@ -27,29 +39,29 @@ const SystemIntegration: React.FC = () => {
       type: "LDAP",
       status: "connected",
       lastSync: "2 minutes ago",
-      description: "Corporate directory integration"
+      description: "Corporate directory integration",
     },
     {
       name: "Slack",
       type: "Webhook",
       status: "connected",
       lastSync: "5 minutes ago",
-      description: "Notification delivery"
+      description: "Notification delivery",
     },
     {
       name: "AWS IAM",
       type: "Cloud Provider",
       status: "pending",
       lastSync: "Never",
-      description: "Cloud resource management"
+      description: "Cloud resource management",
     },
     {
       name: "Okta",
       type: "SSO",
       status: "disconnected",
       lastSync: "2 hours ago",
-      description: "Single sign-on provider"
-    }
+      description: "Single sign-on provider",
+    },
   ];
 
   const getStatusIcon = (status: string) => {
@@ -103,7 +115,10 @@ const SystemIntegration: React.FC = () => {
             <CardContent>
               <div className="space-y-4">
                 {integrations.map((integration, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-4 border rounded-lg"
+                  >
                     <div className="flex items-center gap-4">
                       {getStatusIcon(integration.status)}
                       <div>
@@ -111,9 +126,12 @@ const SystemIntegration: React.FC = () => {
                           <h4 className="font-medium">{integration.name}</h4>
                           {getStatusBadge(integration.status)}
                         </div>
-                        <p className="text-sm text-gray-500">{integration.description}</p>
+                        <p className="text-sm text-gray-500">
+                          {integration.description}
+                        </p>
                         <p className="text-xs text-gray-400">
-                          Type: {integration.type} • Last sync: {integration.lastSync}
+                          Type: {integration.type} • Last sync:{" "}
+                          {integration.lastSync}
                         </p>
                       </div>
                     </div>
@@ -140,14 +158,17 @@ const SystemIntegration: React.FC = () => {
                 LDAP/Active Directory
               </CardTitle>
               <CardDescription>
-                Configure LDAP or Active Directory integration for user authentication
+                Configure LDAP or Active Directory integration for user
+                authentication
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Enable LDAP Integration</Label>
-                  <p className="text-sm text-gray-500">Connect to your LDAP server for user management</p>
+                  <p className="text-sm text-gray-500">
+                    Connect to your LDAP server for user management
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -163,11 +184,7 @@ const SystemIntegration: React.FC = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="ldapPort">Port</Label>
-                  <Input
-                    id="ldapPort"
-                    placeholder="389"
-                    defaultValue="389"
-                  />
+                  <Input id="ldapPort" placeholder="389" defaultValue="389" />
                 </div>
               </div>
 
@@ -220,10 +237,14 @@ const SystemIntegration: React.FC = () => {
                     <SelectValue placeholder="Select cloud provider" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="aws">Amazon Web Services (AWS)</SelectItem>
+                    <SelectItem value="aws">
+                      Amazon Web Services (AWS)
+                    </SelectItem>
                     <SelectItem value="azure">Microsoft Azure</SelectItem>
                     <SelectItem value="gcp">Google Cloud Platform</SelectItem>
-                    <SelectItem value="oci">Oracle Cloud Infrastructure</SelectItem>
+                    <SelectItem value="oci">
+                      Oracle Cloud Infrastructure
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -253,17 +274,25 @@ const SystemIntegration: React.FC = () => {
                     <SelectValue placeholder="Select region" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="us-east-1">US East (N. Virginia)</SelectItem>
+                    <SelectItem value="us-east-1">
+                      US East (N. Virginia)
+                    </SelectItem>
                     <SelectItem value="us-west-2">US West (Oregon)</SelectItem>
                     <SelectItem value="eu-west-1">Europe (Ireland)</SelectItem>
-                    <SelectItem value="ap-southeast-1">Asia Pacific (Singapore)</SelectItem>
+                    <SelectItem value="ap-southeast-1">
+                      Asia Pacific (Singapore)
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm">Test Connection</Button>
-                <Button variant="outline" size="sm">Import Resources</Button>
+                <Button variant="outline" size="sm">
+                  Test Connection
+                </Button>
+                <Button variant="outline" size="sm">
+                  Import Resources
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -307,17 +336,16 @@ const SystemIntegration: React.FC = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="entityId">Entity ID</Label>
-                <Input
-                  id="entityId"
-                  placeholder="urn:your-entity-id"
-                />
+                <Input id="entityId" placeholder="urn:your-entity-id" />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="certificate">X.509 Certificate</Label>
                 <Textarea
                   id="certificate"
-                  placeholder={"-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----"}
+                  placeholder={
+                    "-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----"
+                  }
                   className="min-h-[100px] font-mono text-sm"
                 />
               </div>
@@ -343,15 +371,21 @@ const SystemIntegration: React.FC = () => {
                   <div className="flex items-center justify-between p-3 border rounded-lg">
                     <div>
                       <p className="font-medium">Production API Key</p>
-                      <p className="text-sm text-gray-500">Created on Jan 15, 2024</p>
+                      <p className="text-sm text-gray-500">
+                        Created on Jan 15, 2024
+                      </p>
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary">Active</Badge>
-                      <Button variant="outline" size="sm">Regenerate</Button>
+                      <Button variant="outline" size="sm">
+                        Regenerate
+                      </Button>
                     </div>
                   </div>
                 </div>
-                <Button variant="outline" size="sm">Create New API Key</Button>
+                <Button variant="outline" size="sm">
+                  Create New API Key
+                </Button>
               </div>
 
               <div className="space-y-2">
@@ -374,7 +408,9 @@ const SystemIntegration: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Enable Webhook Verification</Label>
-                  <p className="text-sm text-gray-500">Verify webhook signatures for security</p>
+                  <p className="text-sm text-gray-500">
+                    Verify webhook signatures for security
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
