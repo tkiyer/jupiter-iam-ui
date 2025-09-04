@@ -4,15 +4,15 @@
  */
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { Badge } from '../components/ui/badge';
-import { Alert, AlertDescription } from '../components/ui/alert';
-import { Separator } from '../components/ui/separator';
-import { ScrollArea } from '../components/ui/scroll-area';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   PermissionGuard,
   RoleGuard,
@@ -21,8 +21,8 @@ import {
   ConditionalRender,
   AccessIndicator,
   AccessDebug
-} from '../components/access-control/AccessGuard';
-import { usePermission, useRole, usePermissions, useAccessControlContext } from '../hooks/useAccessControl';
+} from '@/components/access-control/AccessGuard';
+import { usePermission, useRole, usePermissions, useAccessControlContext } from '@/hooks/useAccessControl';
 import { Shield, CheckCircle, XCircle, Info, User, Key, Database, Settings, FileText, Users } from 'lucide-react';
 
 export default function AccessControl() {
